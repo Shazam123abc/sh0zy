@@ -1,49 +1,234 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Games</title>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 <style>
-  * {
-    box-sizing: border-box;
-  }
-
-  html, body {
-    margin: 0;
-    min-height: 100%;
-    background: transparent !important;
-    color: #f2f4f8;
-    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-
-  #games {
-    min-height: 100vh;
-    background: transparent !important;
-  }
-
-  #games > div,
-  #games iframe {
-    background: transparent !important;
-  }
+:root{--acc:#6a95ff;--acc2:#a78bfa;--glass:rgba(10,14,26,.62);--line:rgba(255,255,255,.1);--mut:#8a93a6}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html,body{background:transparent;color:#eef1f6;font:14px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{max-width:1400px;margin:0 auto;padding:0 24px 60px}
+.hero{padding:34px 0 14px}
+.hero h1{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,#fff,#a9bdff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);margin-top:4px}
+.top{position:sticky;top:0;z-index:20;margin:0 -24px;padding:12px 24px 10px;background:linear-gradient(rgba(5,8,15,.88),rgba(5,8,15,.6));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:220px;max-width:520px;position:relative}
+.search>i{position:absolute;left:16px;top:50%;translate:0 -50%;color:var(--mut)}
+.search input{width:100%;height:46px;padding:0 48px 0 44px;border-radius:23px;border:1px solid var(--line);background:var(--glass);color:inherit;font:inherit;outline:0;transition:.2s}
+.search input::placeholder{color:var(--mut)}
+.search input:focus{border-color:var(--acc);box-shadow:0 0 0 4px rgba(106,149,255,.18)}
+.search kbd{position:absolute;right:14px;top:50%;translate:0 -50%;padding:1px 8px;border-radius:6px;background:rgba(255,255,255,.08);font:11px ui-monospace,Consolas,monospace;color:var(--mut)}
+.seg{display:flex;padding:4px;gap:2px;border-radius:23px;background:var(--glass);border:1px solid var(--line)}
+.seg button{height:36px;padding:0 16px;border-radius:19px;color:var(--mut);font-weight:600;transition:.2s}
+.seg button:hover{color:#fff}
+.seg button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 16px rgba(106,149,255,.4)}
+.btn{height:46px;padding:0 18px;border-radius:23px;border:1px solid var(--line);background:var(--glass);font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:.2s}
+.btn:hover{border-color:var(--acc);background:rgba(106,149,255,.2);transform:translateY(-1px)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#c3cbdb;font-size:13px;transition:.18s}
+.chip:hover{background:rgba(255,255,255,.1)}
+.chip.on{background:#fff;color:#0a0e1a;border-color:#fff;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:16px;padding-top:20px}
+.card{position:relative;border-radius:18px;background:var(--glass);border:1px solid var(--line);overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s;animation:up .5s both;animation-delay:calc(var(--i,0)*35ms)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.card:hover{transform:translateY(-6px);border-color:rgba(106,149,255,.6);box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 40px rgba(106,149,255,.18)}
+.open{display:block;width:100%;text-align:left}
+.thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#1a2342,#0d1226)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.thumb img:not([src]){display:none}
+.card:hover .thumb img{transform:scale(1.08)}
+.thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(5,8,15,.75))}
+.go{position:absolute;inset:0;margin:auto;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;z-index:2;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 8px 24px rgba(106,149,255,.5);opacity:0;scale:.6;transition:.25s}
+.card:hover .go,.open:focus-visible .go{opacity:1;scale:1}
+.sk{background:linear-gradient(100deg,#141a30 30%,#1f2848 50%,#141a30 70%) 0 0/200% 100%;animation:sh 1.3s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.meta{padding:10px 12px 12px}
+.meta b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta small{color:var(--mut);font-size:11.5px}
+.fav{position:absolute;top:8px;right:8px;z-index:3;width:32px;height:32px;border-radius:50%;background:rgba(5,8,15,.6);backdrop-filter:blur(6px);color:#dbe2f0;transition:.2s}
+.fav:hover{scale:1.15;color:#ff6b8b}.fav.on{color:#ff6b8b}
+.state{display:grid;justify-items:center;gap:10px;padding:80px 20px;text-align:center;color:var(--mut)}
+.state>i{font-size:40px;opacity:.5}.state h3{color:#eef1f6;font-size:18px}
+.more{display:flex;justify-content:center;padding:24px}
+.spin{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--acc);animation:sp .8s linear infinite}
+@keyframes sp{to{rotate:360deg}}
+#player{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:rgba(3,5,10,.94);backdrop-filter:blur(16px);animation:fi .25s}
+@keyframes fi{from{opacity:0}}
+.pbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.pbar strong{flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar .ib{height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.06);display:inline-flex;align-items:center;gap:8px;transition:.2s}
+.pbar .ib:hover{background:rgba(106,149,255,.25);border-color:var(--acc)}
+.pbar .ib.on{color:#ff6b8b}
+.stage{position:relative;flex:1;min-height:0;padding:12px}
+#pf{width:100%;height:100%;border:0;border-radius:14px;background:#000}
+#pload{position:absolute;inset:12px;display:grid;place-items:center;border-radius:14px;background:rgba(3,5,10,.85);color:var(--mut)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+@media(max-width:560px){.lbl{display:none}.wrap{padding:0 14px 40px}.top{margin:0 -14px;padding:10px 14px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-
 <body>
-  <div id="games"></div>
+<div class="wrap">
+  <header class="hero"><h1>Games</h1><p id="sub">Loading the library…</p></header>
+  <div class="top">
+    <div class="row">
+      <label class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="q" type="text" placeholder="Search games…" aria-label="Search games" autocomplete="off"><kbd>/</kbd></label>
+      <div class="seg" role="group" aria-label="Library">
+        <button class="on" data-mode="all">All</button><button data-mode="favs"><i class="fa-solid fa-heart"></i> <span class="lbl">Favorites</span></button><button data-mode="recent"><i class="fa-solid fa-clock-rotate-left"></i> <span class="lbl">Recent</span></button>
+      </div>
+      <button class="btn" id="rand"><i class="fa-solid fa-shuffle"></i><span class="lbl">Surprise me</span></button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Categories"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="state" id="state" hidden></div>
+  <div class="more" id="more" hidden><div class="spin"></div></div>
+  <div id="sent"></div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+<div id="player" hidden>
+  <div class="pbar">
+    <button class="ib" id="pback"><i class="fa-solid fa-arrow-left"></i><span class="lbl">Back</span></button>
+    <strong id="ptitle"></strong>
+    <button class="ib" id="pfav" aria-label="Favorite"></button>
+    <button class="ib" id="preload" aria-label="Reload game"><i class="fa-solid fa-rotate-right"></i></button>
+    <button class="ib" id="pfs" aria-label="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+  </div>
+  <div class="stage"><iframe id="pf" title="Game" allow="autoplay; fullscreen; pointer-lock; gamepad" allowfullscreen></iframe><div id="pload"><div class="spin"></div></div></div>
+</div>
 
-  <script>
-    Lumin.init({
-      container: '#games',
-      theme: 'dark',
-      columns: 12,
-      rows: 4,
-      gamesPerPage: 48
-    });
-  </script>
+<script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s), STEP = 48;
+const ls = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+const mk = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
+const arr = r => Array.isArray(r) ? r : (r && r.games) || [];
+let all = [], seen = new Set(), results = [], cats = ["All"], cat = "All", mode = "all", query = "";
+let page = 0, pages = 1, total = 0, loading = false, shown = 0, current = null, st;
+let favs = ls.get("sh0zy.favs", []), recent = ls.get("sh0zy.recent", []);
+const grid = $("#grid"), stateEl = $("#state"), more = $("#more"), pf = $("#pf");
+const imgs = new Map();                       // image_token -> Promise<blob url>
+const getImg = g => !g.image_token ? Promise.resolve(null) : (imgs.get(g.image_token) || (imgs.set(g.image_token, Lumin.getImageUrl(g.image_token).catch(() => null)), imgs.get(g.image_token)));
+const isFav = id => favs.some(g => g.id === id);
+const slim = g => ({ id: g.id, name: g.name, image_token: g.image_token, category: g.category });
+const paintFav = (b, on) => { b.classList.toggle("on", on); b.innerHTML = '<i class="fa-' + (on ? "solid" : "regular") + ' fa-heart"></i>'; b.setAttribute("aria-pressed", on); };
+
+function setState(icon, title, text, retry) {
+  const i = mk("i", icon), h = mk("h3"), p = mk("p"); h.textContent = title; p.textContent = text;
+  stateEl.replaceChildren(i, h, p);
+  if (retry) { const b = mk("button", "btn"); b.textContent = "Try again"; b.onclick = retry; stateEl.append(b); }
+  stateEl.hidden = false;
+}
+function list() {
+  let b = mode === "favs" ? favs : mode === "recent" ? recent : query ? results : all;
+  if (mode !== "all" && query) b = b.filter(g => g.name.toLowerCase().includes(query.toLowerCase()));
+  return cat === "All" ? b : b.filter(g => g.category === cat);
+}
+function render(reset = true) {
+  const l = list();
+  if (reset) { grid.replaceChildren(); shown = 0; }
+  const f = document.createDocumentFragment();
+  l.slice(shown).forEach((g, i) => f.append(card(g, i)));
+  shown = l.length; grid.append(f);
+  const none = !l.length && !loading;
+  stateEl.hidden = !none;
+  if (none) setState(...({ favs: ["fa-regular fa-heart", "No favorites yet", "Tap the heart on any game to save it here."], recent: ["fa-solid fa-clock-rotate-left", "Nothing played yet", "Games you play will show up here."], all: ["fa-solid fa-ghost", "No games found", "Try a different search or category."] })[mode]);
+  const n = total || all.length; $("#sub").textContent = n ? n.toLocaleString() + " games ready to play" : "Loading the library…";
+}
+
+/* Lazy thumbnails: resolve each image token only when its card is near the viewport */
+const imgIO = new IntersectionObserver(es => es.forEach(async e => {
+  if (!e.isIntersecting) return; imgIO.unobserve(e.target);
+  const t = e.target.querySelector(".thumb"), im = t.querySelector("img"), u = await getImg(e.target._g);
+  if (u) { im.onload = () => t.classList.remove("sk"); im.src = u; } else t.classList.remove("sk");
+}), { rootMargin: "300px" });
+
+function card(g, i) {
+  const c = mk("div", "card"); c._g = g; c.style.setProperty("--i", Math.min(i, 12));
+  const o = mk("button", "open"); o.setAttribute("aria-label", "Play " + g.name);
+  o.innerHTML = '<div class="thumb sk"><img alt=""><span class="go"><i class="fa-solid fa-play"></i></span></div><div class="meta"><b></b><small></small></div>';
+  o.querySelector("b").textContent = g.name; o.querySelector("small").textContent = g.category || "Game"; o.querySelector("img").alt = g.name + " thumbnail";
+  o.onclick = () => play(g);
+  const f = mk("button", "fav"); f.setAttribute("aria-label", "Toggle favorite"); paintFav(f, isFav(g.id)); f.onclick = () => toggleFav(g);
+  c.append(o, f); imgIO.observe(c); return c;
+}
+function toggleFav(g) {
+  favs = isFav(g.id) ? favs.filter(x => x.id !== g.id) : [slim(g), ...favs]; ls.set("sh0zy.favs", favs);
+  document.querySelectorAll(".card").forEach(c => { if (c._g.id === g.id) paintFav(c.querySelector(".fav"), isFav(g.id)); });
+  if (current && current.id === g.id) paintFav($("#pfav"), isFav(g.id));
+  if (mode === "favs") render(true);
+}
+
+/* Data loading: paged catalog + search */
+async function loadMore() {
+  if (loading || page >= pages || mode !== "all" || query) return;
+  loading = true; more.hidden = false;
+  try {
+    const r = await Lumin.getGames({ page: page + 1, limit: STEP });
+    page++; pages = r.pages || page; total = r.total || total;
+    arr(r).forEach(g => { if (!seen.has(g.id)) { seen.add(g.id); all.push(g); } });
+    loading = false; render(page === 1);
+  } catch (e) { loading = false; if (!all.length) setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the game library", "Check your connection and try again.", boot); }
+  more.hidden = true; fill();
+}
+const sentIO = new IntersectionObserver(es => { if (es[0].isIntersecting) loadMore(); }, { rootMargin: "600px" });
+sentIO.observe($("#sent"));
+function fill() { if ($("#sent").getBoundingClientRect().top < innerHeight + 600) loadMore(); }  // keep loading while a filter leaves the screen empty
+
+async function doSearch() {
+  query = $("#q").value.trim();
+  if (query && mode === "all") { try { results = arr(await Lumin.search(query)); } catch { results = []; } }
+  render(true); if (!query) fill();
+}
+$("#q").addEventListener("input", () => { clearTimeout(st); st = setTimeout(doSearch, 250); });
+
+function drawChips() {
+  $("#chips").hidden = cats.length < 2;
+  $("#chips").replaceChildren(...cats.map(c => { const b = mk("button", "chip" + (c === cat ? " on" : "")); b.textContent = c; b.onclick = () => { cat = c; drawChips(); render(true); fill(); }; return b; }));
+}
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => {
+  mode = b.dataset.mode; document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b)); doSearch(); fill();
+});
+$("#rand").onclick = async () => { try { const g = arr(await Lumin.getRandomGames(1))[0]; if (g) play(g); } catch {} };
+
+/* Player: game URLs are one-time use, so every (re)load asks for a fresh one */
+async function play(g) {
+  current = g; $("#ptitle").textContent = g.name; paintFav($("#pfav"), isFav(g.id));
+  $("#pload").replaceChildren(mk("div", "spin")); $("#pload").hidden = false; $("#player").hidden = false; pf.src = "about:blank";
+  recent = [slim(g), ...recent.filter(x => x.id !== g.id)].slice(0, 24); ls.set("sh0zy.recent", recent);
+  try { const { url } = await Lumin.getGameUrl(g.id); if (current === g) pf.src = url; }
+  catch { $("#pload").textContent = "Couldn't load this game. Try reloading."; }
+}
+pf.addEventListener("load", () => { if (current && pf.src !== "about:blank") $("#pload").hidden = true; });
+function closePlayer() { current = null; pf.src = "about:blank"; $("#player").hidden = true; if (mode === "recent") render(true); }
+$("#pback").onclick = closePlayer;
+$("#preload").onclick = () => current && play(current);
+$("#pfav").onclick = () => current && toggleFav(current);
+$("#pfs").onclick = () => { if (pf.requestFullscreen) Promise.resolve(pf.requestFullscreen()).catch(() => {}); };
+addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#player").hidden) closePlayer();
+  else if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); $("#q").focus(); }
+});
+
+async function boot() {
+  stateEl.hidden = true;
+  grid.replaceChildren(...Array.from({ length: 12 }, (_, i) => { const c = mk("div", "card"); c.style.setProperty("--i", i); c.innerHTML = '<div class="thumb sk"></div><div class="meta"><b>&nbsp;</b><small>&nbsp;</small></div>'; return c; }));
+  try {
+    await Lumin.init({ headless: true });
+    try { cats = ["All", ...((await Lumin.getCategories()) || []).map(c => typeof c === "string" ? c : c && c.name).filter(Boolean)]; } catch {}
+    drawChips(); await loadMore();
+  } catch { grid.replaceChildren(); setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the game library", "Check your connection and try again.", boot); }
+}
+addEventListener("pagehide", () => { try { Lumin.destroy(); } catch {} });
+boot();
+</script>
 </body>
 </html>
