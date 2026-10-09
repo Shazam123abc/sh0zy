@@ -124,7 +124,7 @@ const label = t => { const e = t.hist[t.i]; return e.u ? new URL(e.u).hostname :
 async function getPage(file, fresh) {
   if (!/^[\w-]+\.html$/.test(file)) throw new Error("bad file");
   if (!fresh && cache.has(file)) return cache.get(file);
-  const r = await fetch(BASE + "pages/" + file, { cache: fresh ? "reload" : "default" });
+  const r = await fetch(BASE + file, { cache: fresh ? "reload" : "default" });
   if (!r.ok) throw new Error(r.status);
   const t = await r.text(); cache.set(file, t); return t;
 }
