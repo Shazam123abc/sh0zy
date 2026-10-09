@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>New Tab</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+
 <style>
 *{box-sizing:border-box;margin:0}
 html,body{height:100%;background:transparent;color:#f2f4f8;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -28,16 +30,18 @@ select.pill option{color:#111}
 .corner.r{right:14px}
 .dock{display:flex;gap:8px;padding:8px;border-radius:20px}
 .tile{width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);font-size:18px;transition:.2s}
+.ic{font-size:18px;line-height:1}
+.search .ic{font-size:17px}.circle .ic{font-size:21px}.pill .ic{font-size:13px;margin-right:4px}
 @media(max-width:600px){.corner{position:static}.corner.l{flex-direction:row;align-items:center}body{justify-content:flex-start;padding-top:16px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill" id="b-trend">🔥 Trending</button></div>
+<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill" id="b-trend"><span data-ic="flame"></span> Trending</button></div>
 <div class="corner r"><button class="glass pill" id="b-discord">Discord</button><button class="glass pill" id="b-links">Get Links</button></div>
 <h1>PeteZah</h1>
 <form class="glass search" id="sf">
-  <span aria-hidden="true">🔍</span>
+  <span aria-hidden="true" data-ic="search"></span>
   <input id="q" type="search" placeholder="Search the web or enter a URL" aria-label="Search" autocomplete="off">
   <kbd>Ctrl+K</kbd>
 </form>
@@ -48,22 +52,34 @@ select.pill option{color:#111}
 <script>
 /* ===== CONFIG: edit links here ===== */
 const CFG = { discord: "https://discord.gg/YOURINVITE", getLinks: "https://discord.gg/YOURINVITE", trending: "https://trends.google.com/trending" };
-const DOCK = [["Instagram", "📸", "https://www.instagram.com"], ["Spotify", "🎧", "https://open.spotify.com"], ["TikTok", "🎵", "https://www.tiktok.com"]];
-const ICONS = [["Games", "🎮", { nav: "games" }], ["Apps", "🧩", { url: "https://play.google.com" }], ["Music", "🎵", { url: "https://open.spotify.com" }],
-  ["Movies", "🎬", { url: "https://www.themoviedb.org" }], ["TV", "📺", { url: "https://www.justwatch.com" }], ["Browser", "🌐", { url: "https://duckduckgo.com" }], ["Chat", "💬", { nav: "chat" }]];
+const DOCK = [["Instagram", "instagram", "https://www.instagram.com"], ["Spotify", "headphones", "https://open.spotify.com"], ["TikTok", "tiktok", "https://www.tiktok.com"]];
+const ICONS = [["Games", "gamepad", { nav: "games" }], ["Apps", "grid", { url: "https://play.google.com" }], ["Music", "music", { url: "https://open.spotify.com" }],
+  ["Movies", "film", { url: "https://www.themoviedb.org" }], ["TV", "tv", { url: "https://www.justwatch.com" }], ["Browser", "globe", { url: "https://duckduckgo.com" }], ["Chat", "chat", { nav: "chat" }]];
 
+/* Font Awesome Free 6.5.2 icons (same set as the old site); loaded via the <link> in <head> */
+const ICONS = {
+  home:'fa-solid fa-house', gamepad:'fa-solid fa-gamepad', chat:'fa-solid fa-comments', settings:'fa-solid fa-gear',
+  lock:'fa-solid fa-lock', alert:'fa-solid fa-triangle-exclamation', flame:'fa-solid fa-fire', plus:'fa-solid fa-plus',
+  x:'fa-solid fa-xmark', back:'fa-solid fa-arrow-left', fwd:'fa-solid fa-arrow-right', reload:'fa-solid fa-rotate-right',
+  search:'fa-solid fa-magnifying-glass', grid:'fa-solid fa-table-cells-large', music:'fa-solid fa-music', film:'fa-solid fa-film',
+  tv:'fa-solid fa-tv', globe:'fa-solid fa-globe', instagram:'fa-brands fa-instagram', headphones:'fa-brands fa-spotify',
+  tiktok:'fa-brands fa-tiktok'
+};
+const ico = n => '<i class="ic ' + (ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
+const fillIcons = () => document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
 const $ = id => document.getElementById(id);
 const send = (sh, rest) => parent.postMessage(Object.assign({ sh }, rest), "*");
 const act = a => a.nav ? send("nav", { to: a.nav }) : a.url ? send("open", { url: a.url, newTab: true }) : send("settings");
-const mk = (cls, label, icon, a) => { const b = document.createElement("button"); b.className = cls; b.textContent = icon; b.title = label; b.setAttribute("aria-label", label); b.onclick = () => act(a); return b; };
+const mk = (cls, label, icon, a) => { const b = document.createElement("button"); b.className = cls; b.innerHTML = ico(icon); b.title = label; b.setAttribute("aria-label", label); b.onclick = () => act(a); return b; };
 
-$("dock").append(...DOCK.map(([n, i, u]) => mk("tile", n, i, { url: u })), mk("tile", "Add shortcut", "+", {}));
-$("icons").append(...ICONS.map(([n, i, a]) => mk("glass circle", n, i, a)), mk("glass circle", "More (settings)", "+", {}));
+$("dock").append(...DOCK.map(([n, i, u]) => mk("tile", n, i, { url: u })), mk("tile", "Add shortcut", "plus", {}));
+$("icons").append(...ICONS.map(([n, i, a]) => mk("glass circle", n, i, a)), mk("glass circle", "More (settings)", "plus", {}));
 $("b-discord").onclick = () => act({ url: CFG.discord });
 $("b-links").onclick = () => act({ url: CFG.getLinks });
 $("b-trend").onclick = () => act({ url: CFG.trending });
 
 $("sf").addEventListener("submit", e => { e.preventDefault(); const q = $("q").value.trim(); if (q) send("search", { q }); });
+fillIcons();
 try { $("eng").value = localStorage.getItem("sh0zy.engine") || "default"; } catch {}
 $("eng").onchange = () => { try { localStorage.setItem("sh0zy.engine", $("eng").value); } catch {} };
 addEventListener("message", e => { if (e.data && e.data.sh === "focus") { $("q").focus(); $("q").select(); } });
