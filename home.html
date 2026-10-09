@@ -7,59 +7,76 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 <style>
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:transparent;color:#eef1f6;font:13px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px 20px 60px;overflow-y:auto;animation:in .5s ease}
-@keyframes in{from{opacity:0;transform:translateY(8px)}}
+[hidden]{display:none!important}
+html,body{height:100%;background:transparent;color:#eef1f6;font:13px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overflow-y:auto}
 :focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
-button,select,input{font:inherit;color:inherit}button{cursor:pointer}
-.ic{font-size:13px;line-height:1}
-.glass{background:rgba(5,8,15,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-h1{font-size:38px;font-weight:700;letter-spacing:-.01em;text-shadow:0 2px 20px rgba(0,0,0,.6)}
-.search{display:flex;align-items:center;gap:10px;width:min(510px,100%);height:46px;padding:0 12px 0 16px;border-radius:12px;color:#9aa3b5;transition:.2s}
-.search:focus-within{border-color:#8aa4ff}
-.search input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:14px;color:#eef1f6}
-.search input::placeholder{color:#8a93a6}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+.ic{font-size:14px;line-height:1}
+.glass{background:rgba(7,10,20,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:70px 20px 40px;animation:in .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.mark{font-size:clamp(56px,10vw,104px);font-weight:800;letter-spacing:.14em;padding-left:.14em;line-height:1;background:linear-gradient(110deg,#fff 20%,#9db7ff 45%,#c9a9ff 60%,#fff 80%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(120,150,255,.5));animation:sheen 8s linear infinite}
+@keyframes sheen{to{background-position:-250% 0}}
+.tag{margin-top:-12px;color:#b4bdd0;font-size:15px;font-weight:500}
+.search{display:flex;align-items:center;gap:10px;width:min(600px,100%);height:56px;padding:0 10px 0 20px;border-radius:18px;color:#9aa3b5;transition:.25s}
+.search:focus-within{border-color:#8aa4ff;box-shadow:0 0 0 5px rgba(138,164,255,.15),0 10px 40px rgba(60,90,200,.25)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px}
+.search input::placeholder{color:#7f89a0}
 kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px ui-monospace,Consolas,monospace;color:#9aa3b5}
-.icons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.circle{width:34px;height:34px;border-radius:50%;transition:.2s}
-.circle:hover{transform:translateY(-3px);background:rgba(30,38,60,.85)}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:12px;font-size:12px;font-weight:600;transition:.2s}
-.pill:hover{background:rgba(30,38,60,.85)}
-.pill.sm{font-size:11px;padding:5px 10px}
-.eng{border-radius:16px;padding:5px 12px;font-weight:500;color:#c3cbdb}
-.eng select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:none;font-size:11px;cursor:pointer}
-.eng select option{color:#111}
-.eng .ic{font-size:11px}
-.corner{position:absolute;top:12px;display:flex;flex-direction:column;gap:8px}
-.corner.l{left:12px;align-items:flex-start}
-.corner.r{right:12px;align-items:flex-end}
-.dock{display:flex;gap:2px;padding:4px 6px;border-radius:12px}
-.tile{width:28px;height:28px;border:0;border-radius:8px;background:none;color:#8a93a6;transition:.2s}
+.eng{display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:12px;color:#c3cbdb}
+.eng select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:none;cursor:pointer}
+.eng option{color:#111}
+.apps{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 12px;max-width:760px}
+.app{display:grid;justify-items:center;gap:8px;width:78px;border:0;background:none}
+.app .box{width:58px;height:58px;border-radius:19px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--c) 70%,#000),color-mix(in srgb,var(--c) 30%,#000));border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.35);transition:.25s}
+.app .ic{font-size:21px}
+.app:hover .box,.app:focus-visible .box{transform:translateY(-5px) scale(1.06);box-shadow:0 14px 34px color-mix(in srgb,var(--c) 50%,transparent)}
+.app span{font-size:12px;font-weight:600;color:#c3cbdb}
+.wg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(760px,100%)}
+.card{padding:16px 18px;border-radius:18px;min-height:116px;display:flex;flex-direction:column;gap:6px}
+.card h3{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a93a6;font-weight:700}
+.time{font-size:34px;font-weight:700;letter-spacing:-.02em}.date{color:#9aa3b5}
+.rec{display:flex;flex-direction:column;gap:6px;color:#8a93a6}
+.rec button{display:flex;align-items:center;gap:8px;padding:5px 9px;border:0;border-radius:8px;background:rgba(255,255,255,.06);color:#eef1f6;text-align:left;white-space:nowrap;overflow:hidden;transition:.2s}
+.rec button:hover{background:rgba(138,164,255,.22)}
+#tip{color:#c3cbdb;transition:opacity .3s}
+.corner{position:absolute;top:14px;display:flex;flex-direction:column;gap:8px;z-index:2}
+.corner.l{left:14px;align-items:flex-start}.corner.r{right:14px;align-items:flex-end}
+.dock{display:flex;gap:2px;padding:4px 6px;border-radius:14px}
+.tile{width:30px;height:30px;border:0;border-radius:9px;background:none;color:#8a93a6;transition:.2s}
 .tile:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
 .tile .ic{font-size:16px}
 .tile .fa-instagram{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tile .fa-spotify{color:#1ed760}.tile .fa-tiktok{color:#fff}
-[hidden]{display:none!important}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:13px;font-size:12px;font-weight:600;transition:.2s}
+.pill:hover{background:rgba(30,38,60,.85)}
 #ctx{position:fixed;z-index:9;min-width:220px;padding:6px;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.6)}
 #ctx button{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;border-radius:8px;background:none;text-align:left}
 #ctx button:hover,#ctx button:focus-visible{background:rgba(138,164,255,.22)}
-@media(max-width:600px){.corner{position:static;flex-direction:row;align-items:center}body{justify-content:flex-start}}
+@media(max-width:700px){.wg{grid-template-columns:1fr}.stage{padding-top:120px}.search kbd{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill sm" id="b-trend"><span data-ic="flame"></span>Trending</button></div>
-<div class="corner r"><button class="glass pill" id="b-discord"><span data-ic="discord"></span>Discord</button><button class="glass pill sm" id="b-links"><span data-ic="link"></span>Get Links</button></div>
-<h1>SIFT</h1>
-<form class="glass search" id="sf">
-  <span data-ic="search" aria-hidden="true"></span>
-  <input id="q" type="text" placeholder="Search or enter URL…" aria-label="Search" autocomplete="off">
-  <kbd>Ctrl+K</kbd>
-</form>
-<div class="icons" id="icons"></div>
-<label class="glass pill eng"><span data-ic="shield"></span><span data-ic="globe"></span>
-  <select id="eng" aria-label="Search engine"><option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option></select>
-  <span data-ic="down"></span></label>
+<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill" id="b-trend"><span data-ic="flame"></span>Trending</button></div>
+<div class="corner r"><button class="glass pill" id="b-discord"><span data-ic="discord"></span>Discord</button><button class="glass pill" id="b-links"><span data-ic="link"></span>Get Links</button></div>
+<main class="stage">
+  <h1 class="mark">SIFT</h1>
+  <p class="tag" id="greet"></p>
+  <form class="glass search" id="sf">
+    <span data-ic="search" aria-hidden="true"></span>
+    <input id="q" type="text" placeholder="Search the web or enter a URL…" aria-label="Search" autocomplete="off">
+    <kbd>Ctrl+K</kbd>
+    <label class="eng"><span data-ic="globe"></span><select id="eng" aria-label="Search engine"><option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option></select></label>
+  </form>
+  <div class="apps" id="apps"></div>
+  <div class="wg">
+    <section class="glass card"><h3><span data-ic="fa-regular fa-clock"></span>Local time</h3><div class="time" id="time"></div><div class="date" id="date"></div></section>
+    <section class="glass card"><h3><span data-ic="fa-solid fa-clock-rotate-left"></span>Jump back in</h3><div class="rec" id="rec"></div></section>
+    <section class="glass card"><h3><span data-ic="fa-regular fa-lightbulb"></span>Tip</h3><p id="tip"></p></section>
+  </div>
+</main>
 <div id="ctx" class="glass" role="menu" hidden>
   <button role="menuitem" data-a="wallpaper"><span data-ic="image"></span>Change wallpaper</button>
   <button role="menuitem" data-a="dl-page"><span data-ic="download"></span>Download this page's HTML</button>
@@ -70,8 +87,10 @@ kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px
 /* ===== CONFIG: edit links here ===== */
 const CFG = { discord: "https://discord.gg/YOURINVITE", getLinks: "https://discord.gg/YOURINVITE", trending: "https://trends.google.com/trending" };
 const DOCK = [["Instagram", "instagram", "https://www.instagram.com"], ["Spotify", "spotify", "https://open.spotify.com"], ["TikTok", "tiktok", "https://www.tiktok.com"]];
-const ICON_ROW = [["Games", "gamepad", { nav: "games" }], ["Apps", "robot", { url: "https://play.google.com" }], ["Music", "music", { url: "https://open.spotify.com" }],
-  ["Movies", "film", { url: "https://www.themoviedb.org" }], ["TV", "desktop", { url: "https://www.justwatch.com" }], ["Browser", "window", { url: "https://duckduckgo.com" }], ["Chat", "chat", { nav: "chat" }]];
+const APPS = [["Games", "gamepad", { nav: "games" }, "#6a95ff"], ["Chat", "chat", { nav: "chat" }, "#a78bfa"], ["Music", "music", { url: "https://open.spotify.com" }, "#1ed760"],
+  ["Movies", "film", { url: "https://www.themoviedb.org" }, "#f59e0b"], ["TV", "desktop", { url: "https://www.justwatch.com" }, "#ec4899"], ["Apps", "robot", { url: "https://play.google.com" }, "#22d3ee"],
+  ["Browser", "window", { url: "https://duckduckgo.com" }, "#fb7185"], ["Add", "plus", {}, "#64748b"]];
+const TIPS = ["Press Ctrl+K to search from anywhere.", "Right-click this page to change your wallpaper.", "Tap the heart on a game to save it as a favorite.", "Open Chat to talk with everyone online.", "Press Ctrl+T to open a new tab."];
 
 const ICONS = {
   home:'fa-solid fa-house', games:'fa-solid fa-gamepad', gamepad:'fa-solid fa-gamepad', chat:'fa-regular fa-comment',
@@ -86,14 +105,35 @@ const ico = n => '<i class="ic ' + (/^fa-/.test(n) ? n : ICONS[n] || 'fa-solid f
 const $ = id => document.getElementById(id);
 const send = (sh, rest) => parent.postMessage(Object.assign({ sh }, rest), "*");
 const act = a => a.nav ? send("nav", { to: a.nav }) : a.url ? send("open", { url: a.url, newTab: true }) : send("settings");
-const mk = (cls, label, icon, a) => { const b = document.createElement("button"); b.className = cls; b.innerHTML = ico(icon); b.title = label; b.setAttribute("aria-label", label); b.onclick = () => act(a); return b; };
+const el = (t, c) => { const n = document.createElement(t); n.className = c || ""; return n; };
+const tile = ([n, i, u]) => { const b = el("button", "tile"); b.innerHTML = ico(i); b.title = n; b.setAttribute("aria-label", n); b.onclick = () => act({ url: u }); return b; };
 
-$("dock").append(...DOCK.map(([n, i, u]) => mk("tile", n, i, { url: u })), mk("tile", "Add shortcut", "plus", {}));
-$("icons").append(...ICON_ROW.map(([n, i, a]) => mk("glass circle", n, i, a)), mk("glass circle", "More (settings)", "plus", {}));
+$("dock").append(...DOCK.map(tile));
+$("apps").append(...APPS.map(([n, i, a, c]) => {
+  const b = el("button", "app"); b.style.setProperty("--c", c); b.innerHTML = '<div class="box">' + ico(i) + "</div><span></span>"; b.lastChild.textContent = n; b.onclick = () => act(a); return b;
+}));
 $("b-discord").onclick = () => act({ url: CFG.discord });
 $("b-links").onclick = () => act({ url: CFG.getLinks });
 $("b-trend").onclick = () => act({ url: CFG.trending });
 document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
+
+/* Greeting + clock */
+function tick() {
+  const d = new Date(), h = d.getHours();
+  $("greet").textContent = (h < 5 ? "Up late" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening") + ". What are we getting into?";
+  $("time").textContent = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  $("date").textContent = d.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+}
+tick(); setInterval(tick, 10000);
+
+/* "Jump back in": games saved by the Games page */
+let recent = []; try { recent = JSON.parse(localStorage.getItem("sh0zy.recent")) || []; } catch {}
+if (!recent.length) $("rec").textContent = "Games you play will show up here.";
+else recent.slice(0, 3).forEach(g => { const b = el("button"); b.innerHTML = ico("gamepad") + "<span></span>"; b.lastChild.textContent = g.name; b.onclick = () => act({ nav: "games" }); $("rec").append(b); });
+
+/* Rotating tips */
+let ti = 0; const showTip = () => { $("tip").style.opacity = 0; setTimeout(() => { $("tip").textContent = TIPS[ti++ % TIPS.length]; $("tip").style.opacity = 1; }, 300); };
+showTip(); setInterval(showTip, 6000);
 
 /* Right-click menu: wallpaper, downloads, settings (handled by the shell) */
 const ctx = $("ctx"), hideCtx = () => { ctx.hidden = true; };
