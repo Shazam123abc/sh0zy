@@ -39,6 +39,10 @@ kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px
 .tile .ic{font-size:16px}
 .tile .fa-instagram{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tile .fa-spotify{color:#1ed760}.tile .fa-tiktok{color:#fff}
+[hidden]{display:none!important}
+#ctx{position:fixed;z-index:9;min-width:220px;padding:6px;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+#ctx button{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;border-radius:8px;background:none;text-align:left}
+#ctx button:hover,#ctx button:focus-visible{background:rgba(138,164,255,.22)}
 @media(max-width:600px){.corner{position:static;flex-direction:row;align-items:center}body{justify-content:flex-start}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -46,7 +50,7 @@ kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px
 <body>
 <div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill sm" id="b-trend"><span data-ic="flame"></span>Trending</button></div>
 <div class="corner r"><button class="glass pill" id="b-discord"><span data-ic="discord"></span>Discord</button><button class="glass pill sm" id="b-links"><span data-ic="link"></span>Get Links</button></div>
-<h1>PeteZah</h1>
+<h1>SIFT</h1>
 <form class="glass search" id="sf">
   <span data-ic="search" aria-hidden="true"></span>
   <input id="q" type="text" placeholder="Search or enter URL…" aria-label="Search" autocomplete="off">
@@ -56,6 +60,12 @@ kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px
 <label class="glass pill eng"><span data-ic="shield"></span><span data-ic="globe"></span>
   <select id="eng" aria-label="Search engine"><option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option></select>
   <span data-ic="down"></span></label>
+<div id="ctx" class="glass" role="menu" hidden>
+  <button role="menuitem" data-a="wallpaper"><span data-ic="image"></span>Change wallpaper</button>
+  <button role="menuitem" data-a="dl-page"><span data-ic="download"></span>Download this page's HTML</button>
+  <button role="menuitem" data-a="dl-site"><span data-ic="download"></span>Download site HTML</button>
+  <button role="menuitem" data-a="settings"><span data-ic="settings"></span>Settings</button>
+</div>
 <script>
 /* ===== CONFIG: edit links here ===== */
 const CFG = { discord: "https://discord.gg/YOURINVITE", getLinks: "https://discord.gg/YOURINVITE", trending: "https://trends.google.com/trending" };
@@ -70,7 +80,7 @@ const ICONS = {
   reload:'fa-solid fa-rotate-right', search:'fa-solid fa-magnifying-glass', robot:'fa-solid fa-robot', music:'fa-solid fa-music',
   film:'fa-solid fa-film', desktop:'fa-solid fa-desktop', window:'fa-regular fa-window-maximize', globe:'fa-solid fa-globe',
   wrench:'fa-solid fa-wrench', user:'fa-regular fa-user', link:'fa-solid fa-link', down:'fa-solid fa-chevron-down',
-  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok'
+  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok', upload:'fa-solid fa-upload', download:'fa-solid fa-download', image:'fa-regular fa-image'
 };
 const ico = n => '<i class="ic ' + (/^fa-/.test(n) ? n : ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
 const $ = id => document.getElementById(id);
@@ -85,6 +95,19 @@ $("b-links").onclick = () => act({ url: CFG.getLinks });
 $("b-trend").onclick = () => act({ url: CFG.trending });
 document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
 
+/* Right-click menu: wallpaper, downloads, settings (handled by the shell) */
+const ctx = $("ctx"), hideCtx = () => { ctx.hidden = true; };
+addEventListener("contextmenu", e => {
+  e.preventDefault(); ctx.hidden = false;
+  ctx.style.left = Math.max(4, Math.min(e.clientX, innerWidth - ctx.offsetWidth - 8)) + "px";
+  ctx.style.top = Math.max(4, Math.min(e.clientY, innerHeight - ctx.offsetHeight - 8)) + "px";
+  ctx.querySelector("button").focus();
+});
+addEventListener("click", hideCtx); addEventListener("blur", hideCtx); addEventListener("keydown", e => { if (e.key === "Escape") hideCtx(); });
+ctx.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
+  if (a === "wallpaper") send("wallpaper"); else if (a === "settings") send("settings"); else send("download", { what: a === "dl-site" ? "site" : "page" });
+});
 $("sf").addEventListener("submit", e => { e.preventDefault(); const q = $("q").value.trim(); if (q) send("search", { q }); });
 try { $("eng").value = localStorage.getItem("sh0zy.engine") || "default"; } catch {}
 $("eng").onchange = () => { try { localStorage.setItem("sh0zy.engine", $("eng").value); } catch {} };
