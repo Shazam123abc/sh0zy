@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games</title>
+<style>
+  /* Transparent so the shell's rain-city background shows through */
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:transparent;color:#f2f4f8;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+  #games{min-height:100vh}
+</style>
+</head>
+<body>
+<div id="games"></div>
+
+<script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+<script>
+  Lumin.init({
+    container: '#games',
+    theme: 'dark'
+  });
+</script>
+</body>
+</html>

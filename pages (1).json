@@ -1,0 +1,5 @@
+[
+  { "name": "Home",  "icon": "🏠", "file": "home.html" },
+  { "name": "Games", "icon": "🎮", "file": "games.html" },
+  { "name": "Chat",  "icon": "💬", "file": "chat.html" }
+]
