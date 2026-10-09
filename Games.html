@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games</title>
+<style>
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html,body{height:100%;background:transparent;color:#f2f4f8;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{padding:20px;overflow-y:auto;animation:in .4s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+:focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.glass{background:rgba(16,18,28,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.tools input{flex:1;min-width:180px;max-width:360px;height:38px;padding:0 16px;border-radius:19px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14)}
+.chip,.btn{padding:6px 14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:.2s}
+.chip:hover,.btn:hover,.chip.on{background:rgba(138,164,255,.3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.card{display:block;width:100%;padding:0;border-radius:16px;overflow:hidden;text-align:left;transition:.25s}
+.card:hover{transform:translateY(-5px);border-color:#8aa4ff}
+.thumb{display:grid;place-items:center;height:110px;font-size:44px}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.meta{padding:10px 12px}.meta small{color:#a3abbd}
+#player{display:flex;flex-direction:column;gap:10px;height:calc(100vh - 40px)}
+.bar{display:flex;align-items:center;gap:12px}.bar strong{flex:1}
+#gf{flex:1;min-height:0;border:0;border-radius:14px;background:#000}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="list">
+  <div class="tools"><input id="q" type="search" placeholder="Search games…" aria-label="Search games"><div id="chips" role="group" aria-label="Categories"></div></div>
+  <div class="grid" id="grid"></div>
+  <p id="none" hidden>No games match your search.</p>
+</div>
+<div id="player" hidden>
+  <div class="bar"><button class="btn" id="back">← Back</button><strong id="gt"></strong><button class="btn" id="fs">⛶ Fullscreen</button></div>
+  <iframe id="gf" title="Game" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-fullscreen" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+</div>
+<script>
+/* ===== GAME LIST: add a game by adding one line. thumb is optional (falls back to emoji). ===== */
+const GAMES = [
+  { title: "2048",         category: "Puzzle", emoji: "🔢", thumb: "", url: "https://gabrielecirulli.github.io/2048/" },
+  { title: "Hextris",      category: "Puzzle", emoji: "⬡",  thumb: "", url: "https://hextris.io/" },
+  { title: "React Tetris", category: "Arcade", emoji: "🧱", thumb: "", url: "https://chvin.github.io/react-tetris/" },
+  { title: "Floppy Bird",  category: "Arcade", emoji: "🐤", thumb: "", url: "https://nebezb.com/floppybird/" },
+  { title: "HexGL",        category: "Racing", emoji: "🏎️", thumb: "", url: "https://hexgl.bkcore.com/play/" }
+];
+
+const $ = id => document.getElementById(id);
+const cats = ["All", ...new Set(GAMES.map(g => g.category))];
+let cat = "All";
+
+function card(g) {
+  const hue = (GAMES.indexOf(g) * 67) % 360;
+  const t = document.createElement("div"); t.className = "thumb"; t.style.background = `linear-gradient(135deg,hsl(${hue} 55% 38%),hsl(${hue + 40} 55% 18%))`;
+  if (g.thumb) { const i = document.createElement("img"); i.src = g.thumb; i.alt = g.title + " thumbnail"; i.loading = "lazy"; t.append(i); }
+  else { t.textContent = g.emoji || "🎮"; t.setAttribute("aria-hidden", "true"); }
+  const m = document.createElement("div"); m.className = "meta";
+  const n = document.createElement("div"); n.textContent = g.title;
+  const c = document.createElement("small"); c.textContent = g.category;
+  m.append(n, c);
+  const b = document.createElement("button"); b.className = "glass card"; b.append(t, m); b.onclick = () => play(g);
+  return b;
+}
+function draw() {
+  const s = $("q").value.trim().toLowerCase();
+  const list = GAMES.filter(g => (cat === "All" || g.category === cat) && g.title.toLowerCase().includes(s));
+  $("grid").replaceChildren(...list.map(card)); $("none").hidden = list.length > 0;
+}
+function chips() {
+  $("chips").replaceChildren(...cats.map(c => {
+    const b = document.createElement("button"); b.className = "chip" + (c === cat ? " on" : ""); b.textContent = c; b.setAttribute("aria-pressed", c === cat);
+    b.onclick = () => { cat = c; chips(); draw(); }; return b;
+  }));
+}
+function play(g) { $("gf").src = g.url; $("gt").textContent = g.title; $("list").hidden = true; $("player").hidden = false; }
+$("back").onclick = () => { $("gf").src = "about:blank"; $("player").hidden = true; $("list").hidden = false; };
+$("fs").onclick = () => { const f = $("gf"); if (f.requestFullscreen) Promise.resolve(f.requestFullscreen()).catch(() => {}); };
+$("q").addEventListener("input", draw);
+chips(); draw();
+</script>
+</body>
+</html>
