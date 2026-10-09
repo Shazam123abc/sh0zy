@@ -4,55 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chat</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 <style>
+:root{--l:rgba(255,255,255,.08);--mut:#8a93a6;--acc:#6a95ff}
 *{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-html,body{height:100%;background:transparent;color:#f2f4f8;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-body{padding:16px;animation:in .4s ease}
+html,body{height:100%;background:transparent;color:#eef1f6;font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{padding:14px;animation:in .4s}
 @keyframes in{from{opacity:0;transform:translateY(8px)}}
-:focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
 button,input{font:inherit;color:inherit}button{cursor:pointer}
-.glass{background:rgba(16,18,28,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14)}
-.wrap{display:flex;flex-direction:column;height:100%;max-width:820px;margin:0 auto;border-radius:18px;overflow:hidden}
-header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.12)}
-header strong{flex:1}#who{color:#a3abbd}
-.btn{padding:6px 14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);transition:.2s}.btn:hover{background:rgba(138,164,255,.3)}
-#log{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:85%;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.07);overflow-wrap:anywhere;animation:in .25s ease}
-.msg.me{align-self:flex-end;background:rgba(138,164,255,.22)}
-.msg b{margin-right:8px}.msg time{font-size:11px;color:#a3abbd}
-#hint{min-height:20px;padding:0 16px;font-size:12px;color:#ffb4a8}
-form.c{display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(255,255,255,.12)}
-input{height:38px;padding:0 14px;border-radius:19px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14)}
-#m{flex:1;min-width:0}
-.ov{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.5);z-index:5}
-.card{display:grid;gap:12px;width:min(90vw,340px);padding:22px;border-radius:18px;background:rgba(16,18,28,.95)}
+:focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
+.glass{background:rgba(7,10,20,.68);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.app{display:grid;grid-template-columns:216px minmax(0,1fr) 210px;height:100%;border-radius:20px;overflow:hidden}
+.side,.mem{display:flex;flex-direction:column;min-height:0;background:rgba(0,0,0,.22)}
+.side{border-right:1px solid var(--l)}.mem{border-left:1px solid var(--l)}
+.brand{padding:16px 16px 10px;font-weight:800;letter-spacing:.14em}
+.brand small{display:block;margin-top:2px;font-size:11px;font-weight:500;letter-spacing:0;color:var(--mut)}
+.chs{display:flex;flex-direction:column;gap:2px;padding:6px 10px;overflow:auto}
+.ch{display:flex;align-items:center;gap:10px;padding:8px 10px;border:0;border-radius:10px;background:none;color:#aeb7c9;text-align:left;white-space:nowrap;transition:.15s}
+.ch:hover{background:rgba(255,255,255,.07);color:#fff}
+.ch.on{background:linear-gradient(135deg,rgba(106,149,255,.35),rgba(167,139,250,.25));color:#fff}
+.ch i{width:16px;text-align:center;opacity:.85}
+.me{display:flex;align-items:center;gap:10px;margin-top:auto;padding:12px 14px;border-top:1px solid var(--l)}
+.me b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{position:relative;flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff}
+.main{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0}
+.main header{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--l)}
+.main h2{font-size:16px}.main header p{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mut);font-size:12.5px}
+.ibtn{width:32px;height:32px;border:0;border-radius:9px;background:none;color:var(--mut);transition:.15s}
+.ibtn:hover{background:rgba(255,255,255,.1);color:#fff}
+#log{flex:1;display:flex;flex-direction:column;gap:14px;overflow-y:auto;padding:14px 20px}
+.grp{display:flex;gap:12px;animation:in .25s}
+.bd{flex:1;min-width:0}
+.hd{display:flex;align-items:baseline;gap:8px}.hd b{font-size:14px}.hd time{font-size:11px;color:var(--mut)}
+.ln{margin:0 -6px;padding:1px 6px;border-radius:6px;color:#dde3f0;overflow-wrap:anywhere}
+.ln:hover{background:rgba(255,255,255,.04)}
+.ln.men{background:rgba(250,204,21,.12);box-shadow:inset 3px 0 #facc15}
+.ln a{color:#8fb0ff}
+#down{position:absolute;right:24px;bottom:92px;z-index:3;height:32px;padding:0 14px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--acc),#a78bfa);color:#fff;font-size:12px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+#hint{min-height:18px;padding:0 20px;font-size:12px;color:#ffb4a8}
+form.c{position:relative;display:flex;align-items:center;gap:6px;margin:0 16px 16px;padding:6px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.35);transition:.2s}
+form.c:focus-within{border-color:var(--acc);box-shadow:0 0 0 4px rgba(106,149,255,.15)}
+#m{flex:1;min-width:0;height:38px;border:0;outline:0;background:none}
+#m::placeholder{color:var(--mut)}
+#cc{font-size:11px;color:var(--mut)}
+.send{width:42px;height:38px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--acc),#a78bfa);color:#fff}
+.send:disabled{opacity:.4}
+#pick{position:absolute;left:0;bottom:52px;width:296px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:8px;border-radius:14px;z-index:4}
+#pick button{padding:3px;border:0;border-radius:8px;background:none;font-size:20px}#pick button:hover{background:rgba(255,255,255,.12)}
+.mem h3{padding:16px 16px 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+#ml{flex:1;overflow-y:auto;padding:0 8px 10px}
+.mm{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px}.mm:hover{background:rgba(255,255,255,.05)}
+.mm .av{width:30px;height:30px;font-size:12px}
+.mm span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mm small{display:block;color:var(--mut);font-size:11px}
+.dot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#34d399;border:2px solid #0b1020}
+.ov{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.card{display:grid;gap:12px;width:min(90vw,340px);padding:22px;border-radius:18px;background:rgba(10,13,22,.96)}
+.card input{height:40px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35)}
+.card .send{width:auto;padding:0 16px;font-weight:600}
+@media(max-width:820px){.app{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.mem,.brand,.me{display:none}.side{border:0;border-bottom:1px solid var(--l)}.chs{flex-direction:row}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap glass">
-  <header><strong>Global chat</strong><span id="who"></span><button class="btn" id="chg">Change name</button></header>
-  <div id="log" role="log" aria-live="polite"></div>
-  <p id="hint" role="status"></p>
-  <form class="c" id="f"><input id="m" maxlength="300" placeholder="Send a message" aria-label="Message" autocomplete="off"><button class="btn">Send</button></form>
+<div class="app glass">
+  <nav class="side" aria-label="Channels"><div class="brand">SIFT<small>Global chat</small></div><div class="chs" id="chs"></div><div class="me" id="me"></div></nav>
+  <section class="main">
+    <header><h2 id="rt"></h2><p id="rd"></p><button class="ibtn" id="chg" title="Change name" aria-label="Change name"><i class="fa-solid fa-user-pen"></i></button></header>
+    <div id="log" role="log" aria-live="polite"></div>
+    <button id="down" hidden><i class="fa-solid fa-arrow-down"></i> New messages</button>
+    <p id="hint" role="status"></p>
+    <form class="c" id="f" autocomplete="off">
+      <button type="button" class="ibtn" id="emo" aria-label="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+      <input id="m" maxlength="300" aria-label="Message">
+      <span id="cc"></span>
+      <button class="send" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
+      <div id="pick" class="glass" hidden></div>
+    </form>
+  </section>
+  <aside class="mem" aria-label="Online"><h3>Online — <span id="oc">0</span></h3><div id="ml"></div></aside>
 </div>
 <div class="ov" id="nm" hidden>
-  <form class="glass card" id="nf">
-    <h2>Pick a username</h2>
-    <input id="ni" maxlength="16" placeholder="2–16 letters, numbers, spaces" aria-label="Username" autocomplete="off">
-    <button class="btn">Join chat</button>
-  </form>
+  <form class="glass card" id="nf"><h2>Pick a username</h2><input id="ni" maxlength="16" placeholder="2–16 letters, numbers, spaces" aria-label="Username" autocomplete="off"><button class="send">Join chat</button></form>
 </div>
 
-<!-- Firebase client SDK (compat build) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
 /* ==========================================================
    >>> PASTE YOUR FIREBASE CONFIG BELOW (Firebase console >
    >>> Project settings > Your apps > Web app > Config).
-   >>> Use a Realtime Database; databaseURL is required.
    ========================================================== */
 const FIREBASE_CONFIG = {
   apiKey: "PASTE_API_KEY",
@@ -61,60 +102,106 @@ const FIREBASE_CONFIG = {
   projectId: "YOUR-PROJECT",
   appId: "PASTE_APP_ID"
 };
-
+/* Channels. "general" keeps the old /messages path, so existing history still works. */
+const ROOMS = [
+  { id: "general", icon: "fa-hashtag", desc: "Everything and anything", path: "messages" },
+  { id: "games", icon: "fa-gamepad", desc: "What are you playing?", path: "rooms/games" },
+  { id: "music", icon: "fa-music", desc: "Share what you're listening to", path: "rooms/music" },
+  { id: "memes", icon: "fa-face-laugh", desc: "Keep it fun", path: "rooms/memes" },
+  { id: "help", icon: "fa-circle-question", desc: "Questions about the site", path: "rooms/help" }
+];
+const EMOJI = "😀 😂 🥹 😍 😎 🤔 😭 😡 👍 👎 🔥 💯 ❤️ 🎮 🎵 👀 🙏 🎉 ✨ 💀 😴 🤝 👑 🍕".split(" ");
 const NAME_KEY = "sh0zy.name", MAX = 300, MIN_GAP = 1500, BURST = 6, WINDOW = 20000;
 const BAD = /\b(f+u+c+k\w*|sh+i+t+\w*|bitch\w*|asshole\w*|cunt\w*|slut\w*|whore\w*|dick\w*|bastard\w*)\b/gi; // extend as needed
 const clean = s => s.replace(BAD, m => "*".repeat(m.length));
 const $ = id => document.getElementById(id);
 const ls = { get(k) { try { return localStorage.getItem(k) || ""; } catch { return ""; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
-let name = ls.get(NAME_KEY), ref = null, hintT;
-
+const mk = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+const hue = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const avatar = n => { const a = mk("div", "av", (n[0] || "?").toUpperCase()); a.style.background = `linear-gradient(135deg,hsl(${hue(n)} 70% 55%),hsl(${hue(n) + 40} 70% 38%))`; return a; };
+const uid = ls.get("sh0zy.uid") || (ls.set("sh0zy.uid", Math.random().toString(36).slice(2, 14)), ls.get("sh0zy.uid"));
+let name = ls.get(NAME_KEY), room = ROOMS[0], db = null, ref = null, connected = false, last = null, unread = 0, hintT;
+const log = $("log"), sent = [];
 const hint = t => { $("hint").textContent = t; clearTimeout(hintT); hintT = setTimeout(() => { $("hint").textContent = ""; }, 3000); };
-function setName(n) { name = n; ls.set(NAME_KEY, n); $("who").textContent = "You: " + n; $("nm").hidden = true; $("m").focus(); }
 
-// Render one message (textContent only, so user text can never inject HTML)
-function add(m) {
-  const log = $("log"), mine = m.name === name;
-  const near = log.scrollHeight - log.scrollTop - log.clientHeight < 80;
-  const row = document.createElement("div"); row.className = "msg" + (mine ? " me" : "");
-  const who = document.createElement("b"); who.textContent = clean(String(m.name || "anon")).slice(0, 16);
-  const tm = document.createElement("time"); tm.textContent = new Date(m.ts || Date.now()).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  const tx = document.createElement("div"); tx.textContent = clean(String(m.text || "")).slice(0, MAX);
-  row.append(who, tm, tx); log.append(row);
-  while (log.children.length > 200) log.firstChild.remove();
-  if (near || mine) log.scrollTop = log.scrollHeight;   // auto-scroll
+function linkify(el, t) {                       // only http(s) links; everything else stays plain text
+  let i = 0;
+  for (const m of t.matchAll(/https?:\/\/[^\s<]+/g)) {
+    if (m.index > i) el.append(t.slice(i, m.index));
+    const a = mk("a", "", m[0]); a.href = m[0]; a.target = "_blank"; a.rel = "noopener noreferrer"; el.append(a); i = m.index + m[0].length;
+  }
+  if (i < t.length) el.append(t.slice(i));
 }
+function add(m) {                               // consecutive messages from one person within 5 min share a header
+  const nm = clean(String(m.name || "anon")).slice(0, 16), tx = clean(String(m.text || "")).slice(0, MAX), ts = m.ts || Date.now();
+  const mine = nm === name, near = log.scrollHeight - log.scrollTop - log.clientHeight < 90;
+  if (!last || last.nm !== nm || ts - last.ts > 3e5) {
+    const g = mk("div", "grp"), bd = mk("div", "bd"), hd = mk("div", "hd"), b = mk("b", "", nm);
+    b.style.color = `hsl(${hue(nm)} 80% 72%)`;
+    hd.append(b, mk("time", "", new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })));
+    bd.append(hd); g.append(avatar(nm), bd); log.append(g); last = { nm, bd };
+  }
+  last.ts = ts;
+  const ln = mk("div", "ln"); linkify(ln, tx);
+  if (name && !mine && tx.toLowerCase().includes("@" + name.toLowerCase())) ln.classList.add("men");
+  last.bd.append(ln);
+  while (log.children.length > 150) log.firstChild.remove();
+  if (near || mine) log.scrollTop = log.scrollHeight; else { unread++; $("down").hidden = false; }
+}
+log.addEventListener("scroll", () => { if (log.scrollHeight - log.scrollTop - log.clientHeight < 90) { unread = 0; $("down").hidden = true; } });
+$("down").onclick = () => { log.scrollTop = log.scrollHeight; };
 
-// Spam control: minimum gap between messages + max burst per window
-const sent = [];
-function allowed() {
+function join(r) {
+  room = r; last = null; unread = 0; log.replaceChildren(); $("down").hidden = true;
+  $("rt").textContent = "# " + r.id; $("rd").textContent = r.desc; $("m").placeholder = "Message #" + r.id;
+  document.querySelectorAll(".ch").forEach(b => b.classList.toggle("on", b.dataset.id === r.id));
+  if (!db) return;
+  if (ref) ref.off();
+  ref = db.ref(r.path).limitToLast(100);
+  ref.on("child_added", s => add(s.val() || {}), () => hint("Couldn't read this channel. Check your database rules."));
+  announce();
+}
+function announce() { if (db && connected && name) db.ref("presence/" + uid).set({ name, room: room.id, ts: firebase.database.ServerValue.TIMESTAMP }); }
+
+function allowed() {                            // spam control: min gap + max burst
   const now = Date.now();
   while (sent.length && now - sent[0] > WINDOW) sent.shift();
   if ((sent.length && now - sent[sent.length - 1] < MIN_GAP) || sent.length >= BURST) return false;
   sent.push(now); return true;
 }
-
+function setName(n) {
+  name = n; ls.set(NAME_KEY, n); $("nm").hidden = true;
+  $("me").replaceChildren(avatar(n), mk("b", "", n)); announce(); $("m").focus();
+}
 function start() {
   if (FIREBASE_CONFIG.apiKey.startsWith("PASTE") || typeof firebase === "undefined") {
-    $("hint").textContent = "Chat isn't set up yet: paste your Firebase config at the top of pages/chat.html.";
-    $("m").disabled = true; return;
+    hint("Chat isn't set up yet: paste your Firebase config at the top of chat.html."); $("m").disabled = true; return;
   }
   try {
-    firebase.initializeApp(FIREBASE_CONFIG);
-    ref = firebase.database().ref("messages");
-    ref.limitToLast(100).on("child_added", s => add(s.val() || {}), () => hint("Couldn't read messages. Check your database rules."));
-  } catch { $("hint").textContent = "Firebase failed to start. Check your config."; $("m").disabled = true; }
+    firebase.initializeApp(FIREBASE_CONFIG); db = firebase.database();
+    db.ref(".info/connected").on("value", s => { connected = !!s.val(); if (connected) { db.ref("presence/" + uid).onDisconnect().remove(); announce(); } });
+    db.ref("presence").on("value", s => {       // who's online
+      const v = Object.values(s.val() || {}).map(u => ({ n: clean(String(u.name || "anon")).slice(0, 16), r: ROOMS.find(x => x.id === u.room) })).sort((a, b) => a.n.localeCompare(b.n));
+      $("oc").textContent = v.length;
+      $("ml").replaceChildren(...v.map(u => { const r = mk("div", "mm"), a = avatar(u.n), t = mk("div"); a.append(mk("i", "dot")); t.append(mk("span", "", u.n), mk("small", "", u.r ? "in #" + u.r.id : "online")); r.append(a, t); return r; }));
+    });
+    join(room);
+  } catch { hint("Firebase failed to start. Check your config."); $("m").disabled = true; }
 }
 
 $("f").addEventListener("submit", e => {
   e.preventDefault();
-  const text = clean($("m").value.trim()).slice(0, MAX);
-  if (!text || !ref) return;
+  const t = clean($("m").value.trim()).slice(0, MAX);
+  if (!t || !db) return;
   if (!name) { $("nm").hidden = false; return; }
   if (!allowed()) return hint("Slow down a little before sending again.");
-  ref.push({ name, text, ts: firebase.database.ServerValue.TIMESTAMP }).catch(() => hint("Message failed to send."));
-  $("m").value = "";
+  db.ref(room.path).push({ name, text: t, ts: firebase.database.ServerValue.TIMESTAMP }).catch(() => hint("Message failed to send."));
+  $("m").value = ""; $("cc").textContent = "";
 });
+$("m").addEventListener("input", () => { const n = $("m").value.length; $("cc").textContent = n > 250 ? MAX - n : ""; });
+$("emo").onclick = e => { e.stopPropagation(); $("pick").hidden = !$("pick").hidden; };
+$("pick").replaceChildren(...EMOJI.map(x => { const b = mk("button", "", x); b.type = "button"; b.setAttribute("aria-label", x); b.onclick = e => { e.stopPropagation(); const m = $("m"); m.setRangeText(x, m.selectionStart, m.selectionEnd, "end"); m.focus(); }; return b; }));
+addEventListener("click", () => { $("pick").hidden = true; });
 $("nf").addEventListener("submit", e => {
   e.preventDefault();
   const v = $("ni").value.replace(/[^\w .-]/g, "").trim().slice(0, 16);
@@ -123,7 +210,10 @@ $("nf").addEventListener("submit", e => {
 });
 $("ni").addEventListener("input", () => $("ni").setCustomValidity(""));
 $("chg").onclick = () => { $("ni").value = name; $("nm").hidden = false; $("ni").focus(); };
+$("chs").replaceChildren(...ROOMS.map(r => { const b = mk("button", "ch"); b.dataset.id = r.id; b.innerHTML = '<i class="fa-solid ' + r.icon + '"></i>'; b.append(r.id); b.onclick = () => join(r); return b; }));
 
+$("rt").textContent = "# " + room.id; $("rd").textContent = room.desc;
+document.querySelector('.ch[data-id="general"]').classList.add("on");
 if (name) setName(name); else $("nm").hidden = false;
 start();
 </script>
