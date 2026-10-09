@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sh0zy</title>
+<link rel="icon" id="fav" href="data:,">
+<style>
+:root{--glass:rgba(16,18,28,.55);--line:rgba(255,255,255,.13);--txt:#f2f4f8;--mut:#a3abbd;--acc:#8aa4ff}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{display:grid;grid-template-columns:56px minmax(0,1fr);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--txt);background:#07090f;overflow:hidden}
+/* Background: dark overlay + optional image (--bg, from DEFAULT_BG/Settings) + CSS night-city fallback */
+body::before{content:"";position:fixed;inset:-12px;z-index:-1;filter:blur(4px);background:linear-gradient(rgba(4,6,12,.55),rgba(4,6,12,.82)),var(--bg,none),radial-gradient(circle at 18% 85%,rgba(255,150,70,.28),transparent 28%),radial-gradient(circle at 78% 72%,rgba(90,150,255,.32),transparent 34%),linear-gradient(#0a0f1e,#1b1432 65%,#07090f);background-size:cover;background-position:center}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.glass{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}
+/* Sidebar */
+#side{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0;border-width:0 1px 0 0}
+#side .sp{flex:1}
+.sb{position:relative;width:38px;height:38px;border-radius:12px;border:1px solid transparent;background:none;font-size:18px;transition:.2s}
+.sb:hover,.sb.on{background:rgba(255,255,255,.12);border-color:var(--line);transform:scale(1.08)}
+.sb::after{content:attr(data-tip);position:absolute;left:46px;top:50%;translate:0 -50%;padding:3px 9px;border-radius:8px;background:rgba(0,0,0,.8);font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:9}
+.sb:hover::after,.sb:focus-visible::after{opacity:1}
+/* Tabs + toolbar */
+main{display:flex;flex-direction:column;min-width:0;height:100vh}
+#tabs{display:flex;gap:4px;padding:6px 8px 0;overflow-x:auto}
+.tab{display:flex;align-items:center;min-width:96px;max-width:190px;border-radius:10px 10px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(255,255,255,.04);transition:.2s}
+.tab.on{background:var(--glass)}
+.tab button{background:none;border:0;padding:6px 8px}
+.tab .t{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab .x{color:var(--mut)}.tab .x:hover{color:#fff}
+#bar{display:flex;gap:6px;align-items:center;padding:6px 8px;border-width:1px 0}
+.ib{height:32px;min-width:32px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);transition:.2s}
+.ib:hover:not(:disabled){background:rgba(255,255,255,.16)}
+.ib:disabled{opacity:.35;cursor:default}
+#url{flex:1;min-width:0;height:32px;padding:0 14px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.35)}
+/* Viewport (page transitions: fade + slide) */
+#view{position:relative;flex:1;min-height:0}
+#frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
+#frame.in{opacity:1;transform:none}
+#msg{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center;padding:20px}
+#warn{position:absolute;bottom:10px;left:50%;translate:-50% 0;display:flex;gap:10px;align-items:center;padding:5px 8px 5px 14px;border-radius:14px;font-size:12px;z-index:2;white-space:nowrap}
+/* Status bar */
+#status{display:flex;justify-content:space-between;gap:12px;padding:5px 12px;font-size:12px;color:var(--mut);border-width:1px 0 0;white-space:nowrap;overflow:hidden}
+#status div{display:flex;gap:14px}
+#status a{color:inherit;text-decoration:none}#status a:hover{color:#fff}
+/* Settings dialog */
+dialog{margin:auto;width:min(92vw,380px);padding:20px;border-radius:16px;color:var(--txt);background:rgba(16,18,28,.94);border:1px solid var(--line)}
+dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+dialog label{display:block;margin-top:10px;font-size:12px;color:var(--mut)}
+dialog input{width:100%;height:34px;margin-top:4px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.4)}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+@media(max-width:640px){body{grid-template-columns:44px minmax(0,1fr)}.sb{width:34px;height:34px}#rf,.hide-s{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav id="side" class="glass" aria-label="Pages"></nav>
+<main>
+  <div id="tabs" role="tablist" aria-label="Tabs"></div>
+  <form id="bar" class="glass" autocomplete="off">
+    <button type="button" class="ib" id="back" aria-label="Back">←</button>
+    <button type="button" class="ib" id="fwd" aria-label="Forward">→</button>
+    <button type="button" class="ib" id="rl" aria-label="Reload">↻</button>
+    <input id="url" aria-label="Address bar and search" placeholder="Search or enter address (Ctrl+K)" spellcheck="false">
+    <button type="button" class="ib" id="rf" title="Re-download this page, bypassing the cache">Refresh page</button>
+  </form>
+  <div id="view">
+    <!-- Sandbox per spec; pages are loaded via srcdoc, never innerHTML -->
+    <iframe id="frame" title="Page content" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-fullscreen" allow="fullscreen; autoplay"></iframe>
+    <div id="msg" hidden></div>
+    <div id="warn" class="glass" hidden>Site not loading? <button type="button" class="ib" id="ext">Open in new window</button></div>
+  </div>
+  <footer id="status" class="glass">
+    <div><span id="count">1 tab</span><a data-l="discord">Discord</a><a data-l="tos" class="hide-s">ToS</a><a data-l="privacy" class="hide-s">Privacy</a><a data-l="dmca" class="hide-s">DMCA</a></div>
+    <div><span class="hide-s">🔥 Trending</span><span id="sec">🔒 Secure</span><span id="clock"></span></div>
+  </footer>
+</main>
+
+<dialog id="set">
+  <form method="dialog" id="sf">
+    <h2>Settings</h2>
+    <label>Background image URL<input id="s-bg" type="url" placeholder="https://example.com/city.jpg"></label>
+    <label>Tab title<input id="s-title" maxlength="40" placeholder="Sh0zy"></label>
+    <label>Favicon (emoji or image URL)<input id="s-icon" maxlength="300" placeholder="🌧️"></label>
+    <div class="row">
+      <button type="button" class="ib" id="s-reset">Reset</button>
+      <button type="button" class="ib" id="s-cancel">Cancel</button>
+      <button class="ib">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+"use strict";
+/* ===== CONFIG ===== */
+const BASE = "https://cdn.jsdelivr.net/gh/YOURUSER/YOURREPO@main/"; // tip: pin to @<commit-or-tag> for instant updates
+const DEFAULT_BG = "";                    // paste a rain-city image URL here (or use Settings)
+const SCHEME = "petezah://";              // internal address prefix
+const LINKS = { discord: "https://discord.gg/YOURINVITE", tos: "#", privacy: "#", dmca: "#" };
+const ENGINES = { default: "https://duckduckgo.com/?q=", google: "https://www.google.com/search?q=", bing: "https://www.bing.com/search?q=", brave: "https://search.brave.com/search?q=" };
+// Injected into every page so Ctrl+K/T/W work while focus is inside the iframe
+const FWD = '<script>addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&"ktw".indexOf(e.key.toLowerCase())>-1){e.preventDefault();parent.postMessage({sh:"key",key:e.key.toLowerCase()},"*")}})<\/script>';
+
+/* ===== HELPERS ===== */
+const $ = id => document.getElementById(id);
+const h = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
+const ls = { get(k, d = "") { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const frame = $("frame"), msg = $("msg"), warn = $("warn");
+let pages = [], tabs = [], active = 0, nextId = 1, seq = 0, timer;
+const cache = new Map();                  // in-memory page cache: file -> html text
+
+const slugOf = p => p.file.replace(/\.html$/, "");
+const addr = s => SCHEME + (s === "home" ? "newtab" : s);
+const pageBySlug = s => pages.find(p => slugOf(p) === (s === "newtab" ? "home" : s));
+const cur = () => tabs[active];
+const entry = () => cur().hist[cur().i];   // entry = {p:slug} (internal) or {u:url} (web)
+const label = t => { const e = t.hist[t.i]; return e.u ? new URL(e.u).hostname : (pageBySlug(e.p)?.name || e.p); };
+
+/* ===== LOADING (only ever fetches BASE + pages.json / BASE + pages/<file from pages.json>) ===== */
+async function getPage(file, fresh) {
+  if (!/^[\w-]+\.html$/.test(file)) throw new Error("bad file");
+  if (!fresh && cache.has(file)) return cache.get(file);
+  const r = await fetch(BASE + "pages/" + file, { cache: fresh ? "reload" : "default" });
+  if (!r.ok) throw new Error(r.status);
+  const t = await r.text(); cache.set(file, t); return t;
+}
+function showMsg(text, ...btns) { msg.replaceChildren(h("p", { textContent: text }), ...btns); msg.hidden = false; }
+const retryBtn = fn => h("button", { className: "ib", textContent: "Retry", onclick: fn });
+
+async function render(fresh = false) {
+  const e = entry(), my = ++seq;
+  clearTimeout(timer); frame.classList.remove("in"); msg.hidden = true; warn.hidden = !e.u;
+  drawChrome();
+  if (e.u) {                               // external site
+    frame.removeAttribute("srcdoc"); frame.src = e.u;
+    timer = setTimeout(() => showMsg("This site is taking too long or refuses to be embedded.", h("button", { className: "ib", textContent: "Open in new window", onclick: openExt })), 10000);
+    return;
+  }
+  const p = pageBySlug(e.p); if (!p) return;
+  showMsg("Loading…");
+  try {
+    const html = await getPage(p.file, fresh);
+    if (my !== seq) return;                // a newer navigation superseded this one
+    msg.hidden = true; frame.srcdoc = html + FWD;
+  } catch {
+    if (my === seq) showMsg("Couldn't load this page. Check your connection and the BASE path.", retryBtn(() => render(true)));
+  }
+}
+frame.onload = () => { clearTimeout(timer); frame.classList.add("in"); };
+
+/* ===== NAVIGATION ===== */
+function go(e, newTab) {
+  if (newTab || !tabs.length) { tabs.push({ id: nextId++, hist: [e], i: 0 }); active = tabs.length - 1; }
+  else { const t = cur(); t.hist = t.hist.slice(0, t.i + 1); t.hist.push(e); t.i++; }
+  render();
+}
+function openPage(slug, newTab) { const p = pageBySlug(slug); if (p) go({ p: slugOf(p) }, newTab); }
+function openUrl(u, newTab) { try { const x = new URL(u); if (/^https?:$/.test(x.protocol)) go({ u: x.href }, newTab); } catch {} }
+function openExt() { const e = entry(); if (e.u) window.open(e.u, "_blank", "noopener"); }
+function closeTab(i) {
+  tabs.splice(i, 1);
+  if (!tabs.length) return go({ p: "home" }, true);
+  if (i < active) active--; active = Math.min(active, tabs.length - 1); render();
+}
+function resolve(q) {                       // address-bar text -> navigation entry
+  q = String(q).trim().slice(0, 500);
+  const m = q.match(/^petezah:\/\/(\w+)/i), pg = m && pageBySlug(m[1].toLowerCase());
+  if (pg) return { p: slugOf(pg) };
+  if (/^https?:\/\/\S+$/i.test(q)) return { u: q };
+  if (/^[\w-]+(\.[\w-]+)+(:\d+)?(\/\S*)?$/.test(q)) return { u: "https://" + q };
+  return { u: (ENGINES[ls.get("sh0zy.engine", "default")] || ENGINES.default) + encodeURIComponent(q) };
+}
+function hotkey(k) {
+  if (k === "t") go({ p: "home" }, true);
+  else if (k === "w" && tabs.length) closeTab(active);
+  else if (k === "k" && tabs.length) {
+    if (entry().p === "home") frame.contentWindow.postMessage({ sh: "focus" }, "*");
+    else { $("url").focus(); $("url").select(); }
+  }
+}
+
+/* ===== CHROME (tabs, URL bar, status) ===== */
+function drawChrome() {
+  const e = entry(), t = cur();
+  $("tabs").replaceChildren(...tabs.map((x, i) => {
+    const d = h("div", { className: "tab" + (i === active ? " on" : ""), role: "tab" });
+    d.setAttribute("aria-selected", i === active);
+    d.append(h("button", { className: "t", textContent: label(x), onclick: () => { active = i; render(); } }),
+             h("button", { className: "x", textContent: "×", ariaLabel: "Close tab", onclick: () => closeTab(i) }));
+    return d;
+  }), h("button", { className: "ib", textContent: "+", ariaLabel: "New tab", onclick: () => hotkey("t") }));
+  $("url").value = e.u || addr(e.p);
+  $("back").disabled = t.i === 0; $("fwd").disabled = t.i >= t.hist.length - 1;
+  $("count").textContent = tabs.length + (tabs.length === 1 ? " tab" : " tabs");
+  $("sec").textContent = !e.u || e.u.startsWith("https:") ? "🔒 Secure" : "⚠ Not secure";
+  document.querySelectorAll(".sb[data-slug]").forEach(b => b.classList.toggle("on", !e.u && b.dataset.slug === e.p));
+}
+function buildSidebar() {
+  const mk = (icon, tip, fn) => { const b = h("button", { className: "sb", textContent: icon, onclick: fn, ariaLabel: tip }); b.dataset.tip = tip; return b; };
+  $("side").replaceChildren(
+    ...pages.map(p => { const b = mk(p.icon || "•", p.name, () => openPage(slugOf(p))); b.dataset.slug = slugOf(p); return b; }),
+    h("span", { className: "sp" }), mk("⚙️", "Settings", openSettings));
+}
+
+/* ===== SETTINGS ===== */
+function applySettings() {
+  const bg = ls.get("sh0zy.bg", DEFAULT_BG).replace(/[()"'\\\s]/g, c => "%" + c.charCodeAt(0).toString(16));
+  document.documentElement.style.setProperty("--bg", /^https?:\/\//.test(bg) ? 'url("' + bg + '")' : "none");
+  document.title = ls.get("sh0zy.title") || "Sh0zy";
+  const f = ls.get("sh0zy.icon");
+  $("fav").href = !f ? "data:," : /^https?:\/\//.test(f) ? f
+    : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
+}
+function openSettings() {
+  $("s-bg").value = ls.get("sh0zy.bg", DEFAULT_BG); $("s-title").value = ls.get("sh0zy.title"); $("s-icon").value = ls.get("sh0zy.icon");
+  $("set").showModal();
+}
+$("sf").addEventListener("submit", () => {
+  ls.set("sh0zy.bg", $("s-bg").value.trim()); ls.set("sh0zy.title", $("s-title").value.trim()); ls.set("sh0zy.icon", $("s-icon").value.trim());
+  applySettings();
+});
+$("s-cancel").onclick = () => $("set").close();
+$("s-reset").onclick = () => { ["bg", "title", "icon"].forEach(k => ls.set("sh0zy." + k, "")); applySettings(); $("set").close(); };
+
+/* ===== EVENTS ===== */
+$("back").onclick = () => { cur().i--; render(); };
+$("fwd").onclick = () => { cur().i++; render(); };
+$("rl").onclick = () => render();
+$("rf").onclick = () => render(true);       // bypasses the in-memory + browser cache
+$("ext").onclick = openExt;
+$("bar").addEventListener("submit", ev => {
+  ev.preventDefault(); const v = $("url").value.trim(); if (!v) return;
+  const e = resolve(v); e.p ? openPage(e.p) : openUrl(e.u);
+});
+addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && "ktw".includes(e.key.toLowerCase())) { e.preventDefault(); hotkey(e.key.toLowerCase()); } });
+// Messages from pages (only trusted while an internal page is showing)
+addEventListener("message", e => {
+  if (e.source !== frame.contentWindow || !tabs.length || entry().u) return;
+  const d = e.data || {};
+  if (d.sh === "key") hotkey(d.key);
+  else if (d.sh === "nav") openPage(String(d.to), false);
+  else if (d.sh === "open") openUrl(String(d.url), !!d.newTab);
+  else if (d.sh === "search") { const r = resolve(d.q); if (r.u) openUrl(r.u, !!d.newTab); }
+  else if (d.sh === "settings") openSettings();
+});
+
+/* ===== INIT ===== */
+async function init() {
+  try {
+    const r = await fetch(BASE + "pages.json"); if (!r.ok) throw 0;
+    pages = (await r.json()).filter(p => p && /^[\w-]+\.html$/.test(p.file)); if (!pages.length) throw 0;
+  } catch { return showMsg("Couldn't load pages.json. Check BASE and that the repo is public.", retryBtn(init)); }
+  buildSidebar(); go({ p: pageBySlug("home") ? "home" : slugOf(pages[0]) }, true);
+}
+document.querySelectorAll("[data-l]").forEach(a => { a.href = LINKS[a.dataset.l]; a.rel = "noopener"; if (LINKS[a.dataset.l] !== "#") a.target = "_blank"; });
+const tick = () => { $("clock").textContent = new Date().toLocaleTimeString(); }; tick(); setInterval(tick, 1000);
+applySettings(); init();
+</script>
+</body>
+</html>
