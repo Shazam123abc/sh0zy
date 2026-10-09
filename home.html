@@ -5,81 +5,87 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>New Tab</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-
 <style>
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:transparent;color:#f2f4f8;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:70px 20px 20px;overflow-y:auto;animation:in .5s ease}
-@keyframes in{from{opacity:0;transform:translateY(10px)}}
+html,body{height:100%;background:transparent;color:#eef1f6;font:13px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px 20px 60px;overflow-y:auto;animation:in .5s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
 :focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
 button,select,input{font:inherit;color:inherit}button{cursor:pointer}
-.glass{background:rgba(16,18,28,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14)}
-h1{font-size:clamp(44px,9vw,84px);font-weight:800;letter-spacing:-.03em;text-shadow:0 4px 30px rgba(0,0,0,.5)}
-.search{display:flex;align-items:center;gap:10px;width:min(680px,100%);height:54px;padding:0 14px 0 20px;border-radius:28px;transition:.25s}
-.search:focus-within{border-color:#8aa4ff;box-shadow:0 0 0 4px rgba(138,164,255,.18)}
-.search input{flex:1;min-width:0;background:none;border:0;outline:0;font-size:16px}
-kbd{padding:3px 9px;border-radius:8px;border:1px solid rgba(255,255,255,.2);font-size:12px;color:#a3abbd}
-.icons{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
-.circle{width:52px;height:52px;border-radius:50%;font-size:22px;transition:.2s}
-.circle:hover,.tile:hover{transform:translateY(-4px) scale(1.07);background:rgba(255,255,255,.18)}
-.pill{padding:6px 16px;border-radius:20px;font-size:13px;transition:.2s}
-.pill:hover{background:rgba(255,255,255,.18)}
-select.pill option{color:#111}
-.corner{position:absolute;top:14px;display:flex;gap:10px}
-.corner.l{left:14px;flex-direction:column;align-items:flex-start}
-.corner.r{right:14px}
-.dock{display:flex;gap:8px;padding:8px;border-radius:20px}
-.tile{width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);font-size:18px;transition:.2s}
-.ic{font-size:18px;line-height:1}
-.search .ic{font-size:17px}.circle .ic{font-size:21px}.pill .ic{font-size:13px;margin-right:4px}
-@media(max-width:600px){.corner{position:static}.corner.l{flex-direction:row;align-items:center}body{justify-content:flex-start;padding-top:16px}}
+.ic{font-size:13px;line-height:1}
+.glass{background:rgba(5,8,15,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+h1{font-size:38px;font-weight:700;letter-spacing:-.01em;text-shadow:0 2px 20px rgba(0,0,0,.6)}
+.search{display:flex;align-items:center;gap:10px;width:min(510px,100%);height:46px;padding:0 12px 0 16px;border-radius:12px;color:#9aa3b5;transition:.2s}
+.search:focus-within{border-color:#8aa4ff}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:14px;color:#eef1f6}
+.search input::placeholder{color:#8a93a6}
+kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px ui-monospace,Consolas,monospace;color:#9aa3b5}
+.icons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.circle{width:34px;height:34px;border-radius:50%;transition:.2s}
+.circle:hover{transform:translateY(-3px);background:rgba(30,38,60,.85)}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:12px;font-size:12px;font-weight:600;transition:.2s}
+.pill:hover{background:rgba(30,38,60,.85)}
+.pill.sm{font-size:11px;padding:5px 10px}
+.eng{border-radius:16px;padding:5px 12px;font-weight:500;color:#c3cbdb}
+.eng select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:none;font-size:11px;cursor:pointer}
+.eng select option{color:#111}
+.eng .ic{font-size:11px}
+.corner{position:absolute;top:12px;display:flex;flex-direction:column;gap:8px}
+.corner.l{left:12px;align-items:flex-start}
+.corner.r{right:12px;align-items:flex-end}
+.dock{display:flex;gap:2px;padding:4px 6px;border-radius:12px}
+.tile{width:28px;height:28px;border:0;border-radius:8px;background:none;color:#8a93a6;transition:.2s}
+.tile:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.tile .ic{font-size:16px}
+.tile .fa-instagram{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile .fa-spotify{color:#1ed760}.tile .fa-tiktok{color:#fff}
+@media(max-width:600px){.corner{position:static;flex-direction:row;align-items:center}body{justify-content:flex-start}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill" id="b-trend"><span data-ic="flame"></span> Trending</button></div>
-<div class="corner r"><button class="glass pill" id="b-discord">Discord</button><button class="glass pill" id="b-links">Get Links</button></div>
+<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill sm" id="b-trend"><span data-ic="flame"></span>Trending</button></div>
+<div class="corner r"><button class="glass pill" id="b-discord"><span data-ic="discord"></span>Discord</button><button class="glass pill sm" id="b-links"><span data-ic="link"></span>Get Links</button></div>
 <h1>PeteZah</h1>
 <form class="glass search" id="sf">
-  <span aria-hidden="true" data-ic="search"></span>
-  <input id="q" type="search" placeholder="Search the web or enter a URL" aria-label="Search" autocomplete="off">
+  <span data-ic="search" aria-hidden="true"></span>
+  <input id="q" type="text" placeholder="Search or enter URL…" aria-label="Search" autocomplete="off">
   <kbd>Ctrl+K</kbd>
 </form>
 <div class="icons" id="icons"></div>
-<select class="glass pill" id="eng" aria-label="Search engine">
-  <option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option>
-</select>
+<label class="glass pill eng"><span data-ic="shield"></span><span data-ic="globe"></span>
+  <select id="eng" aria-label="Search engine"><option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option></select>
+  <span data-ic="down"></span></label>
 <script>
 /* ===== CONFIG: edit links here ===== */
 const CFG = { discord: "https://discord.gg/YOURINVITE", getLinks: "https://discord.gg/YOURINVITE", trending: "https://trends.google.com/trending" };
-const DOCK = [["Instagram", "instagram", "https://www.instagram.com"], ["Spotify", "headphones", "https://open.spotify.com"], ["TikTok", "tiktok", "https://www.tiktok.com"]];
-const ICONS = [["Games", "gamepad", { nav: "games" }], ["Apps", "grid", { url: "https://play.google.com" }], ["Music", "music", { url: "https://open.spotify.com" }],
-  ["Movies", "film", { url: "https://www.themoviedb.org" }], ["TV", "tv", { url: "https://www.justwatch.com" }], ["Browser", "globe", { url: "https://duckduckgo.com" }], ["Chat", "chat", { nav: "chat" }]];
+const DOCK = [["Instagram", "instagram", "https://www.instagram.com"], ["Spotify", "spotify", "https://open.spotify.com"], ["TikTok", "tiktok", "https://www.tiktok.com"]];
+const ICON_ROW = [["Games", "gamepad", { nav: "games" }], ["Apps", "robot", { url: "https://play.google.com" }], ["Music", "music", { url: "https://open.spotify.com" }],
+  ["Movies", "film", { url: "https://www.themoviedb.org" }], ["TV", "desktop", { url: "https://www.justwatch.com" }], ["Browser", "window", { url: "https://duckduckgo.com" }], ["Chat", "chat", { nav: "chat" }]];
 
-/* Font Awesome Free 6.5.2 icons (same set as the old site); loaded via the <link> in <head> */
 const ICONS = {
-  home:'fa-solid fa-house', gamepad:'fa-solid fa-gamepad', chat:'fa-solid fa-comments', settings:'fa-solid fa-gear',
-  lock:'fa-solid fa-lock', alert:'fa-solid fa-triangle-exclamation', flame:'fa-solid fa-fire', plus:'fa-solid fa-plus',
-  x:'fa-solid fa-xmark', back:'fa-solid fa-arrow-left', fwd:'fa-solid fa-arrow-right', reload:'fa-solid fa-rotate-right',
-  search:'fa-solid fa-magnifying-glass', grid:'fa-solid fa-table-cells-large', music:'fa-solid fa-music', film:'fa-solid fa-film',
-  tv:'fa-solid fa-tv', globe:'fa-solid fa-globe', instagram:'fa-brands fa-instagram', headphones:'fa-brands fa-spotify',
-  tiktok:'fa-brands fa-tiktok'
+  home:'fa-solid fa-house', games:'fa-solid fa-gamepad', gamepad:'fa-solid fa-gamepad', chat:'fa-regular fa-comment',
+  settings:'fa-solid fa-gear', lock:'fa-solid fa-lock', shield:'fa-solid fa-shield-halved', alert:'fa-solid fa-triangle-exclamation',
+  flame:'fa-solid fa-fire', plus:'fa-solid fa-plus', x:'fa-solid fa-xmark', back:'fa-solid fa-arrow-left', fwd:'fa-solid fa-arrow-right',
+  reload:'fa-solid fa-rotate-right', search:'fa-solid fa-magnifying-glass', robot:'fa-solid fa-robot', music:'fa-solid fa-music',
+  film:'fa-solid fa-film', desktop:'fa-solid fa-desktop', window:'fa-regular fa-window-maximize', globe:'fa-solid fa-globe',
+  wrench:'fa-solid fa-wrench', user:'fa-regular fa-user', link:'fa-solid fa-link', down:'fa-solid fa-chevron-down',
+  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok'
 };
-const ico = n => '<i class="ic ' + (ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
-const fillIcons = () => document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
+const ico = n => '<i class="ic ' + (/^fa-/.test(n) ? n : ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
 const $ = id => document.getElementById(id);
 const send = (sh, rest) => parent.postMessage(Object.assign({ sh }, rest), "*");
 const act = a => a.nav ? send("nav", { to: a.nav }) : a.url ? send("open", { url: a.url, newTab: true }) : send("settings");
 const mk = (cls, label, icon, a) => { const b = document.createElement("button"); b.className = cls; b.innerHTML = ico(icon); b.title = label; b.setAttribute("aria-label", label); b.onclick = () => act(a); return b; };
 
 $("dock").append(...DOCK.map(([n, i, u]) => mk("tile", n, i, { url: u })), mk("tile", "Add shortcut", "plus", {}));
-$("icons").append(...ICONS.map(([n, i, a]) => mk("glass circle", n, i, a)), mk("glass circle", "More (settings)", "plus", {}));
+$("icons").append(...ICON_ROW.map(([n, i, a]) => mk("glass circle", n, i, a)), mk("glass circle", "More (settings)", "plus", {}));
 $("b-discord").onclick = () => act({ url: CFG.discord });
 $("b-links").onclick = () => act({ url: CFG.getLinks });
 $("b-trend").onclick = () => act({ url: CFG.trending });
+document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
 
 $("sf").addEventListener("submit", e => { e.preventDefault(); const q = $("q").value.trim(); if (q) send("search", { q }); });
-fillIcons();
 try { $("eng").value = localStorage.getItem("sh0zy.engine") || "default"; } catch {}
 $("eng").onchange = () => { try { localStorage.setItem("sh0zy.engine", $("eng").value); } catch {} };
 addEventListener("message", e => { if (e.data && e.data.sh === "focus") { $("q").focus(); $("q").select(); } });
