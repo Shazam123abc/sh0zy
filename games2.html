@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: transparent !important;
+    color: #f2f4f8;
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  #games {
+    min-height: 100vh;
+    background: transparent !important;
+  }
+
+  #games > div,
+  #games iframe {
+    background: transparent !important;
+  }
+</style>
+</head>
+
+<body>
+  <div id="games"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"></script>
+
+  <script>
+    Lumin.init({
+      container: '#games',
+      theme: 'dark',
+      columns: 12,
+      rows: 4,
+      gamesPerPage: 48
+    });
+  </script>
+</body>
+</html>
