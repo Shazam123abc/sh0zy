@@ -30,6 +30,16 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .seg button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 16px rgba(106,149,255,.4)}
 .btn{height:46px;padding:0 18px;border-radius:23px;border:1px solid var(--line);background:var(--glass);font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:.2s}
 .btn:hover{border-color:var(--acc);background:rgba(106,149,255,.2);transform:translateY(-1px)}
+.dd{position:relative}
+.dd .btn{gap:10px;padding:0 14px}
+.dd .lbl{display:grid;line-height:1.1;text-align:left}.dd .lbl small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.dd .cv{font-size:11px;color:var(--mut)}
+.ddm{position:absolute;top:calc(100% + 8px);left:0;z-index:40;width:300px;padding:6px;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.6);animation:fi .15s}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:10px;border-radius:12px;text-align:left;transition:.15s}
+.opt:hover{background:rgba(106,149,255,.18)}.opt.on{background:rgba(106,149,255,.12)}
+.opt .oi{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2))}
+.opt .ot{flex:1;min-width:0}.opt b{display:block}.opt small{display:block;color:var(--mut);font-size:11.5px}
+.opt .ck{color:var(--acc);opacity:0}.opt.on .ck{opacity:1}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#c3cbdb;font-size:13px;transition:.18s}
@@ -79,6 +89,10 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   <header class="hero"><h1>Games</h1><p id="sub">Loading the library…</p></header>
   <div class="top">
     <div class="row">
+      <div class="dd">
+        <button class="btn" id="ddb" aria-haspopup="listbox" aria-expanded="false" aria-label="Choose game loader"><i id="ddi" class="fa-solid fa-bolt"></i><span class="lbl"><small>Loader</small><b id="ddn">Lumin</b></span><i class="fa-solid fa-chevron-down cv"></i></button>
+        <div class="ddm glass" id="ddm" role="listbox" hidden></div>
+      </div>
       <label class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="q" type="text" placeholder="Search games…" aria-label="Search games" autocomplete="off"><kbd>/</kbd></label>
       <div class="seg" role="group" aria-label="Library">
         <button class="on" data-mode="all">All</button><button data-mode="favs"><i class="fa-solid fa-heart"></i> <span class="lbl">Favorites</span></button><button data-mode="recent"><i class="fa-solid fa-clock-rotate-left"></i> <span class="lbl">Recent</span></button>
@@ -108,17 +122,63 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 <script>
 "use strict";
 const $ = s => document.querySelector(s), STEP = 48;
+const TRUFFLED = "https://cdn.jsdelivr.net/gh/sussyboi01/truffledgames@main/";   // repo with games.json, html/ and covers/
 const ls = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
 const mk = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
 const arr = r => Array.isArray(r) ? r : (r && r.games) || [];
+const gkey = g => (g.src || "lumin") + ":" + g.id;
+
+/* ===== LOADERS: add another source by adding an entry here =====
+   Each loader provides: init(), page(n), search(q), random(), thumb(game), open(game) -> playable url */
+let blobUrl = null;
+const P = {
+  lumin: {
+    label: "Lumin", icon: "fa-solid fa-bolt", desc: "Cloud library with categories", cats: [],
+    async init() {
+      await Lumin.init({ headless: true });
+      try { this.cats = ((await Lumin.getCategories()) || []).map(c => typeof c === "string" ? c : c && c.name).filter(Boolean); } catch {}
+    },
+    async page(n) { const r = await Lumin.getGames({ page: n, limit: STEP }); return { games: arr(r).map(g => ({ ...g, src: "lumin" })), pages: r.pages || n, total: r.total }; },
+    async search(q) { return arr(await Lumin.search(q)).map(g => ({ ...g, src: "lumin" })); },
+    async random() { const g = arr(await Lumin.getRandomGames(1))[0]; return g && { ...g, src: "lumin" }; },
+    thumb: g => g.image_token ? Lumin.getImageUrl(g.image_token) : null,
+    async open(g) { const { url } = await Lumin.getGameUrl(g.id); return url; }          // one-time link, so always ask fresh
+  },
+  truffled: {
+    label: "Truffled", icon: "fa-solid fa-cookie-bite", desc: "Community library, 400+ games", list: null,
+    async init() {
+      if (this.list) return;
+      const r = await fetch(TRUFFLED + "games.json"); if (!r.ok) throw new Error(r.status);
+      this.list = (await r.json())
+        .filter(x => /^html\/\d+\.html$/.test(x.game) && /^covers\/\d+\.png$/.test(x.cover))      // only ever our own repo paths
+        .map(x => ({ id: x.id, name: String(x.name), src: "truffled", file: x.game, cover: x.cover }))
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+    },
+    async page(n) { const s = (n - 1) * STEP; return { games: this.list.slice(s, s + STEP), pages: Math.ceil(this.list.length / STEP), total: this.list.length }; },
+    async search(q) { const t = q.toLowerCase(); return this.list.filter(g => g.name.toLowerCase().includes(t)); },
+    async random() { return this.list[Math.floor(Math.random() * this.list.length)]; },
+    thumb: g => /^covers\/\d+\.png$/.test(g.cover || "") ? TRUFFLED + g.cover : null,
+    async open(g) {                                   // jsDelivr serves .html as plain text, so load it through a blob
+      if (!/^html\/\d+\.html$/.test(g.file || "")) throw new Error("bad path");
+      const r = await fetch(TRUFFLED + g.file); if (!r.ok) throw new Error(r.status);
+      let h = await r.text(); const m = h.match(/<html[\s\S]*<\/html>/i); if (m) h = m[0];
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      return (blobUrl = URL.createObjectURL(new Blob([h], { type: "text/html" })));
+    }
+  }
+};
+const prov = g => P[g.src] || P.lumin;
+const ready = {}, ensure = k => ready[k] || (ready[k] = P[k].init().catch(e => { delete ready[k]; throw e; }));
+
+let cur = P[ls.get("sh0zy.loader", "lumin")] ? ls.get("sh0zy.loader", "lumin") : "lumin";
 let all = [], seen = new Set(), results = [], cats = ["All"], cat = "All", mode = "all", query = "";
 let page = 0, pages = 1, total = 0, loading = false, shown = 0, current = null, st;
 let favs = ls.get("sh0zy.favs", []), recent = ls.get("sh0zy.recent", []);
 const grid = $("#grid"), stateEl = $("#state"), more = $("#more"), pf = $("#pf");
-const imgs = new Map();                       // image_token -> Promise<blob url>
-const getImg = g => !g.image_token ? Promise.resolve(null) : (imgs.get(g.image_token) || (imgs.set(g.image_token, Lumin.getImageUrl(g.image_token).catch(() => null)), imgs.get(g.image_token)));
-const isFav = id => favs.some(g => g.id === id);
-const slim = g => ({ id: g.id, name: g.name, image_token: g.image_token, category: g.category });
+const imgs = new Map();
+const getImg = g => { const k = gkey(g); if (!imgs.has(k)) imgs.set(k, (async () => { try { await ensure(g.src || "lumin"); return await prov(g).thumb(g); } catch { return null; } })()); return imgs.get(k); };
+const isFav = g => favs.some(x => gkey(x) === gkey(g));
+const slim = g => ({ id: g.id, name: g.name, src: g.src || "lumin", image_token: g.image_token, category: g.category, file: g.file, cover: g.cover });
 const paintFav = (b, on) => { b.classList.toggle("on", on); b.innerHTML = '<i class="fa-' + (on ? "solid" : "regular") + ' fa-heart"></i>'; b.setAttribute("aria-pressed", on); };
 
 function setState(icon, title, text, retry) {
@@ -141,51 +201,52 @@ function render(reset = true) {
   const none = !l.length && !loading;
   stateEl.hidden = !none;
   if (none) setState(...({ favs: ["fa-regular fa-heart", "No favorites yet", "Tap the heart on any game to save it here."], recent: ["fa-solid fa-clock-rotate-left", "Nothing played yet", "Games you play will show up here."], all: ["fa-solid fa-ghost", "No games found", "Try a different search or category."] })[mode]);
-  const n = total || all.length; $("#sub").textContent = n ? n.toLocaleString() + " games ready to play" : "Loading the library…";
+  const n = total || all.length; $("#sub").textContent = n ? P[cur].label + " · " + n.toLocaleString() + " games ready to play" : "Loading the library…";
 }
 
-/* Lazy thumbnails: resolve each image token only when its card is near the viewport */
+/* Lazy thumbnails: resolve each image only when its card is near the viewport */
 const imgIO = new IntersectionObserver(es => es.forEach(async e => {
   if (!e.isIntersecting) return; imgIO.unobserve(e.target);
   const t = e.target.querySelector(".thumb"), im = t.querySelector("img"), u = await getImg(e.target._g);
-  if (u) { im.onload = () => t.classList.remove("sk"); im.src = u; } else t.classList.remove("sk");
+  if (u) { im.onload = () => t.classList.remove("sk"); im.onerror = () => t.classList.remove("sk"); im.src = u; } else t.classList.remove("sk");
 }), { rootMargin: "300px" });
 
 function card(g, i) {
   const c = mk("div", "card"); c._g = g; c.style.setProperty("--i", Math.min(i, 12));
   const o = mk("button", "open"); o.setAttribute("aria-label", "Play " + g.name);
   o.innerHTML = '<div class="thumb sk"><img alt=""><span class="go"><i class="fa-solid fa-play"></i></span></div><div class="meta"><b></b><small></small></div>';
-  o.querySelector("b").textContent = g.name; o.querySelector("small").textContent = g.category || "Game"; o.querySelector("img").alt = g.name + " thumbnail";
+  o.querySelector("b").textContent = g.name; o.querySelector("small").textContent = g.category || prov(g).label; o.querySelector("img").alt = g.name + " thumbnail";
   o.onclick = () => play(g);
-  const f = mk("button", "fav"); f.setAttribute("aria-label", "Toggle favorite"); paintFav(f, isFav(g.id)); f.onclick = () => toggleFav(g);
+  const f = mk("button", "fav"); f.setAttribute("aria-label", "Toggle favorite"); paintFav(f, isFav(g)); f.onclick = () => toggleFav(g);
   c.append(o, f); imgIO.observe(c); return c;
 }
 function toggleFav(g) {
-  favs = isFav(g.id) ? favs.filter(x => x.id !== g.id) : [slim(g), ...favs]; ls.set("sh0zy.favs", favs);
-  document.querySelectorAll(".card").forEach(c => { if (c._g.id === g.id) paintFav(c.querySelector(".fav"), isFav(g.id)); });
-  if (current && current.id === g.id) paintFav($("#pfav"), isFav(g.id));
+  favs = isFav(g) ? favs.filter(x => gkey(x) !== gkey(g)) : [slim(g), ...favs]; ls.set("sh0zy.favs", favs);
+  document.querySelectorAll(".card").forEach(c => { if (gkey(c._g) === gkey(g)) paintFav(c.querySelector(".fav"), isFav(g)); });
+  if (current && gkey(current) === gkey(g)) paintFav($("#pfav"), isFav(g));
   if (mode === "favs") render(true);
 }
 
-/* Data loading: paged catalog + search */
+/* Data loading: paged catalog + search (whichever loader is active) */
 async function loadMore() {
   if (loading || page >= pages || mode !== "all" || query) return;
-  loading = true; more.hidden = false;
+  const k = cur; loading = true; more.hidden = false;
   try {
-    const r = await Lumin.getGames({ page: page + 1, limit: STEP });
+    const r = await P[k].page(page + 1);
+    if (k !== cur) return;                        // the loader was switched mid-request
     page++; pages = r.pages || page; total = r.total || total;
-    arr(r).forEach(g => { if (!seen.has(g.id)) { seen.add(g.id); all.push(g); } });
+    r.games.forEach(g => { const id = gkey(g); if (!seen.has(id)) { seen.add(id); all.push(g); } });
     loading = false; render(page === 1);
-  } catch (e) { loading = false; if (!all.length) setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the game library", "Check your connection and try again.", boot); }
-  more.hidden = true; fill();
+  } catch { if (k === cur && !all.length) setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the " + P[k].label + " library", "Check your connection and try again.", () => switchTo(k)); }
+  if (k === cur) { loading = false; more.hidden = true; fill(); }
 }
 const sentIO = new IntersectionObserver(es => { if (es[0].isIntersecting) loadMore(); }, { rootMargin: "600px" });
 sentIO.observe($("#sent"));
-function fill() { if ($("#sent").getBoundingClientRect().top < innerHeight + 600) loadMore(); }  // keep loading while a filter leaves the screen empty
+function fill() { if ($("#sent").getBoundingClientRect().top < innerHeight + 600) loadMore(); }
 
 async function doSearch() {
   query = $("#q").value.trim();
-  if (query && mode === "all") { try { results = arr(await Lumin.search(query)); } catch { results = []; } }
+  if (query && mode === "all") { const k = cur; try { await ensure(k); results = await P[k].search(query); } catch { results = []; } if (k !== cur) return; }
   render(true); if (!query) fill();
 }
 $("#q").addEventListener("input", () => { clearTimeout(st); st = setTimeout(doSearch, 250); });
@@ -197,15 +258,40 @@ function drawChips() {
 document.querySelectorAll(".seg button").forEach(b => b.onclick = () => {
   mode = b.dataset.mode; document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b)); doSearch(); fill();
 });
-$("#rand").onclick = async () => { try { const g = arr(await Lumin.getRandomGames(1))[0]; if (g) play(g); } catch {} };
+$("#rand").onclick = async () => { const k = cur; try { await ensure(k); const g = await P[k].random(); if (g) play(g); } catch {} };
 
-/* Player: game URLs are one-time use, so every (re)load asks for a fresh one */
+/* Loader dropdown */
+const closeDD = () => { $("#ddm").hidden = true; $("#ddb").setAttribute("aria-expanded", "false"); };
+function paintDD() {
+  $("#ddn").textContent = P[cur].label; $("#ddi").className = P[cur].icon;
+  document.querySelectorAll(".opt").forEach(o => { const on = o.dataset.k === cur; o.classList.toggle("on", on); o.setAttribute("aria-selected", on); });
+}
+$("#ddm").replaceChildren(...Object.keys(P).map(k => {
+  const o = mk("button", "opt"); o.dataset.k = k; o.setAttribute("role", "option");
+  o.innerHTML = '<span class="oi"><i class="' + P[k].icon + '"></i></span><span class="ot"><b></b><small></small></span><i class="fa-solid fa-check ck"></i>';
+  o.querySelector("b").textContent = P[k].label; o.querySelector("small").textContent = P[k].desc;
+  o.onclick = () => { closeDD(); if (k !== cur) switchTo(k); }; return o;
+}));
+$("#ddb").onclick = e => { e.stopPropagation(); const open = $("#ddm").hidden; $("#ddm").hidden = !open; $("#ddb").setAttribute("aria-expanded", open); };
+addEventListener("click", closeDD);
+
+async function switchTo(k) {
+  cur = k; ls.set("sh0zy.loader", k);
+  all = []; seen = new Set(); results = []; cats = ["All"]; cat = "All"; query = ""; $("#q").value = ""; page = 0; pages = 1; total = 0; loading = false; mode = "all";
+  document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x.dataset.mode === "all"));
+  paintDD(); stateEl.hidden = true; more.hidden = true; $("#sub").textContent = "Loading the library…";
+  grid.replaceChildren(...Array.from({ length: 12 }, (_, i) => { const c = mk("div", "card"); c.style.setProperty("--i", i); c.innerHTML = '<div class="thumb sk"></div><div class="meta"><b>&nbsp;</b><small>&nbsp;</small></div>'; return c; }));
+  try { await ensure(k); if (k !== cur) return; cats = ["All", ...(P[k].cats || [])]; drawChips(); await loadMore(); }
+  catch { if (k === cur) { grid.replaceChildren(); setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the " + P[k].label + " library", "Check your connection and try again.", () => switchTo(k)); } }
+}
+
+/* Player */
 async function play(g) {
-  current = g; $("#ptitle").textContent = g.name; paintFav($("#pfav"), isFav(g.id));
+  g.src = g.src || "lumin"; current = g; $("#ptitle").textContent = g.name; paintFav($("#pfav"), isFav(g));
   $("#pload").replaceChildren(mk("div", "spin")); $("#pload").hidden = false; $("#player").hidden = false; pf.src = "about:blank";
-  recent = [slim(g), ...recent.filter(x => x.id !== g.id)].slice(0, 24); ls.set("sh0zy.recent", recent);
-  try { const { url } = await Lumin.getGameUrl(g.id); if (current === g) pf.src = url; }
-  catch { $("#pload").textContent = "Couldn't load this game. Try reloading."; }
+  recent = [slim(g), ...recent.filter(x => gkey(x) !== gkey(g))].slice(0, 24); ls.set("sh0zy.recent", recent);
+  try { await ensure(g.src); const url = await prov(g).open(g); if (current === g) pf.src = url; }
+  catch { if (current === g) $("#pload").textContent = "Couldn't load this game. It may be too big for the CDN, so try another or reload."; }
 }
 pf.addEventListener("load", () => { if (current && pf.src !== "about:blank") $("#pload").hidden = true; });
 function closePlayer() { current = null; pf.src = "about:blank"; $("#player").hidden = true; if (mode === "recent") render(true); }
@@ -214,21 +300,11 @@ $("#preload").onclick = () => current && play(current);
 $("#pfav").onclick = () => current && toggleFav(current);
 $("#pfs").onclick = () => { if (pf.requestFullscreen) Promise.resolve(pf.requestFullscreen()).catch(() => {}); };
 addEventListener("keydown", e => {
-  if (e.key === "Escape" && !$("#player").hidden) closePlayer();
+  if (e.key === "Escape") { if (!$("#ddm").hidden) closeDD(); else if (!$("#player").hidden) closePlayer(); }
   else if (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); $("#q").focus(); }
 });
-
-async function boot() {
-  stateEl.hidden = true;
-  grid.replaceChildren(...Array.from({ length: 12 }, (_, i) => { const c = mk("div", "card"); c.style.setProperty("--i", i); c.innerHTML = '<div class="thumb sk"></div><div class="meta"><b>&nbsp;</b><small>&nbsp;</small></div>'; return c; }));
-  try {
-    await Lumin.init({ headless: true });
-    try { cats = ["All", ...((await Lumin.getCategories()) || []).map(c => typeof c === "string" ? c : c && c.name).filter(Boolean)]; } catch {}
-    drawChips(); await loadMore();
-  } catch { grid.replaceChildren(); setState("fa-solid fa-plug-circle-xmark", "Couldn't reach the game library", "Check your connection and try again.", boot); }
-}
-addEventListener("pagehide", () => { try { Lumin.destroy(); } catch {} });
-boot();
+addEventListener("pagehide", () => { try { if (ready.lumin) Lumin.destroy(); } catch {} });
+paintDD(); switchTo(cur);
 </script>
 </body>
 </html>
