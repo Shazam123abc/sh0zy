@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sh0zy</title>
+<title>SIFT</title>
 <link rel="icon" id="fav" href="data:,">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 
@@ -14,7 +14,18 @@
 html,body{height:100%}
 body{display:grid;grid-template-columns:56px minmax(0,1fr);font:13px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--txt);background:#05070d;overflow:hidden}
 /* Background: blue-tinted dark overlay + image (--bg) + CSS night-city fallback */
-body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(8,14,32,.42),rgba(3,6,14,.72)),var(--bg,none),radial-gradient(circle at 20% 88%,rgba(255,170,90,.22),transparent 26%),radial-gradient(circle at 75% 75%,rgba(80,140,255,.3),transparent 34%),linear-gradient(#0b1530,#121a36 60%,#05070d);background-size:cover;background-position:center}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(6,10,24,.2),rgba(3,6,14,.5)),var(--bg,none);background-size:cover;background-position:center}
+/* Default background (shown until a wallpaper image is set): drifting aurora, stars and a night-city skyline */
+#bgfx{position:fixed;inset:0;z-index:-2;overflow:hidden;background:linear-gradient(#070b1c,#0d1332 60%,#05070d)}
+#bgfx i{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;will-change:transform;animation:drift 24s ease-in-out infinite alternate}
+#bgfx i:nth-child(1){width:48vmax;height:48vmax;left:-14vmax;top:-18vmax;background:#3b5bff}
+#bgfx i:nth-child(2){width:42vmax;height:42vmax;right:-12vmax;top:8vh;background:#8b5cf6;animation-duration:30s;animation-delay:-9s}
+#bgfx i:nth-child(3){width:38vmax;height:38vmax;left:22vw;bottom:-22vmax;background:#06b6d4;animation-duration:27s;animation-delay:-15s}
+@keyframes drift{to{transform:translate(9vmax,7vmax) scale(1.18)}}
+#bgfx::before{content:"";position:absolute;z-index:1;left:0;right:0;bottom:0;height:34vh;min-height:180px;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201600%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20x%3D%220%22%20y%3D%22152%22%20width%3D%2254%22%20height%3D%22148%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%2254%22%20y%3D%22178%22%20width%3D%2259%22%20height%3D%22122%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22113%22%20y%3D%2253%22%20width%3D%2238%22%20height%3D%22247%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22151%22%20y%3D%2297%22%20width%3D%2240%22%20height%3D%22203%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22191%22%20y%3D%22176%22%20width%3D%2271%22%20height%3D%22124%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22262%22%20y%3D%22136%22%20width%3D%2266%22%20height%3D%22164%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22328%22%20y%3D%22168%22%20width%3D%2236%22%20height%3D%22132%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22364%22%20y%3D%2283%22%20width%3D%2261%22%20height%3D%22217%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22425%22%20y%3D%22129%22%20width%3D%2238%22%20height%3D%22171%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22463%22%20y%3D%2282%22%20width%3D%2239%22%20height%3D%22218%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22502%22%20y%3D%22159%22%20width%3D%2237%22%20height%3D%22141%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22539%22%20y%3D%22175%22%20width%3D%2248%22%20height%3D%22125%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22587%22%20y%3D%2289%22%20width%3D%2270%22%20height%3D%22211%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22657%22%20y%3D%22134%22%20width%3D%2237%22%20height%3D%22166%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22694%22%20y%3D%22156%22%20width%3D%2236%22%20height%3D%22144%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22730%22%20y%3D%2283%22%20width%3D%2252%22%20height%3D%22217%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22782%22%20y%3D%2252%22%20width%3D%2243%22%20height%3D%22248%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22825%22%20y%3D%22112%22%20width%3D%2241%22%20height%3D%22188%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22866%22%20y%3D%22144%22%20width%3D%2269%22%20height%3D%22156%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22935%22%20y%3D%22142%22%20width%3D%2240%22%20height%3D%22158%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%22975%22%20y%3D%22166%22%20width%3D%2257%22%20height%3D%22134%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221032%22%20y%3D%22174%22%20width%3D%2269%22%20height%3D%22126%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221101%22%20y%3D%22175%22%20width%3D%2270%22%20height%3D%22125%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221171%22%20y%3D%22138%22%20width%3D%2273%22%20height%3D%22162%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221244%22%20y%3D%2254%22%20width%3D%2265%22%20height%3D%22246%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221309%22%20y%3D%22110%22%20width%3D%2261%22%20height%3D%22190%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221370%22%20y%3D%2274%22%20width%3D%2263%22%20height%3D%22226%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221433%22%20y%3D%22114%22%20width%3D%2257%22%20height%3D%22186%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221490%22%20y%3D%22144%22%20width%3D%2249%22%20height%3D%22156%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%221539%22%20y%3D%22128%22%20width%3D%2261%22%20height%3D%22172%22%20fill%3D%22%230d1638%22/%3E%3Crect%20x%3D%220%22%20y%3D%22177%22%20width%3D%2239%22%20height%3D%22123%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%2230%22%20y%3D%22201%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%2218%22%20y%3D%22229%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%2230%22%20y%3D%22229%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%2230%22%20y%3D%22285%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%2239%22%20y%3D%22168%22%20width%3D%2253%22%20height%3D%22132%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%2281%22%20y%3D%22262%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%2257%22%20y%3D%22290%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%2292%22%20y%3D%22234%22%20width%3D%2254%22%20height%3D%2266%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%2298%22%20y%3D%22258%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%2298%22%20y%3D%22272%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22110%22%20y%3D%22286%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22122%22%20y%3D%22286%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22146%22%20y%3D%22238%22%20width%3D%2268%22%20height%3D%2262%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22176%22%20y%3D%22248%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22188%22%20y%3D%22262%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22176%22%20y%3D%22276%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22214%22%20y%3D%22232%22%20width%3D%2257%22%20height%3D%2268%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22232%22%20y%3D%22256%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22271%22%20y%3D%22147%22%20width%3D%2246%22%20height%3D%22153%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22289%22%20y%3D%22227%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22301%22%20y%3D%22269%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22277%22%20y%3D%22283%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22317%22%20y%3D%22137%22%20width%3D%2264%22%20height%3D%22163%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22323%22%20y%3D%22175%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22323%22%20y%3D%22203%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22323%22%20y%3D%22273%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22347%22%20y%3D%22287%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22381%22%20y%3D%22189%22%20width%3D%2269%22%20height%3D%22111%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22399%22%20y%3D%22199%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22411%22%20y%3D%22199%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22399%22%20y%3D%22269%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22411%22%20y%3D%22283%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22450%22%20y%3D%22232%22%20width%3D%2257%22%20height%3D%2268%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22456%22%20y%3D%22256%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22468%22%20y%3D%22284%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22480%22%20y%3D%22284%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22507%22%20y%3D%22248%22%20width%3D%2279%22%20height%3D%2252%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22561%22%20y%3D%22258%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22513%22%20y%3D%22272%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22586%22%20y%3D%22161%22%20width%3D%2265%22%20height%3D%22139%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22604%22%20y%3D%22185%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22628%22%20y%3D%22185%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22640%22%20y%3D%22185%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22592%22%20y%3D%22213%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22592%22%20y%3D%22255%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22604%22%20y%3D%22269%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22651%22%20y%3D%22138%22%20width%3D%2287%22%20height%3D%22162%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22705%22%20y%3D%22148%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22717%22%20y%3D%22148%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22681%22%20y%3D%22162%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22717%22%20y%3D%22190%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22729%22%20y%3D%22190%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22693%22%20y%3D%22204%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22693%22%20y%3D%22218%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22705%22%20y%3D%22260%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22693%22%20y%3D%22274%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22669%22%20y%3D%22288%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22717%22%20y%3D%22288%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22738%22%20y%3D%22136%22%20width%3D%2266%22%20height%3D%22164%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22768%22%20y%3D%22146%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22768%22%20y%3D%22174%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22792%22%20y%3D%22174%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22756%22%20y%3D%22188%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22744%22%20y%3D%22216%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22756%22%20y%3D%22230%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22744%22%20y%3D%22244%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22756%22%20y%3D%22244%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22804%22%20y%3D%22230%22%20width%3D%2235%22%20height%3D%2270%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22810%22%20y%3D%22240%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22810%22%20y%3D%22282%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22822%22%20y%3D%22282%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22839%22%20y%3D%22200%22%20width%3D%2287%22%20height%3D%22100%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22845%22%20y%3D%22210%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22893%22%20y%3D%22224%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22905%22%20y%3D%22224%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22845%22%20y%3D%22266%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22926%22%20y%3D%22167%22%20width%3D%2259%22%20height%3D%22133%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%22968%22%20y%3D%22177%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22956%22%20y%3D%22219%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22932%22%20y%3D%22247%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%22944%22%20y%3D%22289%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22985%22%20y%3D%22211%22%20width%3D%2261%22%20height%3D%2289%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221015%22%20y%3D%22221%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22991%22%20y%3D%22249%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%22991%22%20y%3D%22263%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221027%22%20y%3D%22263%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221027%22%20y%3D%22277%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%22991%22%20y%3D%22291%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221046%22%20y%3D%22234%22%20width%3D%2253%22%20height%3D%2266%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221052%22%20y%3D%22258%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221076%22%20y%3D%22272%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221099%22%20y%3D%22220%22%20width%3D%2267%22%20height%3D%2280%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221117%22%20y%3D%22230%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221153%22%20y%3D%22230%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221129%22%20y%3D%22244%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221117%22%20y%3D%22258%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221105%22%20y%3D%22272%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221166%22%20y%3D%22237%22%20width%3D%2252%22%20height%3D%2263%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221172%22%20y%3D%22289%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221218%22%20y%3D%22157%22%20width%3D%2254%22%20height%3D%22143%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221224%22%20y%3D%22167%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221248%22%20y%3D%22181%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221260%22%20y%3D%22195%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221260%22%20y%3D%22209%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221224%22%20y%3D%22237%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221260%22%20y%3D%22251%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221248%22%20y%3D%22279%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221272%22%20y%3D%22245%22%20width%3D%2273%22%20height%3D%2255%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221326%22%20y%3D%22255%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221314%22%20y%3D%22269%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221326%22%20y%3D%22269%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221345%22%20y%3D%22234%22%20width%3D%2265%22%20height%3D%2266%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221363%22%20y%3D%22272%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221410%22%20y%3D%22241%22%20width%3D%2240%22%20height%3D%2259%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221428%22%20y%3D%22251%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221450%22%20y%3D%22235%22%20width%3D%2282%22%20height%3D%2265%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221456%22%20y%3D%22273%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221468%22%20y%3D%22287%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221532%22%20y%3D%22213%22%20width%3D%2268%22%20height%3D%2287%22%20fill%3D%22%23050813%22/%3E%3Crect%20x%3D%221550%22%20y%3D%22223%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221550%22%20y%3D%22251%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%221%22/%3E%3Crect%20x%3D%221586%22%20y%3D%22251%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221550%22%20y%3D%22279%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.8%22/%3E%3Crect%20x%3D%221538%22%20y%3D%22293%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3Crect%20x%3D%221574%22%20y%3D%22293%22%20width%3D%224%22%20height%3D%226%22%20fill%3D%22%23ffd27a%22%20opacity%3D%220.5%22/%3E%3C/svg%3E") repeat-x bottom/auto 100%}
+#bgfx::after{content:"";position:absolute;inset:0 0 40% 0;background-image:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 120px 80px,#cfe0ff,transparent),radial-gradient(1.5px 1.5px at 200px 150px,#fff,transparent),radial-gradient(1px 1px at 70px 170px,#dfe8ff,transparent);background-size:240px 200px;animation:tw 6s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.3}to{opacity:.9}}
+@media(prefers-reduced-motion:reduce){#bgfx i,#bgfx::after{animation:none}}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
@@ -44,7 +55,7 @@ main{display:flex;flex-direction:column;min-width:0;height:100vh}
 #rf{font-size:11px}
 .ub{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--mut);transition:.15s}
 .ub:focus-within{border-color:var(--acc)}
-#url{flex:1;min-width:0;border:0;outline:0;background:none;font-size:13px;font-weight:600;color:var(--txt)}
+#url{cursor:default;user-select:none;flex:1;min-width:0;border:0;outline:0;background:none;font-size:13px;font-weight:600;color:var(--txt)}
 #url::placeholder{font-weight:400;color:var(--mut)}
 /* Viewport (page transitions: fade + slide) */
 #view{position:relative;flex:1;min-height:0}
@@ -64,12 +75,23 @@ dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
 dialog label{display:block;margin-top:10px;font-size:12px;color:var(--mut)}
 dialog input{width:100%;height:32px;margin-top:4px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:rgba(0,0,0,.4)}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.row .ib{border:1px solid var(--line)}
+dialog .ib{border:1px solid var(--line)}
+.acts{display:grid;gap:8px;margin-top:14px}.acts .ib{height:34px;text-align:left}
+#adm-info div{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid var(--line)}#adm-info span{color:var(--mut);text-align:right;overflow-wrap:anywhere}
+#wp-msg,#pw-msg{min-height:18px;margin-top:8px;font-size:12px;color:#ffb4a8}
+#doc{width:min(92vw,560px)}
+#doc-b{max-height:55vh;margin-top:8px;padding-right:6px;overflow:auto}
+#doc-b h3{margin:14px 0 4px;font-size:13px}
+#doc-b p{color:#c3cbdb;font-size:13px;line-height:1.55}#doc-b small{color:var(--mut)}
+.gp{margin-top:10px;color:#c3cbdb;font-size:13px;line-height:1.55}
+.lk{padding:0;border:0;background:none;color:#8fb0ff;text-decoration:underline}
+#g-ok{height:34px;padding:0 20px;border:0;background:linear-gradient(135deg,#6a95ff,#a78bfa);color:#fff;font-weight:600}
 @media(max-width:640px){body{grid-template-columns:44px minmax(0,1fr)}.sb{width:34px}#rf,.hide-s{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<div id="bgfx" aria-hidden="true"><i></i><i></i><i></i></div>
 <nav id="side" class="glass" aria-label="Pages"></nav>
 <main>
   <div id="tabs" role="tablist" aria-label="Tabs"></div>
@@ -77,7 +99,7 @@ dialog input{width:100%;height:32px;margin-top:4px;padding:0 10px;border-radius:
     <button type="button" class="ib" id="back" aria-label="Back" data-ic="back"></button>
     <button type="button" class="ib" id="fwd" aria-label="Forward" data-ic="fwd"></button>
     <button type="button" class="ib" id="rl" aria-label="Reload" data-ic="reload"></button>
-    <label class="ub"><span data-ic="lock" aria-hidden="true"></span><input id="url" aria-label="Address bar and search" placeholder="Search or enter address (Ctrl+K)" spellcheck="false"></label>
+    <label class="ub"><span data-ic="lock" aria-hidden="true"></span><input id="url" aria-label="Current address" readonly tabindex="-1" spellcheck="false"></label>
     <button type="button" class="ib" id="rf" title="Re-download this page, bypassing the cache">Refresh page</button>
   </form>
   <div id="view">
@@ -87,7 +109,7 @@ dialog input{width:100%;height:32px;margin-top:4px;padding:0 10px;border-radius:
     <div id="warn" class="glass" hidden>Site not loading? <button type="button" class="ib" id="ext">Open in new window</button></div>
   </div>
   <footer id="status" class="glass">
-    <div><span id="count">1 tab</span><a data-l="discord"><span data-ic="discord"></span>Discord</a><a data-l="tos" class="hide-s">ToS</a><a data-l="privacy" class="hide-s">Privacy</a><a data-l="dmca" class="hide-s">DMCA</a></div>
+    <div><span id="count">1 tab</span><a data-l="discord"><span data-ic="discord"></span>Discord</a><a href="#" data-doc="tos" class="hide-s">ToS</a><a href="#" data-doc="privacy" class="hide-s">Privacy</a><a data-l="dmca" class="hide-s">DMCA</a></div>
     <div><span class="hide-s"><span data-ic="flame"></span>Trending</span><span id="sec"></span><span id="clock"></span></div>
   </footer>
 </main>
@@ -95,8 +117,7 @@ dialog input{width:100%;height:32px;margin-top:4px;padding:0 10px;border-radius:
 <dialog id="set">
   <form method="dialog" id="sf">
     <h2>Settings</h2>
-    <label>Background image URL<input id="s-bg" type="url" placeholder="https://example.com/city.jpg"></label>
-    <label>Tab title<input id="s-title" maxlength="40" placeholder="Sh0zy"></label>
+    <label>Tab title<input id="s-title" maxlength="40" placeholder="SIFT"></label>
     <label>Favicon (emoji or image URL)<input id="s-icon" maxlength="300" placeholder="Single emoji or https://…"></label>
     <div class="row">
       <button type="button" class="ib" id="s-reset">Reset</button>
@@ -106,16 +127,56 @@ dialog input{width:100%;height:32px;margin-top:4px;padding:0 10px;border-radius:
   </form>
 </dialog>
 
+<dialog id="wp">
+  <h2>Wallpaper</h2>
+  <label>Image link<input id="wp-url" type="url" placeholder="https://example.com/city.jpg"></label>
+  <div class="acts"><button type="button" class="ib" id="wp-apply">Use this link</button>
+    <button type="button" class="ib" id="wp-up"><span data-ic="upload"></span> Upload an image</button></div>
+  <input id="wp-file" type="file" accept="image/*" hidden>
+  <p id="wp-msg" role="status"></p>
+  <div class="row"><button type="button" class="ib" id="wp-reset">Reset</button><button type="button" class="ib" id="wp-x">Close</button></div>
+</dialog>
+
+<dialog id="pw">
+  <form id="pw-f" autocomplete="off">
+    <h2>Admin</h2>
+    <label>Password<input id="pw-in" type="password" autocomplete="off" required></label>
+    <p id="pw-msg" role="alert"></p>
+    <div class="row"><button type="button" class="ib" id="pw-x">Cancel</button><button class="ib">Unlock</button></div>
+  </form>
+</dialog>
+
+<dialog id="adm">
+  <h2>Admin panel</h2>
+  <div id="adm-info"></div>
+  <div class="acts">
+    <button type="button" class="ib" id="a-cache"><span data-ic="reload"></span> Clear page cache &amp; reload</button>
+    <button type="button" class="ib" id="a-site"><span data-ic="download"></span> Download site HTML</button>
+    <button type="button" class="ib" id="a-page"><span data-ic="download"></span> Download this page's HTML</button>
+    <button type="button" class="ib" id="a-wall"><span data-ic="image"></span> Change wallpaper</button>
+    <button type="button" class="ib" id="a-reset"><span data-ic="alert"></span> Reset all saved data</button>
+  </div>
+  <div class="row"><button type="button" class="ib" id="adm-x">Close</button></div>
+</dialog>
+
+<dialog id="doc"><h2 id="doc-t"></h2><div id="doc-b"></div><div class="row"><button type="button" class="ib" id="doc-x">Close</button></div></dialog>
+
+<dialog id="gate">
+  <h2>Before you continue</h2>
+  <p class="gp">SIFT is for personal time. It isn't affiliated with any school, and it may not be allowed on your school's devices or network. You are responsible for following your school's rules.</p>
+  <p class="gp">By continuing you agree to the <button type="button" class="lk" id="g-tos">Terms of Service</button> and <button type="button" class="lk" id="g-priv">Privacy Policy</button>.</p>
+  <div class="row"><button class="ib" id="g-ok">I agree</button></div>
+</dialog>
+
 <script>
 "use strict";
 /* ===== CONFIG ===== */
 const BASE = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/"; // tip: pin to @<commit-or-tag> for instant updates
 const DEFAULT_BG = BASE + "bg.jpg";       // upload your rain-city image to the repo as bg.jpg (or paste any URL here / in Settings)
-const SCHEME = "petezah://";              // internal address prefix
-const LINKS = { discord: "https://discord.gg/YOURINVITE", tos: "#", privacy: "#", dmca: "#" };
-const ENGINES = { default: "https://duckduckgo.com/?q=", google: "https://www.google.com/search?q=", bing: "https://www.bing.com/search?q=", brave: "https://search.brave.com/search?q=" };
-// Injected into every page so Ctrl+K/T/W work while focus is inside the iframe
-const FWD = '<script>addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&"ktw".indexOf(e.key.toLowerCase())>-1){e.preventDefault();parent.postMessage({sh:"key",key:e.key.toLowerCase()},"*")}})<\/script>';
+const SCHEME = "sift://";              // internal address prefix
+const LINKS = { discord: "https://discord.com/invite/2zZTRMZPa4", dmca: "#" };
+// Injected into every page so Ctrl+T/W work while focus is inside the iframe
+const FWD = '<script>addEventListener("keydown",function(e){var k=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&"tw".indexOf(k)>-1){e.preventDefault();parent.postMessage({sh:"key",key:k},"*")}else if(e.shiftKey&&e.altKey&&e.code==="KeyA"){e.preventDefault();parent.postMessage({sh:"key",key:"admin"},"*")}})<\/script>';
 
 /* ===== ICONS ===== */
 /* Font Awesome Free 6.5.2 icons (same set as the old site); loaded via the <link> in <head> */
@@ -126,7 +187,7 @@ const ICONS = {
   reload:'fa-solid fa-rotate-right', search:'fa-solid fa-magnifying-glass', robot:'fa-solid fa-robot', music:'fa-solid fa-music',
   film:'fa-solid fa-film', desktop:'fa-solid fa-desktop', window:'fa-regular fa-window-maximize', globe:'fa-solid fa-globe',
   wrench:'fa-solid fa-wrench', user:'fa-regular fa-user', link:'fa-solid fa-link', down:'fa-solid fa-chevron-down',
-  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok'
+  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok', upload:'fa-solid fa-upload', download:'fa-solid fa-download', image:'fa-regular fa-image'
 };
 const ico = n => '<i class="ic ' + (/^fa-/.test(n) ? n : ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
 const fillIcons = () => document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
@@ -134,7 +195,7 @@ const fillIcons = () => document.querySelectorAll("[data-ic]").forEach(e => { e.
 /* ===== HELPERS ===== */
 const $ = id => document.getElementById(id);
 const h = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
-const ls = { get(k, d = "") { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const ls = { get(k, d = "") { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} }, del(k) { try { localStorage.removeItem(k); } catch {} } };
 const frame = $("frame"), msg = $("msg"), warn = $("warn");
 let pages = [], tabs = [], active = 0, nextId = 1, seq = 0, timer;
 const cache = new Map();                  // in-memory page cache: file -> html text
@@ -176,7 +237,10 @@ async function render(fresh = false) {
     if (my === seq) showMsg("Couldn't load this page. Check your connection and the BASE path.", retryBtn(() => render(true)));
   }
 }
-frame.onload = () => { clearTimeout(timer); frame.classList.add("in"); };
+frame.onload = () => {
+  clearTimeout(timer); frame.classList.add("in");
+  if (tabs.length && !entry().u) frame.contentWindow.postMessage({ sh: "pages", pages: pages.map(p => ({ key: slugOf(p), name: p.name, icon: p.icon })) }, "*");   // lets a page build its menu from pages.json
+};
 
 /* ===== NAVIGATION ===== */
 function go(e, newTab) {
@@ -192,21 +256,11 @@ function closeTab(i) {
   if (!tabs.length) return go({ p: "home" }, true);
   if (i < active) active--; active = Math.min(active, tabs.length - 1); render();
 }
-function resolve(q) {                       // address-bar text -> navigation entry
-  q = String(q).trim().slice(0, 500);
-  const m = q.match(/^petezah:\/\/(\w+)/i), pg = m && pageBySlug(m[1].toLowerCase());
-  if (pg) return { p: slugOf(pg) };
-  if (/^https?:\/\/\S+$/i.test(q)) return { u: q };
-  if (/^[\w-]+(\.[\w-]+)+(:\d+)?(\/\S*)?$/.test(q)) return { u: "https://" + q };
-  return { u: (ENGINES[ls.get("sh0zy.engine", "default")] || ENGINES.default) + encodeURIComponent(q) };
-}
 function hotkey(k) {
-  if (k === "t") go({ p: "home" }, true);
+  if (k === "admin") askAdmin();
+  else if (k === "t") go({ p: "home" }, true);
   else if (k === "w" && tabs.length) closeTab(active);
-  else if (k === "k" && tabs.length) {
-    if (entry().p === "home") frame.contentWindow.postMessage({ sh: "focus" }, "*");
-    else { $("url").focus(); $("url").select(); }
-  }
+  else if (k === "k" && tabs.length && entry().p === "home") frame.contentWindow.postMessage({ sh: "focus" }, "*");   // home opens its page menu
 }
 
 /* ===== CHROME (tabs, URL bar, status) ===== */
@@ -236,22 +290,22 @@ function buildSidebar() {
 /* ===== SETTINGS ===== */
 function applySettings() {
   const bg = ls.get("sh0zy.bg", DEFAULT_BG).replace(/[()"'\\\s]/g, c => "%" + c.charCodeAt(0).toString(16));
-  document.documentElement.style.setProperty("--bg", /^https?:\/\//.test(bg) ? 'url("' + bg + '")' : "none");
-  document.title = ls.get("sh0zy.title") || "Sh0zy";
+  document.documentElement.style.setProperty("--bg", /^(https?:\/\/|data:image\/)/.test(bg) ? 'url("' + bg + '")' : "none");
+  document.title = ls.get("sh0zy.title") || "SIFT";
   const f = ls.get("sh0zy.icon");
   $("fav").href = !f ? "data:," : /^https?:\/\//.test(f) ? f
     : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
 }
 function openSettings() {
-  $("s-bg").value = ls.get("sh0zy.bg", DEFAULT_BG); $("s-title").value = ls.get("sh0zy.title"); $("s-icon").value = ls.get("sh0zy.icon");
+  $("s-title").value = ls.get("sh0zy.title"); $("s-icon").value = ls.get("sh0zy.icon");
   $("set").showModal();
 }
 $("sf").addEventListener("submit", () => {
-  ls.set("sh0zy.bg", $("s-bg").value.trim()); ls.set("sh0zy.title", $("s-title").value.trim()); ls.set("sh0zy.icon", $("s-icon").value.trim());
+  ls.set("sh0zy.title", $("s-title").value.trim()); ls.set("sh0zy.icon", $("s-icon").value.trim());
   applySettings();
 });
 $("s-cancel").onclick = () => $("set").close();
-$("s-reset").onclick = () => { ["bg", "title", "icon"].forEach(k => ls.set("sh0zy." + k, "")); applySettings(); $("set").close(); };
+$("s-reset").onclick = () => { ["title", "icon"].forEach(k => ls.del("sh0zy." + k)); applySettings(); $("set").close(); };
 
 /* ===== EVENTS ===== */
 $("back").onclick = () => { cur().i--; render(); };
@@ -259,11 +313,8 @@ $("fwd").onclick = () => { cur().i++; render(); };
 $("rl").onclick = () => render();
 $("rf").onclick = () => render(true);       // bypasses the in-memory + browser cache
 $("ext").onclick = openExt;
-$("bar").addEventListener("submit", ev => {
-  ev.preventDefault(); const v = $("url").value.trim(); if (!v) return;
-  const e = resolve(v); e.p ? openPage(e.p) : openUrl(e.u);
-});
-addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && "ktw".includes(e.key.toLowerCase())) { e.preventDefault(); hotkey(e.key.toLowerCase()); } });
+$("bar").addEventListener("submit", ev => ev.preventDefault());
+addEventListener("keydown", e => { if (e.shiftKey && e.altKey && e.code === "KeyA") { e.preventDefault(); hotkey("admin"); return; } if ((e.ctrlKey || e.metaKey) && "ktw".includes(e.key.toLowerCase())) { e.preventDefault(); hotkey(e.key.toLowerCase()); } });
 // Messages from pages (only trusted while an internal page is showing)
 addEventListener("message", e => {
   if (e.source !== frame.contentWindow || !tabs.length || entry().u) return;
@@ -271,9 +322,92 @@ addEventListener("message", e => {
   if (d.sh === "key") hotkey(d.key);
   else if (d.sh === "nav") openPage(String(d.to), false);
   else if (d.sh === "open") openUrl(String(d.url), !!d.newTab);
-  else if (d.sh === "search") { const r = resolve(d.q); if (r.u) openUrl(r.u, !!d.newTab); }
   else if (d.sh === "settings") openSettings();
+  else if (d.sh === "wallpaper") $("wp").showModal();
+  else if (d.sh === "download") download(d.what === "site" ? "site" : "page");
 });
+
+/* ===== DOWNLOADS ===== */
+function save(name, text) {
+  const a = h("a", { href: URL.createObjectURL(new Blob([text], { type: "text/html" })), download: name });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function download(what) {
+  if (what === "site") return save("sift.html", "<!DOCTYPE html>\n" + document.documentElement.outerHTML);
+  const e = tabs.length && entry(), p = e && e.p && pageBySlug(e.p);
+  if (p && cache.has(p.file)) save(p.file, cache.get(p.file));
+}
+
+/* ===== WALLPAPER (opened by right-clicking the home page) ===== */
+function setBg(v) {
+  v ? ls.set("sh0zy.bg", v) : ls.del("sh0zy.bg");
+  $("wp-msg").textContent = v && ls.get("sh0zy.bg") !== v ? "That image is too big to save. Try a smaller one." : "";
+  applySettings();
+}
+$("wp-file").onchange = e => {                 // uploads are shrunk to 1920px so they fit in browser storage
+  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => {
+    const s = Math.min(1, 1920 / im.width), c = h("canvas", { width: Math.round(im.width * s), height: Math.round(im.height * s) });
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); setBg(c.toDataURL("image/jpeg", 0.82)); }; im.src = r.result; };
+  r.readAsDataURL(f); e.target.value = "";
+};
+$("wp-up").onclick = () => $("wp-file").click();
+$("wp-apply").onclick = () => { const u = $("wp-url").value.trim(); /^https?:\/\//.test(u) ? setBg(u) : ($("wp-msg").textContent = "Enter a link that starts with https://"); };
+$("wp-reset").onclick = () => { setBg(""); $("wp-url").value = ""; };
+$("wp-x").onclick = () => $("wp").close();
+
+/* ===== ADMIN (Shift+Alt+A, then password). Client-side only: this hides the panel, it is not real security. ===== */
+const ADMIN_HASH = "f27eee50f9d3bc3a9ba83177abf2fb229a380c9b110de7df1e15814ee316bc57";
+let adminOK = false;
+const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
+function askAdmin() { if (adminOK) return openAdmin(); $("pw-in").value = ""; $("pw-msg").textContent = ""; $("pw").showModal(); }
+$("pw-f").addEventListener("submit", async e => {
+  e.preventDefault();
+  let ok = false; try { ok = await sha($("pw-in").value) === ADMIN_HASH; } catch {}
+  if (ok) { adminOK = true; $("pw").close(); openAdmin(); } else { $("pw-msg").textContent = "Wrong password."; $("pw-in").select(); }
+});
+$("pw-x").onclick = () => $("pw").close();
+function openAdmin() {
+  const rows = [["Site", "SIFT"], ["Source", BASE], ["Pages", pages.map(p => p.name).join(", ") || "none"], ["Cached", [...cache.keys()].join(", ") || "none"], ["Open tabs", tabs.length]];
+  $("adm-info").replaceChildren(...rows.map(([k, v]) => h("div", {}, h("b", { textContent: k }), h("span", { textContent: String(v) }))));
+  $("adm").showModal();
+}
+$("a-cache").onclick = () => { cache.clear(); $("adm").close(); if (tabs.length) render(true); };
+$("a-site").onclick = () => download("site");
+$("a-page").onclick = () => download("page");
+$("a-wall").onclick = () => { $("adm").close(); $("wp").showModal(); };
+$("a-reset").onclick = () => { if (!confirm("Clear every saved SIFT setting (wallpaper, title, icon, chat name, favorites)?")) return;
+  try { Object.keys(localStorage).filter(k => k.startsWith("sh0zy.")).forEach(k => localStorage.removeItem(k)); } catch {}
+  applySettings(); $("adm").close(); };
+$("adm-x").onclick = () => $("adm").close();
+
+/* ===== TERMS & PRIVACY (opened from the bottom bar; a one-time notice shows on first visit) ===== */
+const DOCS = {
+  tos: ["Terms of Service", `<p><small>Last updated: October 12, 2026</small></p>
+<h3>1. What SIFT is</h3><p>SIFT is a hobby website with games, links and a public chat. It is not affiliated with, endorsed by, or run by any school, school district or employer.</p>
+<h3>2. Use it responsibly, and not at school</h3><p>SIFT is meant for personal time. You are responsible for following the rules of your school, teachers, network and device. Do not use SIFT during class, on school devices or on school networks where that is not allowed. The owner does not encourage or authorize breaking any school rule and is not responsible for any consequences you face from using SIFT.</p>
+<h3>3. Your behavior</h3><p>Follow the law and be decent. No harassment, hate, threats, sexual content, spam, or sharing personal information (yours or anyone else's). Chat is public and may be moderated, and messages or access can be removed at any time.</p>
+<h3>4. Third-party content</h3><p>Games, links and files come from third parties and may change or disappear. SIFT does not own them and their own terms apply. Rights holders can ask for removal through the Discord link in the bottom bar.</p>
+<h3>5. Age</h3><p>SIFT is not directed to children under 13. If you are under the age of majority where you live, use it only with a parent or guardian's permission.</p>
+<h3>6. No warranty</h3><p>SIFT is provided "as is", with no promise that it will work, stay online or be safe. To the extent the law allows, the owner is not liable for any loss, damage or disciplinary action that comes from your use.</p>
+<h3>7. Changes</h3><p>These terms may change. Continuing to use SIFT means you accept the current version.</p>`],
+  privacy: ["Privacy Policy", `<p><small>Last updated: October 12, 2026</small></p>
+<h3>No accounts</h3><p>SIFT has no sign-up. Please do not share your real name, school, address, phone number or other personal details in chat.</p>
+<h3>Saved in your browser</h3><p>Your wallpaper, tab title, favorites, recently played games, chat username and a random anonymous ID are kept in your browser's local storage on your own device. Clear your browser data to remove them. SIFT does not set cookies.</p>
+<h3>Chat</h3><p>Your username, messages, timestamps, anonymous ID and current channel are sent to Google Firebase. Messages are visible to everyone in chat. Ask on Discord if you want one removed.</p>
+<h3>Third parties</h3><p>SIFT loads files and games from services such as jsDelivr, Font Awesome, Google Firebase and the game library provider. They can see your IP address and basic device details under their own privacy policies, and game providers may show their own ads. Links on the home page open other websites with their own policies.</p>
+<h3>What SIFT does not do</h3><p>SIFT does not run its own ads or analytics and does not sell data.</p>
+<h3>School and network monitoring</h3><p>Your school or network may log the sites you visit and the devices you use. SIFT cannot prevent that.</p>
+<h3>Children</h3><p>SIFT is not directed to children under 13 and does not knowingly collect their personal information.</p>
+<h3>Contact</h3><p>Questions or removal requests: use the Discord link in the bottom bar.</p>`]
+};
+function openDoc(k) { $("doc-t").textContent = DOCS[k][0]; $("doc-b").innerHTML = DOCS[k][1]; $("doc").showModal(); $("doc-b").scrollTop = 0; }
+document.querySelectorAll("[data-doc]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); openDoc(a.dataset.doc); }));
+$("doc-x").onclick = () => $("doc").close();
+$("g-tos").onclick = () => openDoc("tos"); $("g-priv").onclick = () => openDoc("privacy");
+$("gate").addEventListener("cancel", e => e.preventDefault());          // must click "I agree"
+$("g-ok").onclick = () => { ls.set("sh0zy.agreed", "1"); $("gate").close(); };
+if (!ls.get("sh0zy.agreed")) $("gate").showModal();
 
 /* ===== INIT ===== */
 async function init() {
