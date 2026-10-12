@@ -8,114 +8,174 @@
 <style>
 *{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-html,body{height:100%;background:transparent;color:#eef1f6;font:13px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--text:#eef1f6;--muted:#9aa3b5;--dim:#7f89a0;--accent:#8aa4ff;--line:rgba(255,255,255,.1);--ease:cubic-bezier(.2,.8,.2,1)}
+html,body{height:100%;background:transparent;color:var(--text);font:13px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
 body{overflow-y:auto}
-:focus-visible{outline:2px solid #8aa4ff;outline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 .ic{font-size:14px;line-height:1}
-.glass{background:rgba(7,10,20,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:70px 20px 40px;animation:in .6s cubic-bezier(.2,.8,.2,1)}
+.glass{background:rgba(7,10,20,.62);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+
+.stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:56px 20px 48px;animation:in .6s var(--ease)}
 @keyframes in{from{opacity:0;transform:translateY(14px)}}
 .mark{font-size:clamp(56px,10vw,104px);font-weight:800;letter-spacing:.14em;padding-left:.14em;line-height:1;background:linear-gradient(110deg,#fff 20%,#9db7ff 45%,#c9a9ff 60%,#fff 80%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(120,150,255,.5));animation:sheen 8s linear infinite}
 @keyframes sheen{to{background-position:-250% 0}}
-.tag{margin-top:-12px;color:#b4bdd0;font-size:15px;font-weight:500}
-.search{display:flex;align-items:center;gap:10px;width:min(600px,100%);height:56px;padding:0 10px 0 20px;border-radius:18px;color:#9aa3b5;transition:.25s}
-.search:focus-within{border-color:#8aa4ff;box-shadow:0 0 0 5px rgba(138,164,255,.15),0 10px 40px rgba(60,90,200,.25)}
-.search input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px}
-.search input::placeholder{color:#7f89a0}
-kbd{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.07);font:10px ui-monospace,Consolas,monospace;color:#9aa3b5}
-.eng{display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:12px;color:#c3cbdb}
-.eng select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:none;cursor:pointer}
-.eng option{color:#111}
-.apps{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 12px;max-width:760px}
-.app{display:grid;justify-items:center;gap:8px;width:78px;border:0;background:none}
-.app .box{width:58px;height:58px;border-radius:19px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--c) 70%,#000),color-mix(in srgb,var(--c) 30%,#000));border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.35);transition:.25s}
-.app .ic{font-size:21px}
-.app:hover .box,.app:focus-visible .box{transform:translateY(-5px) scale(1.06);box-shadow:0 14px 34px color-mix(in srgb,var(--c) 50%,transparent)}
-.app span{font-size:12px;font-weight:600;color:#c3cbdb}
+.tag{margin-top:-14px;color:#b4bdd0;font-size:15px;font-weight:500;text-align:center}
+
+/* Navigation selector */
+.nav{position:relative;width:min(360px,100%);z-index:5}
+.nav-btn{display:flex;align-items:center;gap:12px;width:100%;height:54px;padding:0 18px;border-radius:16px;text-align:left;font-size:15px;font-weight:600;transition:border-color .2s,box-shadow .25s,background .2s}
+.nav-btn:hover{background:rgba(14,18,34,.72);border-color:rgba(255,255,255,.18)}
+.nav-btn[aria-expanded=true],.nav-btn:focus-visible{border-color:var(--accent);box-shadow:0 0 0 4px rgba(138,164,255,.15),0 10px 36px rgba(60,90,200,.22);outline:0}
+.nav-btn .lead{color:var(--accent);width:18px;text-align:center}
+.nav-btn .lbl{flex:1}
+.nav-btn .chev{color:var(--muted);font-size:12px;transition:transform .25s var(--ease)}
+.nav-btn[aria-expanded=true] .chev{transform:rotate(180deg)}
+.nav-list{position:absolute;top:calc(100% + 8px);left:0;right:0;list-style:none;padding:6px;border-radius:16px;background:rgba(9,12,24,.9);box-shadow:0 18px 48px rgba(0,0,0,.55);opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top center;pointer-events:none;visibility:hidden;transition:opacity .18s,transform .22s var(--ease),visibility 0s .22s}
+.nav-list.open{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .18s,transform .22s var(--ease)}
+.nav-list li{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;font-size:14px;font-weight:500;color:#c3cbdb;cursor:pointer;transition:background .15s,color .15s}
+.nav-list li .ic{width:18px;text-align:center;color:var(--muted)}
+.nav-list li span{flex:1}
+.nav-list li .tick{opacity:0;color:var(--accent);font-size:12px}
+.nav-list li:hover,.nav-list li:focus-visible{background:rgba(138,164,255,.16);color:#fff;outline:0}
+.nav-list li[aria-selected=true]{color:#fff;background:rgba(255,255,255,.05)}
+.nav-list li[aria-selected=true] .ic{color:var(--accent)}
+.nav-list li[aria-selected=true] .tick{opacity:1}
+.kb{margin-left:auto;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.07);font:10px ui-monospace,Consolas,monospace;color:var(--muted)}
+
+/* Shortcuts */
+.apps{display:flex;justify-content:center;gap:18px 20px}
+.app{display:grid;justify-items:center;gap:8px;border:0;background:none;text-decoration:none;color:inherit;border-radius:14px;padding:2px 0}
+.app .box{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,rgba(10,14,28,.7));border:1px solid color-mix(in srgb,var(--c) 28%,rgba(255,255,255,.08));box-shadow:0 4px 14px rgba(0,0,0,.28);transition:transform .2s var(--ease),background .2s,border-color .2s,box-shadow .2s}
+.app .ic{font-size:19px}
+.app span{font-size:12px;font-weight:500;color:#aeb7ca;transition:color .2s;text-align:center}
+.app:hover .box,.app:focus-visible .box{transform:translateY(-3px);background:color-mix(in srgb,var(--c) 24%,rgba(10,14,28,.7));border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 10px 24px color-mix(in srgb,var(--c) 28%,transparent)}
+.app:hover span,.app:focus-visible span{color:#fff}
+.app:active .box{transform:translateY(0) scale(.95);transition-duration:.08s}
+.app.add{--c:#8a93a6}
+.app.add .box{background:none;border-style:dashed}
+
+/* Widgets */
 .wg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(760px,100%)}
 .card{padding:16px 18px;border-radius:18px;min-height:116px;display:flex;flex-direction:column;gap:6px}
-.card h3{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a93a6;font-weight:700}
-.time{font-size:34px;font-weight:700;letter-spacing:-.02em}.date{color:#9aa3b5}
+.card h3{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#8a93a6}
+.time{font-size:34px;font-weight:700;letter-spacing:-.02em}.date{color:var(--muted)}
 .rec{display:flex;flex-direction:column;gap:6px;color:#8a93a6}
-.rec button{display:flex;align-items:center;gap:8px;padding:5px 9px;border:0;border-radius:8px;background:rgba(255,255,255,.06);color:#eef1f6;text-align:left;white-space:nowrap;overflow:hidden;transition:.2s}
+.rec button{display:flex;align-items:center;gap:8px;padding:5px 9px;border:0;border-radius:8px;background:rgba(255,255,255,.06);color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;transition:.2s}
 .rec button:hover{background:rgba(138,164,255,.22)}
 #tip{color:#c3cbdb;transition:opacity .3s}
-.corner{position:absolute;top:14px;display:flex;flex-direction:column;gap:8px;z-index:2}
-.corner.l{left:14px;align-items:flex-start}.corner.r{right:14px;align-items:flex-end}
-.dock{display:flex;gap:2px;padding:4px 6px;border-radius:14px}
-.tile{width:30px;height:30px;border:0;border-radius:9px;background:none;color:#8a93a6;transition:.2s}
-.tile:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
-.tile .ic{font-size:16px}
-.tile .fa-instagram{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);-webkit-background-clip:text;background-clip:text;color:transparent}
-.tile .fa-spotify{color:#1ed760}.tile .fa-tiktok{color:#fff}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:13px;font-size:12px;font-weight:600;transition:.2s}
-.pill:hover{background:rgba(30,38,60,.85)}
+
 #ctx{position:fixed;z-index:9;min-width:220px;padding:6px;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.6)}
 #ctx button{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;border-radius:8px;background:none;text-align:left}
 #ctx button:hover,#ctx button:focus-visible{background:rgba(138,164,255,.22)}
-@media(max-width:700px){.wg{grid-template-columns:1fr}.stage{padding-top:120px}.search kbd{display:none}}
+
+@media(max-width:700px){.wg{grid-template-columns:1fr}.stage{padding-top:48px}.nav-btn .kb{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="corner l"><div class="glass dock" id="dock"></div><button class="glass pill" id="b-trend"><span data-ic="flame"></span>Trending</button></div>
-<div class="corner r"><button class="glass pill" id="b-discord"><span data-ic="discord"></span>Discord</button><button class="glass pill" id="b-links"><span data-ic="link"></span>Get Links</button></div>
 <main class="stage">
   <h1 class="mark">SIFT</h1>
   <p class="tag" id="greet"></p>
-  <form class="glass search" id="sf">
-    <span data-ic="search" aria-hidden="true"></span>
-    <input id="q" type="text" placeholder="Search the web or enter a URL…" aria-label="Search" autocomplete="off">
-    <kbd>Ctrl+K</kbd>
-    <label class="eng"><span data-ic="globe"></span><select id="eng" aria-label="Search engine"><option value="default">Default</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave</option></select></label>
-  </form>
+
+  <nav class="nav" id="nav" aria-label="Site navigation">
+    <button class="glass nav-btn" id="navBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="navList">
+      <span class="lead" id="navIc"></span><span class="lbl" id="navLbl">Home</span><kbd class="kb">Ctrl+K</kbd><span class="chev" data-ic="down"></span>
+    </button>
+    <ul class="nav-list glass" id="navList" role="listbox" aria-label="Pages" tabindex="-1"></ul>
+  </nav>
+
   <div class="apps" id="apps"></div>
+
   <div class="wg">
     <section class="glass card"><h3><span data-ic="fa-regular fa-clock"></span>Local time</h3><div class="time" id="time"></div><div class="date" id="date"></div></section>
     <section class="glass card"><h3><span data-ic="fa-solid fa-clock-rotate-left"></span>Jump back in</h3><div class="rec" id="rec"></div></section>
     <section class="glass card"><h3><span data-ic="fa-regular fa-lightbulb"></span>Tip</h3><p id="tip"></p></section>
   </div>
 </main>
+
 <div id="ctx" class="glass" role="menu" hidden>
   <button role="menuitem" data-a="wallpaper"><span data-ic="image"></span>Change wallpaper</button>
   <button role="menuitem" data-a="dl-page"><span data-ic="download"></span>Download this page's HTML</button>
   <button role="menuitem" data-a="dl-site"><span data-ic="download"></span>Download site HTML</button>
   <button role="menuitem" data-a="settings"><span data-ic="settings"></span>Settings</button>
 </div>
+
 <script>
 /* ===== CONFIG: edit links here ===== */
-const CFG = { discord: "https://discord.gg/YOURINVITE", getLinks: "https://discord.gg/YOURINVITE", trending: "https://trends.google.com/trending" };
-const DOCK = [["Instagram", "instagram", "https://www.instagram.com"], ["Spotify", "spotify", "https://open.spotify.com"], ["TikTok", "tiktok", "https://www.tiktok.com"]];
-const APPS = [["Games", "gamepad", { nav: "games" }, "#6a95ff"], ["Chat", "chat", { nav: "chat" }, "#a78bfa"], ["Music", "music", { url: "https://open.spotify.com" }, "#1ed760"],
-  ["Movies", "film", { url: "https://www.themoviedb.org" }, "#f59e0b"], ["TV", "desktop", { url: "https://www.justwatch.com" }, "#ec4899"], ["Apps", "robot", { url: "https://play.google.com" }, "#22d3ee"],
-  ["Browser", "window", { url: "https://duckduckgo.com" }, "#fb7185"], ["Add", "plus", {}, "#64748b"]];
-const TIPS = ["Press Ctrl+K to search from anywhere.", "Right-click this page to change your wallpaper.", "Tap the heart on a game to save it as a favorite.", "Open Chat to talk with everyone online.", "Press Ctrl+T to open a new tab."];
+const DISCORD = "https://discord.gg/2zZTRMZPa4";
+const TRENDING = "https://trends.google.com/trending";
+const NAV = [["home", "Home", "home"], ["games", "Games", "games"], ["chat", "Chat", "chat"]];
+const CURRENT = "home";
+const APPS = [["Games", "gamepad", { nav: "games" }, "#6a95ff"], ["Chat", "chat", { nav: "chat" }, "#a78bfa"]];
+const TIPS = ["Press Ctrl+K to open the page menu.", "Right-click this page to change your wallpaper.", "Tap the heart on a game to save it as a favorite.", "Open Chat to talk with everyone online.", "Press Ctrl+T to open a new tab."];
 
 const ICONS = {
   home:'fa-solid fa-house', games:'fa-solid fa-gamepad', gamepad:'fa-solid fa-gamepad', chat:'fa-regular fa-comment',
-  settings:'fa-solid fa-gear', lock:'fa-solid fa-lock', shield:'fa-solid fa-shield-halved', alert:'fa-solid fa-triangle-exclamation',
-  flame:'fa-solid fa-fire', plus:'fa-solid fa-plus', x:'fa-solid fa-xmark', back:'fa-solid fa-arrow-left', fwd:'fa-solid fa-arrow-right',
-  reload:'fa-solid fa-rotate-right', search:'fa-solid fa-magnifying-glass', robot:'fa-solid fa-robot', music:'fa-solid fa-music',
-  film:'fa-solid fa-film', desktop:'fa-solid fa-desktop', window:'fa-regular fa-window-maximize', globe:'fa-solid fa-globe',
-  wrench:'fa-solid fa-wrench', user:'fa-regular fa-user', link:'fa-solid fa-link', down:'fa-solid fa-chevron-down',
-  discord:'fa-brands fa-discord', instagram:'fa-brands fa-instagram', spotify:'fa-brands fa-spotify', tiktok:'fa-brands fa-tiktok', upload:'fa-solid fa-upload', download:'fa-solid fa-download', image:'fa-regular fa-image'
+  settings:'fa-solid fa-gear', flame:'fa-solid fa-fire', plus:'fa-solid fa-plus', robot:'fa-solid fa-robot', music:'fa-solid fa-music',
+  film:'fa-solid fa-film', desktop:'fa-solid fa-desktop', window:'fa-regular fa-window-maximize', down:'fa-solid fa-chevron-down',
+  check:'fa-solid fa-check', discord:'fa-brands fa-discord', download:'fa-solid fa-download', image:'fa-regular fa-image'
 };
 const ico = n => '<i class="ic ' + (/^fa-/.test(n) ? n : ICONS[n] || 'fa-solid fa-circle') + '" aria-hidden="true"></i>';
 const $ = id => document.getElementById(id);
 const send = (sh, rest) => parent.postMessage(Object.assign({ sh }, rest), "*");
 const act = a => a.nav ? send("nav", { to: a.nav }) : a.url ? send("open", { url: a.url, newTab: true }) : send("settings");
 const el = (t, c) => { const n = document.createElement(t); n.className = c || ""; return n; };
-const tile = ([n, i, u]) => { const b = el("button", "tile"); b.innerHTML = ico(i); b.title = n; b.setAttribute("aria-label", n); b.onclick = () => act({ url: u }); return b; };
 
-$("dock").append(...DOCK.map(tile));
+/* Shortcuts */
 $("apps").append(...APPS.map(([n, i, a, c]) => {
-  const b = el("button", "app"); b.style.setProperty("--c", c); b.innerHTML = '<div class="box">' + ico(i) + "</div><span></span>"; b.lastChild.textContent = n; b.onclick = () => act(a); return b;
+  const b = el("button", "app" + (n === "Add" ? " add" : "")); b.type = "button"; b.style.setProperty("--c", c);
+  b.innerHTML = '<div class="box">' + ico(i) + "</div><span></span>"; b.lastChild.textContent = n; b.onclick = () => act(a); return b;
 }));
-$("b-discord").onclick = () => act({ url: CFG.discord });
-$("b-links").onclick = () => act({ url: CFG.getLinks });
-$("b-trend").onclick = () => act({ url: CFG.trending });
 document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ico(e.dataset.ic); });
+
+/* Navigation dropdown: Home / Games / Chat only */
+const btn = $("navBtn"), list = $("navList");
+let sel = NAV.findIndex(n => n[0] === CURRENT), focusIdx = sel;
+const items = NAV.map(([key, label, icon], i) => {
+  const li = el("li"); li.id = "nav-" + key; li.setAttribute("role", "option"); li.tabIndex = -1;
+  li.innerHTML = ico(icon) + "<span></span>" + ico("check").replace('class="ic', 'class="ic tick');
+  li.children[1].textContent = label;
+  li.onclick = () => choose(i);
+  li.onmousemove = () => { if (document.activeElement !== li) li.focus(); };
+  list.append(li); return li;
+});
+function paint() {
+  items.forEach((li, i) => li.setAttribute("aria-selected", i === sel));
+  $("navIc").innerHTML = ico(NAV[sel][2]); $("navLbl").textContent = NAV[sel][1];
+}
+const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+function openNav(i) {
+  btn.setAttribute("aria-expanded", "true"); list.classList.add("open");
+  focusIdx = i == null ? sel : i; items[focusIdx].focus({ preventScroll: true });
+}
+function closeNav(refocus) {
+  btn.setAttribute("aria-expanded", "false"); list.classList.remove("open");
+  if (refocus) btn.focus();
+}
+function choose(i) {
+  sel = i; paint(); closeNav(true);
+  if (NAV[i][0] !== CURRENT) send("nav", { to: NAV[i][0] });
+}
+btn.onclick = () => isOpen() ? closeNav() : openNav();
+btn.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") { e.preventDefault(); openNav(sel); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); openNav(sel); }
+});
+list.addEventListener("keydown", e => {
+  const n = items.length, k = e.key;
+  if (k === "ArrowDown") { e.preventDefault(); focusIdx = (focusIdx + 1) % n; }
+  else if (k === "ArrowUp") { e.preventDefault(); focusIdx = (focusIdx - 1 + n) % n; }
+  else if (k === "Home") { e.preventDefault(); focusIdx = 0; }
+  else if (k === "End") { e.preventDefault(); focusIdx = n - 1; }
+  else if (k === "Enter" || k === " ") { e.preventDefault(); return choose(focusIdx); }
+  else if (k === "Escape") { e.preventDefault(); return closeNav(true); }
+  else if (k === "Tab") return closeNav();
+  else return;
+  items[focusIdx].focus({ preventScroll: true });
+});
+document.addEventListener("pointerdown", e => { if (isOpen() && !$("nav").contains(e.target)) closeNav(); });
+paint();
 
 /* Greeting + clock */
 function tick() {
@@ -129,7 +189,7 @@ tick(); setInterval(tick, 10000);
 /* "Jump back in": games saved by the Games page */
 let recent = []; try { recent = JSON.parse(localStorage.getItem("sh0zy.recent")) || []; } catch {}
 if (!recent.length) $("rec").textContent = "Games you play will show up here.";
-else recent.slice(0, 3).forEach(g => { const b = el("button"); b.innerHTML = ico("gamepad") + "<span></span>"; b.lastChild.textContent = g.name; b.onclick = () => act({ nav: "games" }); $("rec").append(b); });
+else recent.slice(0, 3).forEach(g => { const b = el("button"); b.type = "button"; b.innerHTML = ico("gamepad") + "<span></span>"; b.lastChild.textContent = g.name; b.onclick = () => act({ nav: "games" }); $("rec").append(b); });
 
 /* Rotating tips */
 let ti = 0; const showTip = () => { $("tip").style.opacity = 0; setTimeout(() => { $("tip").textContent = TIPS[ti++ % TIPS.length]; $("tip").style.opacity = 1; }, 300); };
@@ -143,15 +203,17 @@ addEventListener("contextmenu", e => {
   ctx.style.top = Math.max(4, Math.min(e.clientY, innerHeight - ctx.offsetHeight - 8)) + "px";
   ctx.querySelector("button").focus();
 });
-addEventListener("click", hideCtx); addEventListener("blur", hideCtx); addEventListener("keydown", e => { if (e.key === "Escape") hideCtx(); });
+addEventListener("click", hideCtx); addEventListener("blur", hideCtx);
+addEventListener("keydown", e => {
+  if (e.key === "Escape") hideCtx();
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); isOpen() ? closeNav(true) : openNav(); }
+});
 ctx.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
   if (a === "wallpaper") send("wallpaper"); else if (a === "settings") send("settings"); else send("download", { what: a === "dl-site" ? "site" : "page" });
 });
-$("sf").addEventListener("submit", e => { e.preventDefault(); const q = $("q").value.trim(); if (q) send("search", { q }); });
-try { $("eng").value = localStorage.getItem("sh0zy.engine") || "default"; } catch {}
-$("eng").onchange = () => { try { localStorage.setItem("sh0zy.engine", $("eng").value); } catch {} };
-addEventListener("message", e => { if (e.data && e.data.sh === "focus") { $("q").focus(); $("q").select(); } });
+/* Shell asks the page to focus its primary control: open the menu */
+addEventListener("message", e => { if (e.data && e.data.sh === "focus") openNav(); });
 </script>
 </body>
 </html>
