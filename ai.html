@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,11 +20,6 @@ body{display:grid;place-items:center;padding:18px;overflow:auto;animation:in .5s
 h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
 .head p{color:var(--mut);font-size:13px}
 .panel{position:relative;display:grid;margin:0 auto;max-width:100%;border-radius:20px;overflow:hidden;background:rgba(7,10,20,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.45)}
-#state{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:var(--mut);background:rgba(7,10,20,.85)}
-.spin{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--acc);animation:sp .8s linear infinite}
-@keyframes sp{to{rotate:360deg}}
-.btn{height:36px;padding:0 18px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.07);color:inherit;font:inherit;cursor:pointer;transition:.2s}
-.btn:hover{background:rgba(106,149,255,.25);border-color:var(--acc)}
 .note{text-align:center;color:var(--mut);font-size:12px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -32,35 +28,23 @@ h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
 <main class="wrap">
   <header class="head">
     <div class="badge"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
-    <div><h1>AI Assistant</h1><p>Ask anything. It's an AI, so double-check anything important.</p></div>
+    <div>
+      <h1>AI Assistant</h1>
+      <p>Ask anything. It's an AI, so double-check anything important.</p>
+    </div>
   </header>
+
   <section class="panel" id="panel" aria-label="AI chat">
-    <div id="state" role="status"><div class="spin"></div><span>Loading the assistant…</span></div>
-    <zapier-interfaces-chatbot-embed id="bot" is-popup="false" chatbot-id="cmw4gdpfz006910glbajelaw5" height="600px" width="400px"></zapier-interfaces-chatbot-embed>
+    <div id="botpress-container">
+      <!-- Botpress chatbot loads here -->
+    </div>
   </section>
-  <p class="note">Don't share personal details. Messages here are processed by Zapier.</p>
+
+  <p class="note">Don't share personal details. Messages here are processed by Botpress.</p>
 </main>
 
-<script async type="module" src="https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js"></script>
-<script>
-const bot = document.getElementById("bot"), state = document.getElementById("state");
-/* Size the chat to the window (the embed takes pixel sizes) */
-function fit() {
-  bot.setAttribute("width", Math.max(280, Math.min(560, innerWidth - 36)) + "px");
-  bot.setAttribute("height", Math.max(380, Math.min(720, innerHeight - 200)) + "px");
-}
-fit(); addEventListener("resize", fit);
+<script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/11/06/05/20261106051852-67VVQ873.js" defer></script>
 
-/* Friendly error if the Zapier script never loads (offline or blocked by a network) */
-const failTimer = setTimeout(() => {
-  const msg = document.createElement("span"), retry = document.createElement("button");
-  msg.textContent = "Couldn't load the assistant. Check your connection, or your network may be blocking interfaces.zapier.com.";
-  retry.className = "btn"; retry.textContent = "Try again"; retry.onclick = () => location.reload();
-  state.replaceChildren(msg, retry);
-}, 12000);
-customElements.whenDefined("zapier-interfaces-chatbot-embed").then(() => {
-  clearTimeout(failTimer); setTimeout(() => { state.hidden = true; }, 800);
-});
-</script>
 </body>
 </html>
