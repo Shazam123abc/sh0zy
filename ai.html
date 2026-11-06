@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+<style>
+:root{--mut:#8a93a6;--acc:#6a95ff}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html,body{height:100%;background:transparent;color:#eef1f6;font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{display:grid;place-items:center;padding:18px;overflow:auto;animation:in .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{display:grid;gap:14px;max-width:100%}
+.head{display:flex;align-items:center;gap:14px}
+.badge{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:20px;color:#fff;background:linear-gradient(135deg,#6a95ff,#a78bfa);box-shadow:0 8px 24px rgba(106,149,255,.35)}
+h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.head p{color:var(--mut);font-size:13px}
+.panel{position:relative;display:grid;margin:0 auto;max-width:100%;border-radius:20px;overflow:hidden;background:rgba(7,10,20,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+#state{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:var(--mut);background:rgba(7,10,20,.85)}
+.spin{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--acc);animation:sp .8s linear infinite}
+@keyframes sp{to{rotate:360deg}}
+.btn{height:36px;padding:0 18px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.07);color:inherit;font:inherit;cursor:pointer;transition:.2s}
+.btn:hover{background:rgba(106,149,255,.25);border-color:var(--acc)}
+.note{text-align:center;color:var(--mut);font-size:12px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <div class="badge"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+    <div><h1>AI Assistant</h1><p>Ask anything. It's an AI, so double-check anything important.</p></div>
+  </header>
+  <section class="panel" id="panel" aria-label="AI chat">
+    <div id="state" role="status"><div class="spin"></div><span>Loading the assistant…</span></div>
+    <zapier-interfaces-chatbot-embed id="bot" is-popup="false" chatbot-id="cmw4gdpfz006910glbajelaw5" height="600px" width="400px"></zapier-interfaces-chatbot-embed>
+  </section>
+  <p class="note">Don't share personal details. Messages here are processed by Zapier.</p>
+</main>
+
+<script async type="module" src="https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js"></script>
+<script>
+const bot = document.getElementById("bot"), state = document.getElementById("state");
+/* Size the chat to the window (the embed takes pixel sizes) */
+function fit() {
+  bot.setAttribute("width", Math.max(280, Math.min(560, innerWidth - 36)) + "px");
+  bot.setAttribute("height", Math.max(380, Math.min(720, innerHeight - 200)) + "px");
+}
+fit(); addEventListener("resize", fit);
+
+/* Friendly error if the Zapier script never loads (offline or blocked by a network) */
+const failTimer = setTimeout(() => {
+  const msg = document.createElement("span"), retry = document.createElement("button");
+  msg.textContent = "Couldn't load the assistant. Check your connection, or your network may be blocking interfaces.zapier.com.";
+  retry.className = "btn"; retry.textContent = "Try again"; retry.onclick = () => location.reload();
+  state.replaceChildren(msg, retry);
+}, 12000);
+customElements.whenDefined("zapier-interfaces-chatbot-embed").then(() => {
+  clearTimeout(failTimer); setTimeout(() => { state.hidden = true; }, 800);
+});
+</script>
+</body>
+</html>
