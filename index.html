@@ -1,6 +1,3 @@
-
-SIFT-with-Botpress-AI.html
-100%
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -231,16 +228,6 @@ async function render(fresh = false) {
     return;
   }
   const p = pageBySlug(e.p); if (!p) return;
-  // Replace the built-in AI page with the user's Botpress assistant.
-  const isAIPage = /(^|[-_\s])ai($|[-_\s])/i.test(slugOf(p))
-    || /(^|\s)ai($|\s)/i.test(p.name || "")
-    || /artificial intelligence/i.test((p.name || "") + " " + slugOf(p));
-  if (isAIPage) {
-    frame.removeAttribute("srcdoc");
-    frame.src = "https://cdn.botpress.cloud/webchat/v5.0/shareable.html?configUrl=https://files.bpcontent.cloud/2026/11/06/05/20261106051852-0WPRKPDQ.json";
-    timer = setTimeout(() => showMsg("The AI page is taking too long or refuses to load."), 15000);
-    return;
-  }
   showMsg("Loading…");
   try {
     const html = await getPage(p.file, fresh);
@@ -436,4 +423,3 @@ fillIcons(); applySettings(); init();
 </script>
 </body>
 </html>
-Displaying SIFT-with-Botpress-AI.html.
