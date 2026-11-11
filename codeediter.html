@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>monochrome playground · tabs</title>
+  <style>
+    /* --- GLOBAL RESET & B&W THEME --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      color: #e0e0e0;
+    }
+
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-panel: #121212;
+      --border-light: #2a2a2a;
+      --border-mid: #3f3f3f;
+      --text-primary: #f0f0f0;
+      --text-dim: #b0b0b0;
+      --accent: #ffffff;
+      --shadow: rgba(255, 255, 255, 0.05);
+    }
+
+    /* --- HEADER / TOOLBAR --- */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-mid);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand h1 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      word-spacing: 4px;
+    }
+
+    .brand span {
+      font-size: 0.75rem;
+      background: #1e1e1e;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      border: 1px solid var(--border-mid);
+      color: var(--text-dim);
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: 1px solid var(--border-mid);
+      color: var(--text-primary);
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 450;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .btn:hover {
+      background: #252525;
+      border-color: #6a6a6a;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(255,255,255,0.08);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+      background: #2e2e2e;
+    }
+
+    .btn--run {
+      background: #ffffff;
+      color: #0a0a0a;
+      border-color: #ffffff;
+      font-weight: 600;
+    }
+
+    .btn--run:hover {
+      background: #e5e5e5;
+      border-color: #e5e5e5;
+      color: #0a0a0a;
+    }
+
+    .btn--run i {
+      font-style: normal;
+      font-size: 1rem;
+    }
+
+    /* --- MAIN GRID --- */
+    .playground {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-mid);
+      flex: 1;
+      min-height: 0;
+      border-bottom: 1px solid var(--border-mid);
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-dark);
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 1rem;
+      background: #101010;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 500;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .panel-header .lang-tag {
+      background: #1e1e1e;
+      padding: 0.2rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      border: 1px solid #2e2e2e;
+      color: #cdcdcd;
+    }
+
+    /* --- TABS (editor panel) --- */
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: #0e0e0e;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: #0c0c0c;
+      border-bottom: 1px solid #1f1f1f;
+      padding: 0 0.25rem;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.7rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #8a8a8a;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      margin-bottom: -1px;
+    }
+
+    .tab:hover {
+      color: #d0d0d0;
+      background: #161616;
+    }
+
+    .tab.active {
+      color: #ffffff;
+      border-bottom-color: #ffffff;
+      background: #141414;
+    }
+
+    .tab .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4a4a4a;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .tab.active .dot {
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.5);
+    }
+
+    .tab .dot.html { background: #b0b0b0; }
+    .tab .dot.css  { background: #8a8a8a; }
+    .tab .dot.js   { background: #cfcfcf; }
+
+    .tab .dot.html.active-dot { background: #ffffff; }
+    .tab .dot.css.active-dot  { background: #ffffff; }
+    .tab .dot.js.active-dot   { background: #ffffff; }
+
+    /* --- EDITOR AREA (tab content) --- */
+    .editor-content {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+    }
+
+    .tab-pane {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .tab-pane.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    textarea.code-editor {
+      flex: 1;
+      background: #0e0e0e;
+      border: none;
+      color: #e8e8e8;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      padding: 0.8rem 1rem;
+      resize: none;
+      width: 100%;
+      outline: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    textarea.code-editor:focus {
+      background: #141414;
+    }
+
+    /* --- PREVIEW PANEL --- */
+    .preview-panel {
+      display: flex;
+      flex-direction: column;
+      background: #0e0e0e;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 1rem;
+      background: #101010;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .preview-header .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      background: #1a1a1a;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid #2e2e2e;
+      color: #b0b0b0;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255,255,255,0.6);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0.8; }
+    }
+
+    iframe#previewFrame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #ffffff;
+      margin: 0;
+      min-height: 0;
+    }
+
+    /* --- FOOTER --- */
+    .footer-note {
+      padding: 0.35rem 1.5rem;
+      background: #0c0c0c;
+      border-top: 1px solid #1f1f1f;
+      font-size: 0.7rem;
+      color: #7a7a7a;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+
+    .footer-note kbd {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: #cfcfcf;
+      font-size: 0.65rem;
+      font-family: monospace;
+    }
+
+    /* scrollbar monochrome */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2e2e2e;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4a4a4a;
+    }
+
+    /* responsive */
+    @media (max-width: 780px) {
+      .playground {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+      .toolbar {
+        padding: 0.6rem 1rem;
+      }
+      .brand h1 {
+        font-size: 1rem;
+      }
+      .tab {
+        padding: 0.6rem 1rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="brand">
+      <h1>◼ CODE / ◻ PLAY</h1>
+      <span>black & white</span>
+    </div>
+    <div class="actions">
+      <button class="btn" id="resetBtn" title="reset to default code">
+        <i>⟲</i> reset
+      </button>
+      <button class="btn btn--run" id="runBtn" title="run code (⌘/Ctrl + Enter)">
+        <i>▶</i> RUN
+      </button>
+    </div>
+  </div>
+
+  <div class="playground">
+    <!-- LEFT: TABS + EDITOR -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>CODE EDITOR</span>
+        <span class="lang-tag">HTML · CSS · JS</span>
+      </div>
+      <div class="editor-panel">
+        <!-- TAB BAR -->
+        <div class="tab-bar" role="tablist">
+          <button class="tab active" data-tab="html" role="tab" aria-selected="true">
+            <span class="dot html"></span> HTML
+          </button>
+          <button class="tab" data-tab="css" role="tab" aria-selected="false">
+            <span class="dot css"></span> CSS
+          </button>
+          <button class="tab" data-tab="js" role="tab" aria-selected="false">
+            <span class="dot js"></span> JS
+          </button>
+        </div>
+
+        <!-- EDITOR CONTENT (tab panes) -->
+        <div class="editor-content">
+          <div class="tab-pane active" data-pane="html">
+            <textarea id="htmlEditor" class="code-editor" spellcheck="false" placeholder="<!-- your HTML here -->"></textarea>
+          </div>
+          <div class="tab-pane" data-pane="css">
+            <textarea id="cssEditor" class="code-editor" spellcheck="false" placeholder="/* your CSS here */"></textarea>
+          </div>
+          <div class="tab-pane" data-pane="js">
+            <textarea id="jsEditor" class="code-editor" spellcheck="false" placeholder="// your JS here"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="panel preview-panel">
+      <div class="preview-header">
+        <span>PREVIEW</span>
+        <span class="status">
+          <span class="status-indicator"></span> live
+        </span>
+      </div>
+      <iframe id="previewFrame" title="live preview"></iframe>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>⚫ monochrome playground — everything greyscale</span>
+    <span><kbd>⌘/Ctrl</kbd> + <kbd>Enter</kbd> to run</span>
+  </div>
+
+  <script>
+    (function() {
+      // DOM elements
+      const htmlEditor = document.getElementById('htmlEditor');
+      const cssEditor = document.getElementById('cssEditor');
+      const jsEditor = document.getElementById('jsEditor');
+      const previewFrame = document.getElementById('previewFrame');
+      const runBtn = document.getElementById('runBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      const tabs = document.querySelectorAll('.tab');
+      const panes = document.querySelectorAll('.tab-pane');
+
+      // ----- DEFAULT SNIPPETS (black & white themed example) -----
+      const DEFAULT_HTML = `<!-- black & white playground -->
+<div class="card">
+  <h2>◼ monochrome</h2>
+  <p>pure black & white demo</p>
+  <button id="clickMe">click me</button>
+  <p id="message" class="msg">waiting...</p>
+</div>`;
+
+      const DEFAULT_CSS = `/* black & white only */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  padding: 1rem;
+}
+
+.card {
+  background: #121212;
+  border: 1px solid #2e2e2e;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: #6a6a6a;
+}
+
+h2 {
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 2px;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  color: #b0b0b0;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+button {
+  background: #ffffff;
+  color: #0a0a0a;
+  border: none;
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.8px;
+  border: 1px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+}
+
+button:hover {
+  background: #d0d0d0;
+  border-color: #d0d0d0;
+  transform: scale(1.02);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.msg {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #ffffff;
+  background: #1e1e1e;
+  padding: 0.6rem 1rem;
+  border-radius: 40px;
+  border: 1px solid #2e2e2e;
+  display: inline-block;
+  min-width: 120px;
+}`;
+
+      const DEFAULT_JS = `// black & white interaction
+const btn = document.getElementById('clickMe');
+const msg = document.getElementById('message');
+let count = 0;
+
+if (btn && msg) {
+  btn.addEventListener('click', () => {
+    count++;
+    msg.textContent = \`clicked \${count} time\${count > 1 ? 's' : ''} · ◼◻\`;
+    // subtle animation on message
+    msg.style.transition = 'none';
+    msg.style.backgroundColor = '#2a2a2a';
+    setTimeout(() => {
+      msg.style.transition = 'background 0.3s';
+      msg.style.backgroundColor = '#1e1e1e';
+    }, 10);
+  });
+}`;
+
+      // ----- TAB SWITCHING -----
+      function activateTab(tabName) {
+        // update tabs
+        tabs.forEach(t => {
+          const isActive = t.dataset.tab === tabName;
+          t.classList.toggle('active', isActive);
+          t.setAttribute('aria-selected', isActive);
+        });
+        // update panes
+        panes.forEach(p => {
+          const isActive = p.dataset.pane === tabName;
+          p.classList.toggle('active', isActive);
+        });
+      }
+
+      // tab click listeners
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          activateTab(tab.dataset.tab);
+        });
+      });
+
+      // ----- UTILS -----
+      function getFullPreviewHTML() {
+        const html = htmlEditor.value.trim() || '<!-- empty -->';
+        const css = cssEditor.value.trim();
+        const js = jsEditor.value.trim();
+
+        return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  /* injected playground styles */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background: #0a0a0a; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    font-family: 'Inter', system-ui, sans-serif; 
+    padding: 1rem;
+  }
+  ${css}
+</style>
+</head>
+<body>
+  ${html}
+  <script>
+    (function() {
+      try {
+        ${js}
+      } catch (e) {
+        console.error('JS error in playground:', e);
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'color: #ffffff; background: #1a1a1a; border: 1px solid #5a5a5a; padding: 8px 16px; border-radius: 8px; margin-top: 16px; font-family: monospace; font-size: 13px;';
+        errDiv.textContent = '⚠ JS error: ' + e.message;
+        document.body.appendChild(errDiv);
+      }
+    })();
+  <\/script>
+</body>
+</html>`;
+      }
+
+      function runCode() {
+        previewFrame.srcdoc = getFullPreviewHTML();
+      }
+
+      function resetToDefault() {
+        htmlEditor.value = DEFAULT_HTML;
+        cssEditor.value = DEFAULT_CSS;
+        jsEditor.value = DEFAULT_JS;
+        // keep current tab active
+        runCode();
+      }
+
+      function loadDefaults() {
+        htmlEditor.value = DEFAULT_HTML;
+        cssEditor.value = DEFAULT_CSS;
+        jsEditor.value = DEFAULT_JS;
+      }
+
+      // keyboard shortcut (⌘/Ctrl + Enter)
+      function handleGlobalKeydown(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          e.preventDefault();
+          runCode();
+          runBtn.style.transform = 'scale(0.96)';
+          setTimeout(() => { runBtn.style.transform = ''; }, 100);
+        }
+      }
+
+      // ----- EVENT LISTENERS -----
+      runBtn.addEventListener('click', runCode);
+      resetBtn.addEventListener('click', resetToDefault);
+      window.addEventListener('keydown', handleGlobalKeydown);
+
+      window.addEventListener('load', () => {
+        loadDefaults();
+        setTimeout(runCode, 30);
+      });
+    })();
+  </script>
+</body>
+</html>
