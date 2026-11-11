@@ -198,11 +198,9 @@ function applySettings() {
   const f = ls.get("sh0zy.icon");
   $("fav").href = !f ? "data:," : /^https?:\/\//.test(f) ? f : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
   
-  // Custom Accent Color
   const acc = ls.get("sh0zy.acc") || "#6a95ff";
   document.documentElement.style.setProperty("--acc", acc);
 
-  // Show/Hide Date Widget
   const hideDate = ls.get("sh0zy.hidedate") === "1";
   $("day").style.display = hideDate ? "none" : "block";
 
