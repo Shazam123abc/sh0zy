@@ -2,5 +2,6 @@
   { "name": "Home", "icon": "home", "file": "home.html" },
   { "name": "Games", "icon": "gamepad", "file": "games.html" },
   { "name": "Chat", "icon": "chat", "file": "chat.html" },
-  { "name": "AI", "icon": "fa-solid fa-robot", "file": "ai.html" }
+  { "name": "AI", "icon": "fa-solid fa-robot", "file": "ai.html" },
+    { "name": "Launcher", "icon": "launcher", "file": "launcher.html" }
 ]
