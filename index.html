@@ -165,7 +165,7 @@ dialog .ib{border:1px solid var(--line)}
 /* ===== CONFIG ===== */
 const BASE = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
 const LINKS = { discord: "https://discord.com/invite/2zZTRMZPa4" };
-const FORCED_WALLPAPER = "https://images.unsplash.com/photo-1459278558918-f94278c0f022?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const FORCED_WALLPAPER = "https://wallpaperaccess.com/full/26292853.jpg";
 const FWD = '<script>addEventListener("keydown",function(e){if(e.shiftKey&&e.altKey&&e.code==="KeyA"){e.preventDefault();parent.postMessage({sh:"key",key:"admin"},"*")}})<\/script>';
 const ICONS = { gamepad:'fa-solid fa-gamepad', games:'fa-solid fa-gamepad', chat:'fa-regular fa-comment', robot:'fa-solid fa-robot', discord:'fa-brands fa-discord', settings:'fa-solid fa-gear',
   reload:'fa-solid fa-rotate-right', download:'fa-solid fa-download', upload:'fa-solid fa-upload', image:'fa-regular fa-image', alert:'fa-solid fa-triangle-exclamation' };
@@ -198,9 +198,11 @@ function applySettings() {
   const f = ls.get("sh0zy.icon");
   $("fav").href = !f ? "data:," : /^https?:\/\//.test(f) ? f : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
   
+  // Custom Accent Color
   const acc = ls.get("sh0zy.acc") || "#6a95ff";
   document.documentElement.style.setProperty("--acc", acc);
 
+  // Show/Hide Date Widget
   const hideDate = ls.get("sh0zy.hidedate") === "1";
   $("day").style.display = hideDate ? "none" : "block";
 
@@ -523,4 +525,3 @@ window.addEventListener("message", e => {
 init();
 </script>
 </body>
-</html>
