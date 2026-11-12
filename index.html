@@ -32,6 +32,14 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 #day b{display:block;padding-left:.42em;font-size:clamp(26px,4.4vw,54px);font-weight:300;letter-spacing:.42em;color:rgba(255,255,255,.9)}
 #day span{display:block;margin-top:4px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
+/* WIDGETS */
+#widgets{position:fixed;top:56px;right:16px;z-index:3;width:300px;display:grid;gap:12px;max-height:calc(100% - 170px);overflow:auto;scrollbar-width:none}
+.wg{padding:6px;border-radius:20px;background:rgba(20,21,26,.92);border:1px solid var(--line);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.wg>header{display:flex;align-items:center;gap:10px;padding:10px 12px;font-weight:700}
+.wg>header button{margin-left:auto;width:26px;height:26px;border:0;border-radius:8px;background:none;color:var(--mut);transition:transform .25s}.wg>header button:hover{background:rgba(255,255,255,.1)}
+.wg.shut>header button{transform:rotate(180deg)}.wg.shut .ul{display:none}
+.u{margin:6px;padding:12px;border-radius:14px;background:#26272d}.u small{color:#9aa0ad;font-size:11px}.u b{display:block;margin-top:4px;font-size:15px}.u p{margin-top:4px;color:#b6bbc7}.u ul{margin:6px 0 0 18px;color:#b6bbc7}
+
 /* TRANSPARENT BLACK DOCK WITH WHITE OUTLINE & NO ICON BACKGROUNDS */
 #dock{position:fixed;left:50%;bottom:14px;translate:-50% 0;z-index:6;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:24px;background:rgba(0, 0, 0, 0.65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255, 255, 255, 0.3);box-shadow:0 20px 50px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.25)}
 .dk{position:relative;width:46px;height:46px;padding:0;border:0;background:none;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
@@ -51,7 +59,7 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 @keyframes pop{from{opacity:0;transform:scale(.96) translateY(8px)}}
 .win.focus{box-shadow:0 30px 90px rgba(0,0,0,.85),0 0 0 1px rgba(138,164,255,.35)}
 .win.min{opacity:0;transform:scale(.85) translateY(40px);pointer-events:none;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s}
-.win.max{left:0!important;top:0!important;width:100%!important;height:100%!important;border-radius:0;border:0}
+.win.max{left:0!important;top:36px!important;width:100%!important;height:calc(100% - 36px - 84px)!important;border-radius:0}
 .tb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:40px;padding:0 14px;background:var(--bar);border-bottom:1px solid var(--line);cursor:grab;touch-action:none;user-select:none}
 .tt{display:flex;align-items:center;gap:8px;font-weight:600;color:#dfe3ec}.tt .ic{font-size:12px;color:var(--mut)}
 .wb{display:flex;justify-content:flex-end;gap:8px}
@@ -97,6 +105,8 @@ dialog .ib{border:1px solid var(--line)}
 .lk{padding:0;border:0;background:none;color:#8fb0ff;text-decoration:underline}
 #g-ok{height:34px;padding:0 20px;border:0;background:linear-gradient(135deg,#6a95ff,#a78bfa);color:#fff;font-weight:600}
 
+@media(max-width:900px){#widgets{display:none}}
+@media(max-width:700px){#day b{letter-spacing:.2em;padding-left:.2em}.dk{width:40px;height:40px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -104,6 +114,9 @@ dialog .ib{border:1px solid var(--line)}
 <div id="wall" aria-hidden="true"></div>
 <header id="top"><button type="button" id="menuBtn" aria-label="Menu" aria-haspopup="menu"><i class="ic fa-solid fa-bars"></i></button><span id="clock"></span></header>
 <div id="day" aria-hidden="true"><b id="dayName"></b><span id="dateTxt"></span></div>
+<aside id="widgets" aria-label="Widgets">
+  <section class="wg" id="upd"><header><i class="ic fa-regular fa-file-lines"></i>Updates<button type="button" id="updBtn" aria-label="Collapse updates"><i class="ic fa-solid fa-chevron-up"></i></button></header><div class="ul" id="updList"></div></section>
+</aside>
 <main id="desk"></main>
 <nav id="dock" aria-label="Apps"></nav>
 <div id="menu" role="menu" hidden>
@@ -166,6 +179,10 @@ dialog .ib{border:1px solid var(--line)}
 const BASE = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
 const LINKS = { discord: "https://discord.com/invite/2zZTRMZPa4" };
 const FORCED_WALLPAPER = "https://wallpaperaccess.com/full/26292853.jpg";
+const UPDATES = [
+  { date: "2026-11-10", tag: "New", title: "SIFT is now an OS", text: "Apps open in their own windows.", bullets: ["Dock launcher", "Drag, resize and minimize", "New wallpapers"] },
+  { date: "2026-11-06", tag: "", title: "AI assistant", text: "Ask the AI app anything." }
+];
 const FWD = '<script>addEventListener("keydown",function(e){if(e.shiftKey&&e.altKey&&e.code==="KeyA"){e.preventDefault();parent.postMessage({sh:"key",key:"admin"},"*")}})<\/script>';
 const ICONS = { gamepad:'fa-solid fa-gamepad', games:'fa-solid fa-gamepad', chat:'fa-regular fa-comment', robot:'fa-solid fa-robot', discord:'fa-brands fa-discord', settings:'fa-solid fa-gear',
   reload:'fa-solid fa-rotate-right', download:'fa-solid fa-download', upload:'fa-solid fa-upload', image:'fa-regular fa-image', alert:'fa-solid fa-triangle-exclamation' };
@@ -255,7 +272,7 @@ function openSettings() {
           <button type="button" class="wp-thumb-btn" data-url="https://images.unsplash.com/photo-1459278558918-f94278c0f022?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" style="height:70px;border-radius:8px;border:1px solid var(--line);background:url('https://images.unsplash.com/photo-1459278558918-f94278c0f022?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D') center/cover;cursor:pointer;" title="Wallpaper 1"></button>
           <button type="button" class="wp-thumb-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTEFTn8rD0IZ3MzcN8wbIvMZ2h8ZMh8WIAk7MPo1NGGcNmLNpNHfKmjhXv:https://www.pictorem.com/uploads/collection/R/RB8PBQ2RHF/900_Adriart_japan_uji_maountain_nature.jpg&s=10" style="height:70px;border-radius:8px;border:1px solid var(--line);background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTEFTn8rD0IZ3MzcN8wbIvMZ2h8ZMh8WIAk7MPo1NGGcNmLNpNHfKmjhXv:https://www.pictorem.com/uploads/collection/R/RB8PBQ2RHF/900_Adriart_japan_uji_maountain_nature.jpg&s=10') center/cover;cursor:pointer;" title="Wallpaper 2"></button>
           <button type="button" class="wp-thumb-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYF7HmWLiONoCVHKcDOJIxn9Ce6iBz5RltyD1ZWOShpOIitFAgLXtg2NCQ:https://img.magnific.com/premium-photo/mountain-range-with-foggy-valley-pine-forest_78871-4352.jpg%3Fw%3D360&s=10" style="height:70px;border-radius:8px;border:1px solid var(--line);background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYF7HmWLiONoCVHKcDOJIxn9Ce6iBz5RltyD1ZWOShpOIitFAgLXtg2NCQ:https://img.magnific.com/premium-photo/mountain-range-with-foggy-valley-pine-forest_78871-4352.jpg%3Fw%3D360&s=10') center/cover;cursor:pointer;" title="Wallpaper 3"></button>
-          <button type="button" class="wp-thumb-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QDoHMIDLfMrGU1vV6vFWjsxSa5Ys9SvErpOJlgucKFCszF0N2DMNs9oT:https://images.unsplash.com/photo-1761232007540-27ce50cb29f1%3Ffm%3Djpg%26q%3D60%26w%3D3000%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.1.0%26ixid%3DNHwxMjA3fDA%253D&s=10" style="height:70px;border-radius:8px;border:1px solid var(--line);background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QDoHMIDLfMrGU1vV6vFWjsxSa5Ys9SvErpOJlgucKFCszF0N2DMNs9oT:https://images.unsplash.com/photo-1761232007540-27ce50cb29f1%3Ffm%3Djpg%26q%3D60%26w%3D3000%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.1.0&ixid%3DNHwxMjA3fDA%253D&s=10') center/cover;cursor:pointer;" title="Wallpaper 4"></button>
+          <button type="button" class="wp-thumb-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QDoHMIDLfMrGU1vV6vFWjsxSa5Ys9SvErpOJlgucKFCszF0N2DMNs9oT:https://images.unsplash.com/photo-1761232007540-27ce50cb29f1%3Ffm%3Djpg%26q%3D60%26w%3D3000%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.1.0%26ixid%3DNHwxMjA3fDA%253D&s=10" style="height:70px;border-radius:8px;border:1px solid var(--line);background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QDoHMIDLfMrGU1vV6vFWjsxSa5Ys9SvErpOJlgucKFCszF0N2DMNs9oT:https://images.unsplash.com/photo-1761232007540-27ce50cb29f1%3Ffm%3Djpg%26q%3D60%26w%3D3000%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.1.0%26ixid%3DNHwxMjA3fDA%253D&s=10') center/cover;cursor:pointer;" title="Wallpaper 4"></button>
         </div>
       </div>
       <div class="settings-row">
@@ -469,6 +486,11 @@ function buildDock() {
   );
 }
 
+$("updList").replaceChildren(...UPDATES.map(u => {
+  const a = h("article", { className: "u" }); a.append(h("small", { textContent: u.date + (u.tag ? " · " + u.tag : "") }), h("b", { textContent: u.title }), h("p", { textContent: u.text }));
+  if (u.bullets) a.append(h("ul", {}, ...u.bullets.map(t => h("li", { textContent: t })))); return a;
+}));
+$("updBtn").onclick = () => $("upd").classList.toggle("shut");
 function tick() {
   const d = new Date();
   $("clock").textContent = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -525,3 +547,4 @@ window.addEventListener("message", e => {
 init();
 </script>
 </body>
+</html>
