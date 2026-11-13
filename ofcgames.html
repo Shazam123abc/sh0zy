@@ -396,6 +396,8 @@
     .player-overlay{background:rgba(0,0,0,.88)!important}
     .player-shell{background:#000!important}
     .player-loading{pointer-events:none}
+    .player-source{flex:none;max-width:210px;overflow:hidden;padding:5px 9px;border:1px solid rgba(255,255,255,.22);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:10px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}
+    .player-source.fail{border-color:rgba(255,143,143,.5);color:#ffb4b4}
 
   </style>
 </head>
@@ -480,6 +482,7 @@
       <div class="player-head">
         <button class="player-close" id="closePlayer" aria-label="Close player">×</button>
         <div class="player-title" id="playerTitle">Loading game…</div>
+        <span class="player-source" id="playerSource" hidden></span>
         <button class="player-btn" id="openTabBtn" disabled>Open tab ↗</button>
         <button class="player-btn" id="reloadGameBtn">Reload ↻</button>
         <button class="player-btn" id="fullscreenBtn">Fullscreen ⛶</button>
@@ -609,21 +612,28 @@
         added: records.length
       };
     }
-    // Preferred duplicate winner order: Night, then Chicken King's Vault, then Seraph.
-    // If none of those sources contains a title, GN Math and UGS are equal-priority fallbacks.
-    const SOURCE_PRIORITY = { night: 5, ckv: 4, seraph: 3, gn: 2, ugs: 2 };
+    // Preferred duplicate winner order: GN Math, then Night, then Chicken King's Vault, then Seraph, then UGS.
+    const SOURCE_PRIORITY = { gn: 5, night: 4, ckv: 3, seraph: 2, ugs: 1 };
+    // Per-game launcher overrides: title key (lowercase, letters/digits only) -> preferred source.
+    // The preferred source wins duplicate merges and is tried first when the game launches.
+    const GAME_LAUNCHER_OVERRIDES = { retrobowl: 'seraph' };
+    function sourcePriority(sourceId, dedupeKey = '') {
+      const titleOnly = String(dedupeKey).replace(/^[a-z]+:/, '');
+      if (GAME_LAUNCHER_OVERRIDES[titleOnly] === sourceId) return 100;
+      return SOURCE_PRIORITY[sourceId] || 0;
+    }
     function recordQuality(item) {
-      return (SOURCE_PRIORITY[item.source] || 0) * 10 +
+      return sourcePriority(item.source, item.dedupeKey) * 10 +
         (item.imageCandidates?.length ? 3 : 0) +
         (item.category ? 1 : 0) +
         (item.author ? 1 : 0);
     }
     function mergeDuplicate(existing, incoming) {
       const sources = [...new Set([...(existing.sources || [existing.source]), ...(incoming.sources || [incoming.source])])]
-        .sort((a, b) => (SOURCE_PRIORITY[b] || 0) - (SOURCE_PRIORITY[a] || 0));
+        .sort((a, b) => sourcePriority(b, existing.dedupeKey) - sourcePriority(a, existing.dedupeKey));
       const launches = [...(existing.launchCandidates || []), ...(incoming.launchCandidates || [])];
       const uniqueLaunches = [...new Map(launches.map(candidate => [`${candidate.url}|${candidate.root}`, candidate])).values()]
-        .sort((a, b) => (SOURCE_PRIORITY[sourceFromUrl(b.url)] || 0) - (SOURCE_PRIORITY[sourceFromUrl(a.url)] || 0));
+        .sort((a, b) => sourcePriority(sourceFromUrl(b.url), existing.dedupeKey) - sourcePriority(sourceFromUrl(a.url), existing.dedupeKey));
       const winner = recordQuality(incoming) > recordQuality(existing) ? incoming : existing;
       const other = winner === incoming ? existing : incoming;
       const images = [...new Set([...(winner.imageCandidates || []), ...(other.imageCandidates || [])].filter(Boolean))];
@@ -637,6 +647,11 @@
       existing.image = images[0] || '';
       existing.sourceLabel = sources.map(id => CATALOGS[id]?.label || id).join(' · ');
       existing.added = Math.min(existing.added ?? 0, incoming.added ?? 0);
+    }
+    function sourceName(id) { return ({ gn: 'GN-Math', ckv: 'CKV' }[id] || CATALOGS[id]?.label || id || 'Unknown'); }
+    function setPlayerSource(text, title = '', failed = false) {
+      const badge = $('#playerSource');
+      badge.hidden = !text; badge.textContent = text; badge.title = title; badge.classList.toggle('fail', failed);
     }
     function sourceFromUrl(url) {
       if (url.includes('yellowdevelopment/night')) return 'night';
@@ -668,7 +683,7 @@
     function renderSourceStatus() {
       const container = $('#statusList');
       container.replaceChildren();
-      const order = ['night', 'ckv', 'seraph', 'gn', 'ugs'];
+      const order = ['gn', 'night', 'ckv', 'seraph', 'ugs'];
       let ready = 0, failed = 0;
       for (const id of order) {
         const status = sourceStatus.get(id) || { state: 'loading', count: 0 };
@@ -694,7 +709,7 @@
       renderSourceButtons();
     }
     function renderSourceButtons() {
-      const sourceRank = ['night', 'ckv', 'seraph', 'gn', 'ugs'];
+      const sourceRank = ['gn', 'night', 'ckv', 'seraph', 'ugs'];
       const used = [...new Set(records.flatMap(item => item.sources || [item.source]))].sort((a, b) => sourceRank.indexOf(a) - sourceRank.indexOf(b));
       const sidebar = $('#sourceList');
       const chipbar = $('#sourceChips');
@@ -1099,6 +1114,33 @@
       if (/<html\b[^>]*>/i.test(content)) return content.replace(/<html\b[^>]*>/i, match => `${match}<head>${baseTag}</head>`);
       return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${baseTag}</head><body>${content}</body></html>`;
     }
+    // Some sources (CKV especially) serve a thin wrapper page whose only content is
+    // <iframe src="Game Name.html">. jsDelivr/raw GitHub serve .html as text/plain, so that
+    // nested iframe would show raw source code. Fetch the inner page ourselves instead.
+    function findWrapperTarget(rawHtml, baseUrl) {
+      const html = normalizeGameHtml(rawHtml);
+      if (!html || html.length > 20000 || !/<iframe\b/i.test(html)) return '';
+      let doc;
+      try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch { return ''; }
+      const frames = doc.querySelectorAll('iframe[src]');
+      if (frames.length !== 1) return '';
+      const raw = (frames[0].getAttribute('src') || '').trim();
+      if (!raw || /^(?:about:|javascript:|data:|blob:)/i.test(raw)) return '';
+      let target;
+      try { target = new URL(raw, baseUrl); } catch { return ''; }
+      if (!/^https?:$/.test(target.protocol) || !/\.html?$/i.test(target.pathname)) return '';
+      if (!/(?:^|\.)(?:jsdelivr\.net|githubusercontent\.com|githack\.com)$/i.test(target.hostname)) return '';
+      return target.href;
+    }
+    async function unwrapWrapperPage(page, url) {
+      for (let depth = 0; depth < 3; depth++) {
+        const innerUrl = findWrapperTarget(page.html, page.finalUrl || url);
+        if (!innerUrl) break;
+        page = await fetchHtmlPage(innerUrl);
+        url = page.finalUrl || innerUrl;
+      }
+      return page;
+    }
     function loadingText(message) { $('#playerLoading').hidden = false; $('#playerLoading').innerHTML = `<div style="display:grid;justify-items:center;gap:12px"><div class="spinner"></div><span>${message}</span></div>`; }
     function playerError(message) {
       $('#playerLoading').hidden = false;
@@ -1152,13 +1194,17 @@
       const token = ++playToken;
       $('#playerOverlay').hidden = false; $('#playerTitle').textContent = item.name; $('#openTabBtn').disabled = true;
       const frame = $('#playerFrame'); frame.removeAttribute('src'); frame.srcdoc = '<!doctype html><html><body style="background:#000"></body></html>';
-      loadingText('Loading game…'); addRecent(item);
+      loadingText('Loading game…'); addRecent(item); setPlayerSource('');
       try {
         let lastError = null;
         for (const candidate of (item.launchCandidates || (item.urlCandidates || [item.url]).map(url => ({ url, root: item.root })))) {
           try {
             const url = candidate.url;
-            const page = await fetchHtmlPage(url);
+            const sourceId = sourceFromUrl(url);
+            setPlayerSource(`Trying ${sourceName(sourceId)}…`);
+            let page = await fetchHtmlPage(url);
+            if (token !== playToken) return;
+            page = await unwrapWrapperPage(page, url);
             if (token !== playToken) return;
             const html = normalizeGameHtml(page.html);
             if (!html || (!/<html|<!doctype|<body|<head/i.test(html))) throw new Error('The source did not return a playable HTML page.');
@@ -1166,6 +1212,7 @@
             frame.srcdoc = currentHtml;
             currentDirectUrl = page.finalUrl || url;
             $('#openTabBtn').disabled = false;
+            setPlayerSource(`Launcher: ${sourceName(sourceId)}`, `Loaded from ${sourceName(sourceId)}\n${page.finalUrl || url}`);
             setTimeout(() => { if (token === playToken) $('#playerLoading').hidden = true; }, 1500);
             return;
           } catch (error) { lastError = error; }
@@ -1173,11 +1220,12 @@
         throw lastError || new Error('No playable page was returned.');
       } catch (error) {
         if (token !== playToken) return;
+        setPlayerSource('Launcher: none loaded', '', true);
         playerError(cleanText(error?.message || 'The source may be offline or may block embedding.'));
       }
     }
     function closePlayer() {
-      playToken++; currentRecord = null; currentHtml = ''; currentDirectUrl = '';
+      playToken++; currentRecord = null; currentHtml = ''; currentDirectUrl = ''; setPlayerSource('');
       const frame = $('#playerFrame'); frame.removeAttribute('src'); frame.srcdoc = '';
       $('#playerOverlay').hidden = true;
     }
