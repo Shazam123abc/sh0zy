@@ -391,6 +391,1223 @@
     .player-btn:hover,.player-close:hover{color:#000!important;background:rgba(255,255,255,.9)!important}
     .player-loading{color:#fff!important;background:rgba(0,0,0,.76)!important}
     .spinner{border-top-color:#fff!important}
+    /* Player fix: backdrop-filter on iframe ancestors can render the game blank; keep shell opaque */
+    .player-overlay,.player-shell{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    .player-overlay{background:rgba(0,0,0,.88)!important}
+    .player-shell{background:#000!important}
+    .player-loading{pointer-events:none}
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#top" aria-label="Sift Arcade home">
+        <span class="brand-mark">S</span>
+        <span><span class="brand-name">Sift Arcade</span><span class="brand-sub">All your games, one place</span></span>
+      </a>
+      <div class="side-label">Library</div>
+      <nav class="nav-list" aria-label="Library views">
+        <button class="nav-btn active" data-view="all"><span class="nav-icon">▦</span>All games <span class="nav-count" id="navAllCount">—</span></button>
+        <button class="nav-btn" data-view="apps"><span class="nav-icon">◫</span>Apps <span class="nav-count" id="navAppsCount">—</span></button>
+        <button class="nav-btn" data-view="favorites"><span class="nav-icon">♡</span>Favorites <span class="nav-count" id="navFavCount">0</span></button>
+        <button class="nav-btn" data-view="recent"><span class="nav-icon">◷</span>Recently played</button>
+      </nav>
+      <div class="side-label">Sources</div>
+      <div class="source-list" id="sourceList">
+        <button class="source-btn active" data-source="all"><i class="source-dot"></i>All sources</button>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="side-note"><b>One clean library</b>Search every connected collection, save favorites, and launch games in the same player.</div>
+    </aside>
+
+    <main class="main" id="top">
+      <header class="topbar">
+        <label class="searchbox"><span class="search-symbol">⌕</span><input id="searchInput" type="search" placeholder="Search games…" autocomplete="off" aria-label="Search games and apps"><kbd class="shortcut">/</kbd></label>
+        <div class="top-actions">
+          <button class="icon-button" id="randomBtn" title="Surprise me" aria-label="Surprise me">⤨</button>
+          <button class="small-button" id="refreshBtn">↻ <span>Sync</span></button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><i></i> Your all-in-one arcade</div>
+          <h1>Find your next<br>favorite game.</h1>
+          <p>One searchable library for your connected collections and apps. Duplicate titles prefer Seraph, then Night, then Chicken King's Vault, with the other libraries as fallbacks.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong id="gameStat">—</strong><span>Games</span></div>
+          <div class="stat"><strong id="appStat">—</strong><span>Apps</span></div>
+          <div class="stat"><strong id="sourceStat">5</strong><span>Sources</span></div>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <div class="view-tabs" role="group" aria-label="Show library">
+          <button class="view-tab active" data-view="all">Everything</button>
+          <button class="view-tab" data-view="games">Games</button>
+          <button class="view-tab" data-view="apps">Apps</button>
+          <button class="view-tab" data-view="favorites">♡ Saved</button>
+          <button class="view-tab" data-view="recent">Recent</button>
+        </div>
+        <div class="tool-right">
+          <select class="select" id="sortSelect" aria-label="Sort games"><option value="popular">Recommended order</option><option value="az">Name A–Z</option><option value="za">Name Z–A</option></select>
+          <button class="small-button" id="clearSearchBtn">Clear search</button>
+        </div>
+      </section>
+
+      <div class="section-head">
+        <div><h2 id="sectionTitle">All games</h2><p id="sectionSubtitle">Your connected libraries in one place</p></div>
+        <span class="results" id="resultCount">Loading…</span>
+      </div>
+      <div class="source-chips" id="sourceChips" aria-label="Filter by source"></div>
+      <section class="grid" id="gameGrid" aria-live="polite">
+        <div class="empty"><div class="spinner"></div><b>Connecting your libraries</b><span>Loading game catalogs and covers…</span></div>
+      </section>
+      <div class="load-more" id="loadMoreWrap" hidden><button id="loadMoreBtn">Load more</button></div>
+
+      <section class="source-status">
+        <div class="status-top"><b>Library sync status</b><span id="syncSummary">Connecting…</span></div>
+        <div class="status-list" id="statusList"></div>
+      </section>
+      <footer>Downloads save the game entry HTML. Games that rely on external assets still need an internet connection; files and catalogs remain hosted by their original providers.</footer>
+    </main>
+  </div>
+
+  <div class="player-overlay" id="playerOverlay" hidden>
+    <div class="player-shell" role="dialog" aria-modal="true" aria-label="Game player">
+      <div class="player-head">
+        <button class="player-close" id="closePlayer" aria-label="Close player">×</button>
+        <div class="player-title" id="playerTitle">Loading game…</div>
+        <button class="player-btn" id="openTabBtn" disabled>Open tab ↗</button>
+        <button class="player-btn" id="reloadGameBtn">Reload ↻</button>
+        <button class="player-btn" id="fullscreenBtn">Fullscreen ⛶</button>
+      </div>
+      <div class="frame-wrap">
+        <iframe class="player-frame" id="playerFrame" title="Game player" allow="autoplay; fullscreen; pointer-lock; gamepad; clipboard-read; clipboard-write" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals"></iframe>
+        <div class="player-loading" id="playerLoading"><div style="display:grid;justify-items:center;gap:12px"><div class="spinner"></div><span>Loading game…</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const CATALOGS = {
+      night: {
+        label: 'Night',
+        root: 'https://cdn.jsdelivr.net/gh/yellowdevelopment/night@main/',
+        gamesCatalog: 'https://cdn.jsdelivr.net/gh/yellowdevelopment/night@main/mages.json',
+        appsCatalog: 'https://cdn.jsdelivr.net/gh/yellowdevelopment/night@main/apps.json',
+        gamesBase: 'https://cdn.jsdelivr.net/gh/yellowdevelopment/night@main/mages/',
+        appsBase: 'https://cdn.jsdelivr.net/gh/yellowdevelopment/night@main/apps/'
+      },
+      seraph: {
+        label: 'Seraph',
+        root: 'https://cdn.jsdelivr.net/gh/skibbsz/seraph@main/',
+        gamesCatalog: 'https://cdn.jsdelivr.net/gh/skibbsz/seraph@main/games.json',
+        appsCatalog: 'https://cdn.jsdelivr.net/gh/skibbsz/seraph@main/apps.json'
+      },
+      ckv: {
+        label: "Chicken King's Vault",
+        root: 'https://cdn.jsdelivr.net/gh/skibbsz/ChickenKingsVault@main/',
+        catalog: 'https://cdn.jsdelivr.net/gh/skibbsz/ChickenKingsVault@main/games.js'
+      },
+      ugs: {
+        label: 'UGS',
+        root: 'https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/',
+        catalog: 'https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/games.js'
+      },
+      gn: {
+        label: 'GN Math',
+        catalog: 'https://cdn.jsdelivr.net/gh/freebuisness/assets@main/zones.json',
+        htmlBase: 'https://cdn.jsdelivr.net/gh/freebuisness/html@main/',
+        coverBase: 'https://cdn.jsdelivr.net/gh/freebuisness/covers@main/'
+      }
+    };
+
+    const STORAGE = {
+      favorites: 'sift-arcade-favorites-v1',
+      recent: 'sift-arcade-recent-v1'
+    };
+
+    // Broad title-based exclusions keep the combined display focused on casual titles.
+    const EXCLUDED_TITLE = /(gun|shoot|sniper|rifle|pistol|weapon|combat|war|army|soldier|battle|deathmatch|bomb|grenade|sword|knife|casino|poker|blackjack|roulette|slot|gambl|betting|call\s*of\s*duty|counter\s*strike|grand\s*theft|doom)/i;
+    const EXCLUDED_APP = /emulator|rom\s*loader|bios\s*tool/i;
+
+    const $ = (selector) => document.querySelector(selector);
+    const grid = $('#gameGrid');
+    const sourceStatus = new Map();
+    let records = [];
+    let visibleCount = 72;
+    let activeView = 'all';
+    let activeSource = 'all';
+    let searchText = '';
+    let sortMode = 'popular';
+    let favorites = readList(STORAGE.favorites);
+    let recent = readList(STORAGE.recent);
+    let currentRecord = null;
+    let currentHtml = '';
+    let currentDirectUrl = '';
+    let playToken = 0;
+
+    function readList(key) {
+      try { const value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value : []; }
+      catch { return []; }
+    }
+    function saveList(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage may be disabled */ }
+    }
+    function cleanText(value) { return String(value ?? '').replace(/\s+/g, ' ').trim(); }
+    function titleKey(value) { return cleanText(value).toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+    function canonicalTitleKey(value) {
+      let normalizedName = cleanText(value).toLowerCase();
+      // A trailing parenthesized version is catalog metadata, not a different title.
+      normalizedName = normalizedName.replace(/\s*\(\s*v(?:ersion)?\s*\d+(?:\.\d+)*\s*\)\s*$/i, '');
+      let key = titleKey(normalizedName);
+      // Normalize common catalog spelling and formatting differences.
+      key = key.replace(/capatalist/g, 'capitalist').replace(/achievment/g, 'achievement');
+      key = key.replace(/tildawn/g, 'tilldawn');
+      return key;
+    }
+    function safeName(value, type = 'game') {
+      const name = cleanText(value);
+      if (!name || name.length > 100 || EXCLUDED_TITLE.test(name)) return false;
+      if (type === 'app' && EXCLUDED_APP.test(name)) return false;
+      return true;
+    }
+    function absolutePath(path, base) {
+      if (!path) return '';
+      const value = String(path).trim();
+      if (/^(https?:|blob:|data:)/i.test(value)) return value;
+      return new URL(value.replace(/^\/+/, '').replace(/^\.\//, ''), base).href;
+    }
+    function sourceRecord({ name, url, image = '', source, type = 'game', root = '', category = '', author = '', urlCandidates = [], imageCandidates = [] }) {
+      if (!safeName(name, type) || (!url && !urlCandidates.length)) return null;
+      const firstUrl = url || urlCandidates[0] || '';
+      const normalized = canonicalTitleKey(name);
+      const id = `${type}:${normalized}`;
+      const candidateUrls = urlCandidates.length ? urlCandidates : (url ? [url] : []);
+      return {
+        id,
+        dedupeKey: `${type}:${normalized}`,
+        name: cleanText(name),
+        url: firstUrl,
+        urlCandidates: candidateUrls,
+        launchCandidates: candidateUrls.map(candidate => ({ url: candidate, root })),
+        image,
+        imageCandidates: imageCandidates.length ? imageCandidates : (image ? [image] : []),
+        source,
+        sources: [source],
+        sourceLabel: CATALOGS[source]?.label || source,
+        type,
+        root,
+        category: cleanText(category),
+        author: cleanText(author),
+        added: records.length
+      };
+    }
+    // Preferred duplicate winner order: Night, then Seraph, then Chicken King's Vault.
+    // If none of those sources contains a title, GN Math and UGS are equal-priority fallbacks.
+    const SOURCE_PRIORITY = { night: 5, seraph: 4, ckv: 3, gn: 2, ugs: 2 };
+    function recordQuality(item) {
+      return (SOURCE_PRIORITY[item.source] || 0) * 10 +
+        (item.imageCandidates?.length ? 3 : 0) +
+        (item.category ? 1 : 0) +
+        (item.author ? 1 : 0);
+    }
+    function mergeDuplicate(existing, incoming) {
+      const sources = [...new Set([...(existing.sources || [existing.source]), ...(incoming.sources || [incoming.source])])]
+        .sort((a, b) => (SOURCE_PRIORITY[b] || 0) - (SOURCE_PRIORITY[a] || 0));
+      const launches = [...(existing.launchCandidates || []), ...(incoming.launchCandidates || [])];
+      const uniqueLaunches = [...new Map(launches.map(candidate => [`${candidate.url}|${candidate.root}`, candidate])).values()]
+        .sort((a, b) => (SOURCE_PRIORITY[sourceFromUrl(b.url)] || 0) - (SOURCE_PRIORITY[sourceFromUrl(a.url)] || 0));
+      const winner = recordQuality(incoming) > recordQuality(existing) ? incoming : existing;
+      const other = winner === incoming ? existing : incoming;
+      const images = [...new Set([...(winner.imageCandidates || []), ...(other.imageCandidates || [])].filter(Boolean))];
+      Object.assign(existing, winner);
+      existing.id = existing.dedupeKey;
+      existing.sources = sources;
+      existing.launchCandidates = uniqueLaunches;
+      existing.urlCandidates = uniqueLaunches.map(candidate => candidate.url);
+      existing.url = uniqueLaunches[0]?.url || winner.url;
+      existing.imageCandidates = images;
+      existing.image = images[0] || '';
+      existing.sourceLabel = sources.map(id => CATALOGS[id]?.label || id).join(' · ');
+      existing.added = Math.min(existing.added ?? 0, incoming.added ?? 0);
+    }
+    function sourceFromUrl(url) {
+      if (url.includes('yellowdevelopment/night')) return 'night';
+      if (url.includes('skibbsz/seraph')) return 'seraph';
+      if (url.includes('ChickenKingsVault')) return 'ckv';
+      if (url.includes('freebuisness')) return 'gn';
+      if (url.includes('bubbls/ugs-singlefile')) return 'ugs';
+      return '';
+    }
+    function addRecords(items) {
+      const known = new Map(records.map(item => [item.dedupeKey || item.id, item]));
+      for (const item of items) {
+        if (!item) continue;
+        const key = item.dedupeKey || item.id;
+        const previous = known.get(key);
+        if (previous) mergeDuplicate(previous, item);
+        else { known.set(key, item); records.push(item); }
+      }
+      updateStats();
+      render();
+    }
+    function countForSource(source) {
+      return records.filter(item => (item.sources || [item.source]).includes(source)).length;
+    }
+    function setSourceStatus(id, state, count = 0, detail = '') {
+      sourceStatus.set(id, { state, count, detail });
+      renderSourceStatus();
+    }
+    function renderSourceStatus() {
+      const container = $('#statusList');
+      container.replaceChildren();
+      const order = ['night', 'seraph', 'ckv', 'gn', 'ugs'];
+      let ready = 0, failed = 0;
+      for (const id of order) {
+        const status = sourceStatus.get(id) || { state: 'loading', count: 0 };
+        if (status.state === 'ok') ready++;
+        if (status.state === 'error') failed++;
+        const pill = document.createElement('span');
+        pill.className = `status-pill ${status.state === 'ok' ? 'ok' : status.state === 'error' ? 'bad' : ''}`;
+        pill.textContent = `${CATALOGS[id]?.label || id}: ${status.state === 'ok' ? status.count.toLocaleString() : status.state === 'error' ? 'unavailable' : 'loading'}`;
+        container.append(pill);
+      }
+      const pending = order.length - ready - failed;
+      $('#syncSummary').textContent = pending ? `${ready} of ${order.length} connected` : `${ready} connected${failed ? ` · ${failed} unavailable` : ''}`;
+    }
+    function updateStats() {
+      const games = records.filter(item => item.type === 'game').length;
+      const apps = records.filter(item => item.type === 'app').length;
+      $('#gameStat').textContent = games.toLocaleString();
+      $('#appStat').textContent = apps.toLocaleString();
+      $('#navAllCount').textContent = games.toLocaleString();
+      $('#navAppsCount').textContent = apps.toLocaleString();
+      $('#navFavCount').textContent = favorites.length.toLocaleString();
+      $('#sourceStat').textContent = '5';
+      renderSourceButtons();
+    }
+    function renderSourceButtons() {
+      const sourceRank = ['night', 'seraph', 'ckv', 'gn', 'ugs'];
+      const used = [...new Set(records.flatMap(item => item.sources || [item.source]))].sort((a, b) => sourceRank.indexOf(a) - sourceRank.indexOf(b));
+      const sidebar = $('#sourceList');
+      const chipbar = $('#sourceChips');
+      const names = [{ id: 'all', label: 'All' }, ...used.map(id => ({ id, label: ({ gn: 'GN-Math', ckv: 'CKV' }[id] || CATALOGS[id]?.label || id) }))];
+      sidebar.replaceChildren();
+      chipbar.replaceChildren();
+      for (const entry of names) {
+        const side = document.createElement('button');
+        side.className = `source-btn ${activeSource === entry.id ? 'active' : ''}`;
+        side.dataset.source = entry.id;
+        const dot = document.createElement('i'); dot.className = 'source-dot';
+        const text = document.createElement('span'); text.textContent = entry.label;
+        side.append(dot, text);
+        const count = document.createElement('span'); count.className = 'nav-count';
+        count.textContent = entry.id === 'all' ? records.length.toLocaleString() : countForSource(entry.id).toLocaleString();
+        side.append(count);
+        side.addEventListener('click', () => setSource(entry.id));
+        sidebar.append(side);
+
+        const chip = document.createElement('button');
+        chip.className = `chip ${activeSource === entry.id ? 'active' : ''}`;
+        const chipCount = entry.id === 'all' ? records.length : countForSource(entry.id);
+        chip.textContent = `${entry.label} ${chipCount.toLocaleString()}`;
+        chip.setAttribute('aria-label', `${entry.label}, ${chipCount.toLocaleString()} games`);
+        chip.addEventListener('click', () => setSource(entry.id));
+        chipbar.append(chip);
+      }
+    }
+    function setSource(source) {
+      activeSource = source;
+      visibleCount = 72;
+      renderSourceButtons();
+      render();
+    }
+    function getFiltered() {
+      let list = records;
+      if (activeView === 'games') list = list.filter(item => item.type === 'game');
+      else if (activeView === 'apps') list = list.filter(item => item.type === 'app');
+      else if (activeView === 'favorites') list = list.filter(item => favorites.includes(item.id));
+      else if (activeView === 'recent') list = recent.map(id => records.find(item => item.id === id)).filter(Boolean);
+      if (activeSource !== 'all') list = list.filter(item => (item.sources || [item.source]).includes(activeSource));
+      if (searchText) {
+        const q = searchText.toLowerCase();
+        list = list.filter(item => `${item.name} ${item.sourceLabel} ${item.category} ${item.author}`.toLowerCase().includes(q));
+      }
+      // Keep the very large UGS-only section after every other library.
+      // Records whose winning launch source is Seraph/Night/CKV/GN stay in
+      // their preferred group even when UGS is also listed as a duplicate source.
+      const ugsLast = (a, b) => Number(a.source === 'ugs') - Number(b.source === 'ugs');
+      if (sortMode === 'az') {
+        list = [...list].sort((a, b) => ugsLast(a, b) || a.name.localeCompare(b.name));
+      } else if (sortMode === 'za') {
+        list = [...list].sort((a, b) => ugsLast(a, b) || b.name.localeCompare(a.name));
+      } else {
+        // Stable sorting preserves the existing order within each source group.
+        list = [...list].sort(ugsLast);
+      }
+      return list;
+    }
+    function render() {
+      const filtered = getFiltered();
+      const showing = filtered.slice(0, visibleCount);
+      const title = activeView === 'apps' ? 'Apps' : activeView === 'favorites' ? 'Saved favorites' : activeView === 'recent' ? 'Recently played' : activeView === 'games' ? 'Games' : 'All games';
+      $('#sectionTitle').textContent = activeSource === 'all' ? title : `${CATALOGS[activeSource]?.label || activeSource} · ${title}`;
+      $('#sectionSubtitle').textContent = searchText ? `Search results for “${searchText}”` : 'Browse, save, and launch from one library';
+      $('#resultCount').textContent = `${filtered.length.toLocaleString()} ${filtered.length === 1 ? 'result' : 'results'}`;
+      grid.replaceChildren();
+      if (!showing.length) {
+        const empty = document.createElement('div'); empty.className = 'empty';
+        const icon = document.createElement('div'); icon.className = 'empty-icon'; icon.textContent = activeView === 'favorites' ? '♡' : '⌕';
+        const titleEl = document.createElement('b'); titleEl.textContent = activeView === 'favorites' ? 'Nothing saved yet' : activeView === 'recent' ? 'No recent games' : 'No matches found';
+        const detail = document.createElement('span'); detail.textContent = activeView === 'favorites' ? 'Tap the heart on a card to add it here.' : 'Try a different search or source filter.';
+        empty.append(icon, titleEl, detail); grid.append(empty);
+      } else {
+        const fragment = document.createDocumentFragment();
+        showing.forEach((item, index) => fragment.append(createCard(item, index)));
+        grid.append(fragment);
+      }
+      $('#loadMoreWrap').hidden = showing.length >= filtered.length;
+      updateStatsOnly();
+    }
+    function updateStatsOnly() {
+      $('#navFavCount').textContent = favorites.length.toLocaleString();
+    }
+    function createCard(item, index) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.style.setProperty('--i', Math.min(index, 16));
+
+      const open = document.createElement('button');
+      open.className = 'card-open';
+      open.type = 'button';
+      open.setAttribute('aria-label', `Open ${item.name}`);
+
+      const coverWrap = document.createElement('div');
+      coverWrap.className = 'cover-wrap';
+      const fallback = document.createElement('div');
+      fallback.className = 'cover-fallback';
+      const fallbackInner = document.createElement('div');
+      const emblem = document.createElement('span');
+      emblem.textContent = item.type === 'app' ? '◫' : (item.name.trim()[0] || 'G').toUpperCase();
+      const fallbackName = document.createElement('div');
+      fallbackName.textContent = item.name;
+      fallbackInner.append(emblem, fallbackName);
+      fallback.append(fallbackInner);
+
+      if (item.imageCandidates?.length) {
+        const img = document.createElement('img');
+        img.className = 'cover';
+        img.alt = `${item.name} cover`;
+        img.loading = 'lazy';
+        img.dataset.candidates = JSON.stringify(item.imageCandidates);
+        img.dataset.index = '0';
+        img.addEventListener('load', () => { fallback.hidden = true; });
+        img.addEventListener('error', () => {
+          let candidates = [];
+          try { candidates = JSON.parse(img.dataset.candidates || '[]'); } catch {}
+          const next = Number(img.dataset.index || 0) + 1;
+          if (next < candidates.length) {
+            img.dataset.index = String(next);
+            img.src = candidates[next];
+          } else {
+            img.remove();
+            fallback.hidden = false;
+          }
+        });
+        img.src = item.imageCandidates[0];
+        coverWrap.append(img);
+      } else {
+        fallback.hidden = false;
+      }
+
+      const shade = document.createElement('div');
+      shade.className = 'cover-shade';
+      const play = document.createElement('div');
+      play.className = 'play-overlay';
+      play.textContent = '▶';
+      coverWrap.append(shade, play, fallback);
+
+      const info = document.createElement('div');
+      info.className = 'card-info';
+      const name = document.createElement('h3');
+      name.className = 'card-title';
+      name.textContent = item.name;
+      name.title = item.name;
+      const meta = document.createElement('div');
+      meta.className = 'card-meta';
+      const source = document.createElement('span');
+      source.className = 'source-tag';
+      source.textContent = (item.sources?.length || 1) > 1 ? `${CATALOGS[item.source]?.label || item.source} +${item.sources.length - 1}` : item.sourceLabel;
+      source.title = item.sourceLabel;
+      const type = document.createElement('span');
+      type.textContent = item.type === 'app' ? 'APP' : (item.category || 'GAME').toUpperCase();
+      meta.append(source, type);
+      info.append(name, meta);
+      open.append(coverWrap, info);
+      open.addEventListener('click', () => launch(item));
+
+      const fav = document.createElement('button');
+      fav.className = `favorite ${favorites.includes(item.id) ? 'on' : ''}`;
+      fav.type = 'button';
+      fav.textContent = favorites.includes(item.id) ? '♥' : '♡';
+      fav.setAttribute('aria-label', favorites.includes(item.id) ? 'Remove from favorites' : 'Add to favorites');
+      fav.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleFavorite(item);
+      });
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      const download = document.createElement('button');
+      download.className = 'download-button';
+      download.type = 'button';
+      download.textContent = '↓ Download';
+      download.title = 'Download this game entry page';
+      download.addEventListener('click', (event) => {
+        event.stopPropagation();
+        downloadGame(item, download);
+      });
+      actions.append(download);
+      card.append(open, fav, actions);
+      return card;
+    }
+
+    function toggleFavorite(item) {
+      favorites = favorites.includes(item.id) ? favorites.filter(id => id !== item.id) : [item.id, ...favorites];
+      saveList(STORAGE.favorites, favorites); render();
+    }
+    function addRecent(item) {
+      recent = [item.id, ...recent.filter(id => id !== item.id)].slice(0, 30);
+      saveList(STORAGE.recent, recent);
+    }
+    function setView(view) {
+      activeView = view; visibleCount = 72;
+      document.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === view));
+      render();
+    }
+
+    async function fetchText(url) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
+      try {
+        const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.text();
+      } finally { clearTimeout(timer); }
+    }
+    async function fetchHtmlPage(url) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
+      try {
+        const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return {
+          html: await response.text(),
+          finalUrl: response.url || url,
+          contentType: response.headers.get('content-type') || ''
+        };
+      } finally { clearTimeout(timer); }
+    }
+    function normalizeGameHtml(value) {
+      let html = String(value || '').replace(/^\uFEFF/, '').trim();
+      if (!/<(?:!doctype\b|html\b|head\b|body\b)/i.test(html) && /&lt;(?:!doctype|html|head|body)\b/i.test(html)) {
+        const decoder = document.createElement('textarea');
+        decoder.innerHTML = html;
+        html = decoder.value.trim();
+      }
+      // Some UGS pages are Google-gadget XML wrappers:
+      //   <Module><ModulePrefs/><Content type="html"><![CDATA[ ...real page... ]]></Content></Module>
+      // Browsers render the wrapper tags and the CDATA markers as stray plain text, so unwrap them.
+      if (/^(?:\s*<!--[\s\S]*?-->)*\s*<Module\b/i.test(html)) {
+        const open = html.indexOf('<![CDATA[');
+        const close = html.lastIndexOf(']]>');
+        if (open !== -1 && close > open) {
+          html = html.slice(open + 9, close).trim();
+        } else {
+          html = html.replace(/<\/?(?:Module|ModulePrefs|Content)\b[^>]*>/gi, '').trim();
+        }
+      }
+      return html;
+    }
+    async function fetchJson(url) { return JSON.parse(await fetchText(url)); }
+
+    async function loadNight() {
+      const cfg = CATALOGS.night; const loaded = [];
+      const [games, apps] = await Promise.all([fetchJson(cfg.gamesCatalog), fetchJson(cfg.appsCatalog)]);
+      for (const item of (Array.isArray(games) ? games : games?.games || [])) {
+        const record = sourceRecord({ name: item.name, url: absolutePath(item.url, cfg.gamesBase), image: item.image ? absolutePath(item.image, cfg.root) : '', source: 'night', type: 'game', root: cfg.root, category: item.section, author: item.author });
+        if (record) loaded.push(record);
+      }
+      for (const item of (Array.isArray(apps) ? apps : apps?.apps || [])) {
+        const record = sourceRecord({ name: item.name, url: absolutePath(item.url, cfg.appsBase), image: item.image ? absolutePath(item.image, cfg.root) : '', source: 'night', type: 'app', root: cfg.root, category: item.section, author: item.author });
+        if (record) loaded.push(record);
+      }
+      addRecords(loaded); setSourceStatus('night', 'ok', countForSource('night'));
+    }
+
+    function seraphImageCandidates(path) {
+      if (!path) return [];
+      const clean = String(path).replace(/^\/+/, '');
+      const candidates = [absolutePath(clean, CATALOGS.seraph.root)];
+      if (clean.startsWith('images/thumbnails/')) candidates.push(absolutePath(clean.replace(/^images\//, ''), CATALOGS.seraph.root));
+      else if (clean.startsWith('thumbnails/')) candidates.unshift(absolutePath(`images/${clean}`, CATALOGS.seraph.root));
+      return [...new Set(candidates)];
+    }
+    async function loadSeraph() {
+      const cfg = CATALOGS.seraph; const loaded = [];
+      const [games, apps] = await Promise.all([fetchJson(cfg.gamesCatalog), fetchJson(cfg.appsCatalog)]);
+      for (const item of (Array.isArray(games) ? games : games?.games || [])) {
+        const path = String(item.url || '').replace(/^\/+/, '');
+        const record = sourceRecord({ name: item.name, url: absolutePath(path, cfg.root), image: '', imageCandidates: seraphImageCandidates(item.image), source: 'seraph', type: 'game', root: cfg.root });
+        if (record) loaded.push(record);
+      }
+      for (const item of (Array.isArray(apps) ? apps : apps?.apps || [])) {
+        const path = String(item.url || '').replace(/^\/+/, '');
+        const record = sourceRecord({ name: item.name, url: absolutePath(path, cfg.root), image: '', imageCandidates: seraphImageCandidates(item.image), source: 'seraph', type: 'app', root: cfg.root });
+        if (record) loaded.push(record);
+      }
+      addRecords(loaded); setSourceStatus('seraph', 'ok', countForSource('seraph'));
+    }
+
+    function decodeMarkup(value) {
+      const node = document.createElement('textarea'); node.innerHTML = value; return node.value;
+    }
+    function extractCkvCards(source) {
+      const blocks = source.match(/<a\b[\s\S]*?<\/a>/gi) || [];
+      const loaded = [];
+      for (const block of blocks) {
+        if (!/gamefiles\//i.test(block) && !/game-link/i.test(block)) continue;
+        const href = block.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+        if (!href) continue;
+        const image = block.match(/<img\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1/i)?.[2] || '';
+        const alt = block.match(/<img\b[^>]*\balt\s*=\s*(["'])(.*?)\1/i)?.[2] || '';
+        const text = block.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ');
+        const name = cleanText(decodeMarkup((alt || text).replace(/\s+cover$/i, '')));
+        const url = absolutePath(href, CATALOGS.ckv.root);
+        const imageUrl = image ? absolutePath(image, CATALOGS.ckv.root) : '';
+        const record = sourceRecord({ name, url, image: imageUrl, source: 'ckv', type: 'game', root: CATALOGS.ckv.root });
+        if (record) loaded.push(record);
+      }
+      return loaded;
+    }
+    async function loadCkv() {
+      const source = await fetchText(CATALOGS.ckv.catalog);
+      const loaded = extractCkvCards(source);
+      addRecords(loaded); setSourceStatus('ckv', 'ok', countForSource('ckv'));
+    }
+
+    function legacyTitle(id) {
+      let value = String(id).replace(/^cl/i, '');
+      value = value.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_.-]+/g, ' ').replace(/\s+/g, ' ').trim();
+      return value.replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+    async function loadUgs() {
+      const source = await fetchText(CATALOGS.ugs.catalog);
+      const matches = [...source.matchAll(/["'](cl[a-z0-9][a-z0-9 _().-]{1,84})["']/gi)];
+      const ids = [...new Set(matches.map(match => match[1]).filter(value => value.length > 3))];
+      const loaded = [];
+      for (const id of ids) {
+        const name = legacyTitle(id);
+        const encoded = encodeURIComponent(id);
+        const withoutPrefix = encodeURIComponent(id.replace(/^cl/i, ''));
+        const candidates = [
+          `${CATALOGS.ugs.root}UGS-Files/${encoded}/index.html`,
+          `${CATALOGS.ugs.root}UGS-Files/${withoutPrefix}/index.html`,
+          `${CATALOGS.ugs.root}UGS-Files/${encoded}.html`
+        ];
+        const record = sourceRecord({ name, url: candidates[0], urlCandidates: candidates, source: 'ugs', type: 'game', root: CATALOGS.ugs.root });
+        if (record) loaded.push(record);
+      }
+      addRecords(loaded); setSourceStatus('ugs', 'ok', countForSource('ugs'));
+    }
+
+    async function loadGn() {
+      const cfg = CATALOGS.gn; const zones = await fetchJson(cfg.catalog); const loaded = [];
+      for (const zone of (Array.isArray(zones) ? zones : zones?.zones || [])) {
+        const url = String(zone.url || '').replaceAll('{HTML_URL}', cfg.htmlBase).replace(/^\/+/, '');
+        const cover = String(zone.cover || '').replaceAll('{COVER_URL}', cfg.coverBase).replace(/^\/+/, '');
+        const record = sourceRecord({ name: zone.name, url: absolutePath(url, cfg.htmlBase), image: cover, source: 'gn', type: 'game', root: cfg.htmlBase, category: (zone.special || []).join(', '), author: zone.author });
+        if (record) loaded.push(record);
+      }
+      addRecords(loaded); setSourceStatus('gn', 'ok', countForSource('gn'));
+    }
+
+    async function loadAllSources() {
+      const loaders = [
+        ['night', loadNight], ['seraph', loadSeraph], ['ckv', loadCkv],
+        ['ugs', loadUgs], ['gn', loadGn]
+      ];
+      loaders.forEach(([id]) => setSourceStatus(id, 'loading'));
+      const results = await Promise.allSettled(loaders.map(([, load]) => load()));
+      results.forEach((result, index) => {
+        const id = loaders[index][0];
+        if (result.status === 'rejected') setSourceStatus(id, 'error', 0, result.reason?.message || 'Unable to load');
+      });
+      updateStats(); render();
+    }
+
+    function rewriteRootAssets(html, root) {
+      let output = String(html || '');
+      const escapedRoot = root.endsWith('/') ? root : `${root}/`;
+      output = output.replace(/\b(src|href|poster|action|data)\s*=\s*(["'])\/(?!\/)([^"']*)\2/gi,
+        (_match, attr, quote, path) => `${attr}=${quote}${escapedRoot}${path}${quote}`);
+      output = output.replace(/url\(\s*(["']?)\/(?!\/)([^)"']+)\1\s*\)/gi,
+        (_match, _quote, path) => `url("${escapedRoot}${path}")`);
+      return output;
+    }
+    function escapeAttribute(value) {
+      return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+    function addBaseTag(html, url, root) {
+      const directory = new URL('.', url).href;
+      let content = String(html || '');
+      const existingBase = content.match(/<base\b[^>]*>/i);
+      let baseTag = `<base href="${escapeAttribute(directory)}">`;
+
+      // Some game pages intentionally point at a shared asset folder (for example,
+      // youtube-playables/.../bowmasters/). Keep that base instead of replacing it
+      // with the catalog folder, otherwise relative game.js and CSS files break.
+      if (existingBase) {
+        const hrefMatch = existingBase[0].match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+        const rawHref = hrefMatch ? (hrefMatch[1] ?? hrefMatch[2] ?? hrefMatch[3] ?? '') : '';
+        if (rawHref) {
+          const decoder = document.createElement('textarea');
+          decoder.innerHTML = rawHref;
+          let resolvedHref = decoder.value;
+          try { resolvedHref = new URL(resolvedHref, directory).href; } catch { /* keep source value */ }
+          baseTag = existingBase[0].replace(/\bhref\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/i, `href="${escapeAttribute(resolvedHref)}"`);
+          if (!/\bhref\s*=/i.test(baseTag)) baseTag = `<base href="${escapeAttribute(resolvedHref)}">`;
+        }
+        content = content.replace(/<base\b[^>]*>/gi, '');
+        if (/<head\b[^>]*>/i.test(content)) return content.replace(/<head\b[^>]*>/i, match => `${match}${baseTag}`);
+        if (/<html\b[^>]*>/i.test(content)) return content.replace(/<html\b[^>]*>/i, match => `${match}<head>${baseTag}</head>`);
+        return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${baseTag}</head><body>${content}</body></html>`;
+      }
+
+      // For pages without their own <base>, resolve root-relative files against
+      // the repository root supplied by the catalog and relative files against
+      // the page's own directory.
+      content = rewriteRootAssets(content, root || directory);
+      if (/<head\b[^>]*>/i.test(content)) return content.replace(/<head\b[^>]*>/i, match => `${match}${baseTag}`);
+      if (/<html\b[^>]*>/i.test(content)) return content.replace(/<html\b[^>]*>/i, match => `${match}<head>${baseTag}</head>`);
+      return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${baseTag}</head><body>${content}</body></html>`;
+    }
+    function loadingText(message) { $('#playerLoading').hidden = false; $('#playerLoading').innerHTML = `<div style="display:grid;justify-items:center;gap:12px"><div class="spinner"></div><span>${message}</span></div>`; }
+    function playerError(message) {
+      $('#playerLoading').hidden = false;
+      $('#playerLoading').innerHTML = `<div style="max-width:360px;padding:20px;text-align:center;line-height:1.6"><b style="display:block;color:#f0f5ff;margin-bottom:7px">Could not load this title</b><span>${message}</span><div style="margin-top:13px;font-size:10px;color:#8b9ab4">Try reloading or opening the source in a new tab.</div></div>`;
+    }
+    function downloadFilename(name) {
+      const clean = cleanText(name).normalize('NFKD').replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70);
+      return `${clean || 'game'}-entry.html`;
+    }
+    async function downloadGame(item, button) {
+      if (button.disabled) return;
+      const original = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing…';
+      let lastError = null;
+      try {
+        for (const candidate of (item.launchCandidates || (item.urlCandidates || [item.url]).map(url => ({ url, root: item.root })))) {
+          try {
+            const url = candidate.url;
+            const page = await fetchHtmlPage(url);
+            const html = normalizeGameHtml(page.html);
+            if (!html || !(/<html|<!doctype|<body|<head/i.test(html))) {
+              throw new Error('The source did not return a downloadable HTML page.');
+            }
+            const packaged = addBaseTag(html, page.finalUrl || url, candidate.root || item.root || new URL('.', url).href);
+            const blobUrl = URL.createObjectURL(new Blob([packaged], { type: 'text/html;charset=utf-8' }));
+            const anchor = document.createElement('a');
+            anchor.href = blobUrl;
+            anchor.download = downloadFilename(item.name);
+            document.body.append(anchor);
+            anchor.click();
+            anchor.remove();
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+            button.textContent = 'Downloaded';
+            setTimeout(() => { if (button.isConnected) { button.textContent = original; button.disabled = false; } }, 1800);
+            return;
+          } catch (error) {
+            lastError = error;
+          }
+        }
+        throw lastError || new Error('This entry is not downloadable right now.');
+      } catch (error) {
+        button.textContent = 'Unavailable';
+        button.title = cleanText(error?.message || 'Download failed');
+        setTimeout(() => { if (button.isConnected) { button.textContent = original; button.disabled = false; } }, 2200);
+      }
+    }
+
+    async function launch(item) {
+      currentRecord = item; currentHtml = ''; currentDirectUrl = '';
+      const token = ++playToken;
+      $('#playerOverlay').hidden = false; $('#playerTitle').textContent = item.name; $('#openTabBtn').disabled = true;
+      const frame = $('#playerFrame'); frame.removeAttribute('src'); frame.srcdoc = '<!doctype html><html><body style="background:#000"></body></html>';
+      loadingText('Loading game…'); addRecent(item);
+      try {
+        let lastError = null;
+        for (const candidate of (item.launchCandidates || (item.urlCandidates || [item.url]).map(url => ({ url, root: item.root })))) {
+          try {
+            const url = candidate.url;
+            const page = await fetchHtmlPage(url);
+            if (token !== playToken) return;
+            const html = normalizeGameHtml(page.html);
+            if (!html || (!/<html|<!doctype|<body|<head/i.test(html))) throw new Error('The source did not return a playable HTML page.');
+            currentHtml = addBaseTag(html, page.finalUrl || url, candidate.root || item.root || new URL('.', url).href);
+            frame.srcdoc = currentHtml;
+            currentDirectUrl = page.finalUrl || url;
+            $('#openTabBtn').disabled = false;
+            setTimeout(() => { if (token === playToken) $('#playerLoading').hidden = true; }, 1500);
+            return;
+          } catch (error) { lastError = error; }
+        }
+        throw lastError || new Error('No playable page was returned.');
+      } catch (error) {
+        if (token !== playToken) return;
+        playerError(cleanText(error?.message || 'The source may be offline or may block embedding.'));
+      }
+    }
+    function closePlayer() {
+      playToken++; currentRecord = null; currentHtml = ''; currentDirectUrl = '';
+      const frame = $('#playerFrame'); frame.removeAttribute('src'); frame.srcdoc = '';
+      $('#playerOverlay').hidden = true;
+    }
+    $('#closePlayer').addEventListener('click', closePlayer);
+    $('#playerOverlay').addEventListener('click', event => { if (event.target.id === 'playerOverlay') closePlayer(); });
+    $('#playerFrame').addEventListener('load', () => {
+      if (currentRecord && (currentHtml || currentDirectUrl)) $('#playerLoading').hidden = true;
+    });
+    $('#reloadGameBtn').addEventListener('click', () => { if (currentRecord) launch(currentRecord); });
+    $('#openTabBtn').addEventListener('click', () => {
+      if (currentHtml) {
+        const blob = URL.createObjectURL(new Blob([currentHtml], { type: 'text/html' }));
+        window.open(blob, '_blank', 'noopener,noreferrer');
+        setTimeout(() => URL.revokeObjectURL(blob), 60000);
+      } else if (currentDirectUrl) window.open(currentDirectUrl, '_blank', 'noopener,noreferrer');
+    });
+    $('#fullscreenBtn').addEventListener('click', () => {
+      const frame = $('#playerFrame');
+      if (frame.requestFullscreen) Promise.resolve(frame.requestFullscreen()).catch(() => {});
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !$('#playerOverlay').hidden) closePlayer();
+      if (event.key === '/' && document.activeElement !== $('#searchInput') && $('#playerOverlay').hidden) { event.preventDefault(); $('#searchInput').focus(); }
+    });
+
+    document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
+    $('#searchInput').addEventListener('input', event => { searchText = event.target.value.trim(); visibleCount = 72; render(); });
+    $('#sortSelect').addEventListener('change', event => { sortMode = event.target.value; render(); });
+    $('#clearSearchBtn').addEventListener('click', () => { searchText = ''; $('#searchInput').value = ''; visibleCount = 72; render(); });
+    $('#loadMoreBtn').addEventListener('click', () => { visibleCount += 72; render(); });
+    $('#randomBtn').addEventListener('click', () => { const list = getFiltered(); if (list.length) launch(list[Math.floor(Math.random() * list.length)]); });
+    $('#refreshBtn').addEventListener('click', () => { records = []; visibleCount = 72; sourceStatus.clear(); renderSourceButtons(); updateStats(); loadAllSources(); });
+
+    loadAllSources();
+  })();
+  </script>
+</body>
+</html><!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a0d18">
+  <title>Sift Arcade</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#090c15;--panel:#111726;--panel2:#151e30;--panel3:#1b2940;
+      --line:rgba(181,202,255,.11);--line2:rgba(181,202,255,.2);
+      --text:#edf3ff;--muted:#8e9bb4;--muted2:#64728d;
+      --accent:#7c9cff;--accent2:#9d83ff;--mint:#76e0c1;
+      --shadow:0 18px 55px rgba(0,0,0,.32);--radius:18px;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{background:radial-gradient(ellipse at 60% -20%,rgba(86,112,202,.18),transparent 42%),radial-gradient(ellipse at 0% 40%,rgba(93,64,180,.11),transparent 36%),var(--bg)}
+    button,input{font:inherit}button{cursor:pointer;color:inherit}
+    [hidden]{display:none!important}
+    :focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+    .app{min-height:100vh;display:grid;grid-template-columns:258px minmax(0,1fr)}
+    .sidebar{height:100vh;position:sticky;top:0;padding:24px 16px 18px;border-right:1px solid var(--line);background:rgba(9,13,24,.82);backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:25px;z-index:30}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 10px;text-decoration:none;color:var(--text)}
+    .brand-mark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#93aaff,#7666eb);box-shadow:0 8px 28px rgba(116,115,240,.35);color:#fff;font-size:22px;font-weight:900}
+    .brand-name{font-size:18px;font-weight:850;letter-spacing:-.7px}.brand-sub{display:block;margin-top:2px;color:var(--muted);font-size:10px;font-weight:750;letter-spacing:1.7px;text-transform:uppercase}
+    .side-label{padding:0 12px;color:#64718a;font-size:10px;font-weight:850;letter-spacing:1.8px;text-transform:uppercase}
+    .nav-list,.source-list{display:grid;gap:5px}
+    .nav-btn,.source-btn{min-height:42px;width:100%;display:flex;align-items:center;gap:12px;padding:0 12px;border:1px solid transparent;border-radius:12px;background:transparent;text-align:left;color:#a8b5cc;font-size:13px;font-weight:700;transition:.18s}
+    .nav-btn:hover,.source-btn:hover{color:#fff;background:rgba(255,255,255,.045)}
+    .nav-btn.active,.source-btn.active{color:#fff;border-color:rgba(124,156,255,.2);background:linear-gradient(100deg,rgba(124,156,255,.18),rgba(124,156,255,.06))}
+    .nav-icon{width:22px;text-align:center;font-size:16px;color:#92a8d3}
+    .nav-count{margin-left:auto;color:#75839b;font-size:11px;font-variant-numeric:tabular-nums}
+    .source-dot{width:8px;height:8px;flex:none;border-radius:50%;background:#6d7b96;box-shadow:0 0 0 3px rgba(255,255,255,.035)}
+    .source-btn.active .source-dot{background:var(--mint);box-shadow:0 0 0 4px rgba(118,224,193,.1)}
+    .sidebar-spacer{flex:1}
+    .side-note{margin:0 4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(125,143,220,.1),rgba(255,255,255,.02));color:var(--muted);font-size:11px;line-height:1.55}
+    .side-note b{display:block;margin-bottom:5px;color:#dce7ff;font-size:12px}
+    .main{min-width:0;padding:0 38px 56px}
+    .topbar{height:82px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);background:rgba(9,12,21,.75);backdrop-filter:blur(18px)}
+    .mobile-brand{display:none;align-items:center;gap:9px;font-size:15px;font-weight:850}
+    .searchbox{position:relative;flex:1;max-width:650px}
+    .search-symbol{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#8492aa;font-size:17px;pointer-events:none}
+    .searchbox input{width:100%;height:46px;padding:0 48px 0 44px;border:1px solid var(--line);border-radius:14px;background:#101827;color:#fff;outline:none;font-size:13px;transition:.18s}
+    .searchbox input::placeholder{color:#77859e}.searchbox input:focus{border-color:rgba(124,156,255,.65);box-shadow:0 0 0 4px rgba(124,156,255,.1)}
+    .shortcut{position:absolute;right:12px;top:50%;transform:translateY(-50%);padding:3px 7px;border:1px solid var(--line);border-radius:6px;color:#74829b;font-size:10px}
+    .top-actions{display:flex;gap:8px;margin-left:auto}
+    .icon-button,.small-button{height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#111827;color:#c3cde0;font-size:12px;font-weight:750;transition:.18s}
+    .icon-button{width:42px;padding:0;font-size:16px}.icon-button:hover,.small-button:hover{border-color:var(--line2);background:#1a2538;color:#fff}
+    .hero{position:relative;min-height:230px;margin:30px 0 24px;padding:32px 34px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:22px;border:1px solid rgba(157,171,255,.22);border-radius:24px;background:linear-gradient(112deg,rgba(66,83,164,.42),rgba(33,38,74,.65) 48%,rgba(17,25,43,.94) 100%);box-shadow:var(--shadow)}
+    .hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(196,207,255,.16);border-radius:50%}
+    .hero:before{width:370px;height:370px;right:10%;top:-245px;box-shadow:0 0 0 36px rgba(196,207,255,.025),0 0 0 76px rgba(196,207,255,.02)}
+    .hero:after{width:210px;height:210px;right:4%;bottom:-170px;box-shadow:0 0 0 26px rgba(118,224,193,.035)}
+    .hero-copy{position:relative;z-index:1;max-width:620px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:#c7d4ff;font-size:10px;font-weight:850;letter-spacing:2px;text-transform:uppercase}
+    .eyebrow i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+    h1{margin:13px 0 10px;color:#fff;font-size:clamp(29px,4vw,45px);line-height:1.04;letter-spacing:-1.9px}
+    .hero p{max-width:590px;margin:0;color:#b0bdd5;font-size:13px;line-height:1.7}
+    .hero-stats{position:relative;z-index:1;display:flex;gap:10px;flex:none}
+    .stat{min-width:104px;padding:15px 16px;border:1px solid rgba(225,232,255,.14);border-radius:15px;background:rgba(7,12,23,.35);backdrop-filter:blur(12px)}
+    .stat strong{display:block;color:#fff;font-size:24px;letter-spacing:-1px;font-variant-numeric:tabular-nums}.stat span{display:block;margin-top:4px;color:#a8b6d0;font-size:9px;font-weight:850;letter-spacing:1.2px;text-transform:uppercase}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:22px 0 17px}
+    .view-tabs{display:flex;gap:5px;padding:4px;border:1px solid var(--line);border-radius:13px;background:rgba(13,19,32,.85)}
+    .view-tab{height:34px;padding:0 13px;border:1px solid transparent;border-radius:9px;background:transparent;color:#8795ae;font-size:12px;font-weight:800;transition:.16s}
+    .view-tab:hover{color:#fff}.view-tab.active{border-color:rgba(124,156,255,.18);background:rgba(124,156,255,.16);color:#fff}
+    .tool-right{display:flex;align-items:center;gap:8px}
+    .select{height:40px;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:#101827;color:#b9c6dc;font-size:11px;font-weight:750;outline:none}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:20px 0 14px}
+    .section-head h2{margin:0;color:#f4f7ff;font-size:18px;letter-spacing:-.5px}.section-head p{margin:5px 0 0;color:#8492aa;font-size:11px}
+    .results{color:#8492aa;font-size:11px;font-variant-numeric:tabular-nums}
+    .source-chips{display:flex;gap:7px;overflow-x:auto;padding:1px 0 13px;scrollbar-width:thin;scrollbar-color:#35435e transparent}
+    .chip{height:31px;flex:none;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#94a2bb;font-size:10px;font-weight:800;transition:.15s}
+    .chip:hover,.chip.active{border-color:rgba(124,156,255,.36);background:rgba(124,156,255,.12);color:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:15px}
+    .card{position:relative;min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:linear-gradient(180deg,#151e30,#101725);transition:transform .18s,border-color .18s,box-shadow .18s;animation:cardIn .28s both;animation-delay:calc(var(--i,0)*12ms)}
+    @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .card:hover{transform:translateY(-4px);border-color:rgba(124,156,255,.45);box-shadow:0 13px 27px rgba(0,0,0,.26)}
+    .card-open{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left}
+    .cover-wrap{position:relative;aspect-ratio:16/11;overflow:hidden;background:linear-gradient(135deg,#27314b,#161d2e)}
+    .cover{display:block;width:100%;height:100%;object-fit:cover;transition:transform .38s,filter .25s}
+    .card:hover .cover{transform:scale(1.06);filter:saturate(1.08)}
+    .cover-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;background:radial-gradient(circle at 50% 24%,rgba(147,165,255,.3),transparent 55%),linear-gradient(135deg,#293551,#151d2d);color:#e5ecff;font-size:16px;font-weight:900;letter-spacing:-.5px}
+    .cover-fallback span{width:48px;height:48px;display:grid;place-items:center;margin:auto auto 8px;border:1px solid rgba(255,255,255,.18);border-radius:15px;background:rgba(255,255,255,.08);font-size:20px}
+    .cover-shade{position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(4,8,17,.48));pointer-events:none}
+    .play-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.88);width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(19,28,47,.88);color:#fff;font-size:15px;opacity:0;transition:.18s;backdrop-filter:blur(8px)}
+    .card:hover .play-overlay{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    .favorite{position:absolute;top:9px;right:9px;z-index:2;width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.17);border-radius:10px;background:rgba(7,11,20,.68);color:#d4def1;font-size:15px;backdrop-filter:blur(8px);transition:.16s}
+    .favorite:hover,.favorite.on{color:#ff8fb0;border-color:rgba(255,143,176,.28);background:rgba(40,13,27,.78)}
+    .card-info{padding:11px 11px 12px}.card-title{margin:0;overflow:hidden;color:#eef3ff;font-size:12px;font-weight:800;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+    .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;color:#7e8ca6;font-size:9px}
+    .card-actions{padding:0 11px 11px}.download-button{width:100%;height:31px;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(118,224,193,.2);border-radius:9px;background:rgba(118,224,193,.07);color:#9ce8d2;font-size:10px;font-weight:850;transition:.16s}.download-button:hover{border-color:rgba(118,224,193,.45);background:rgba(118,224,193,.14);color:#d5fff3}.download-button:disabled{opacity:.6;cursor:wait}
+    .source-tag{max-width:115px;overflow:hidden;padding:4px 7px;border:1px solid rgba(124,156,255,.14);border-radius:6px;background:rgba(124,156,255,.08);color:#b4c7ff;font-size:9px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+    .empty{grid-column:1/-1;display:grid;justify-items:center;gap:9px;padding:58px 18px;border:1px dashed var(--line2);border-radius:18px;background:rgba(255,255,255,.02);text-align:center;color:var(--muted)}
+    .empty-icon{width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.035);color:#aebdf0;font-size:20px}
+    .empty b{color:#edf2ff;font-size:14px}.empty span{max-width:340px;font-size:11px;line-height:1.55}
+    .load-more{display:flex;justify-content:center;padding:25px 0 8px}.load-more button{height:42px;padding:0 19px;border:1px solid var(--line);border-radius:12px;background:#141d2d;color:#c4d0e6;font-size:11px;font-weight:850}.load-more button:hover{border-color:rgba(124,156,255,.45);color:#fff}
+    .source-status{margin-top:32px;padding:15px 17px;border:1px solid var(--line);border-radius:15px;background:rgba(13,19,32,.55)}
+    .status-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.status-top b{color:#d9e4fa;font-size:11px}.status-top span{color:#8291ab;font-size:10px}
+    .status-list{display:flex;gap:7px;flex-wrap:wrap}.status-pill{padding:6px 9px;border:1px solid var(--line);border-radius:8px;color:#94a2bb;font-size:9px}.status-pill.ok{border-color:rgba(118,224,193,.15);color:#8bdac2}.status-pill.bad{border-color:rgba(255,130,150,.18);color:#ff9aaa}
+    footer{padding:25px 0 0;color:#66748d;font-size:10px;text-align:center}
+    .player-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:18px;background:rgba(3,6,13,.86);backdrop-filter:blur(14px)}
+    .player-shell{width:min(1500px,100%);height:min(920px,calc(100vh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(185,202,255,.18);border-radius:18px;background:#070b13;box-shadow:0 30px 110px rgba(0,0,0,.64)}
+    .player-head{height:58px;flex:none;display:flex;align-items:center;gap:9px;padding:0 13px;border-bottom:1px solid var(--line);background:#111a29}
+    .player-title{flex:1;min-width:0;overflow:hidden;color:#f0f5ff;font-size:12px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+    .player-btn,.player-close{height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#182338;color:#c9d5e9;font-size:10px;font-weight:800}.player-btn:hover,.player-close:hover{background:#24324a;color:#fff}
+    .player-close{width:35px;padding:0;font-size:17px}.frame-wrap{position:relative;flex:1;min-height:0;background:#000}.player-frame{width:100%;height:100%;display:block;border:0;background:#000}.player-loading{position:absolute;inset:0;display:grid;place-items:center;background:rgba(5,8,15,.92);color:#94a2bb;font-size:12px}.spinner{width:30px;height:30px;border:2px solid rgba(255,255,255,.14);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .mobile-menu{display:none}
+    @media(max-width:1100px){.main{padding:0 24px 45px}.hero-stats{gap:7px}.stat{min-width:88px;padding:13px}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
+    @media(max-width:780px){.app{display:block}.sidebar{position:relative;width:100%;height:auto;padding:13px 16px;display:flex;gap:12px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 2px}.brand-mark{width:36px;height:36px;border-radius:12px}.brand-name{font-size:15px}.brand-sub{font-size:8px}.sidebar>.side-label,.sidebar>.source-list,.sidebar>.sidebar-spacer,.sidebar>.side-note{display:none}.nav-list{display:flex;overflow-x:auto;gap:4px;padding-bottom:2px}.nav-btn{min-height:35px;width:auto;flex:none;padding:0 10px;font-size:10px}.nav-icon{width:auto;font-size:13px}.nav-count{display:none}.main{padding:0 16px 35px}.topbar{height:69px;gap:8px}.mobile-brand{display:none}.searchbox input{height:42px}.shortcut{display:none}.top-actions .small-button{height:40px;padding:0 10px}.hero{min-height:0;display:block;margin:19px 0 16px;padding:25px 22px}.hero-stats{margin-top:19px}.stat{flex:1;min-width:0}.stat strong{font-size:20px}.toolbar{margin:16px 0 13px}.tool-right{width:100%;justify-content:space-between}.view-tabs{max-width:100%;overflow-x:auto}.view-tab{padding:0 10px;white-space:nowrap}.grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:11px}.section-head{margin-top:17px}.source-status{margin-top:22px}}
+    @media(max-width:420px){.main{padding-left:12px;padding-right:12px}.hero{padding:22px 18px}.hero-stats{gap:7px}.stat{padding:11px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card-info{padding:9px}.card-title{font-size:11px}.card-meta{font-size:8px}.source-tag{max-width:90px}.player-overlay{padding:0}.player-shell{width:100%;height:100%;border-radius:0}.player-head{height:54px;padding:0 8px}.player-btn{padding:0 8px;font-size:9px}}
+
+
+    /* Screenshot-inspired compact plum arcade layout */
+    :root{
+      --bg:#3a1931;--panel:#4a263d;--panel2:#542d45;--panel3:#633852;
+      --line:rgba(255,218,239,.10);--line2:rgba(255,218,239,.20);
+      --text:#f5eaf1;--muted:#c3aabd;--muted2:#987a91;
+      --accent:#168dff;--accent2:#a66b91;--mint:#f3c5dc;
+      --shadow:0 14px 35px rgba(18,5,15,.28);--radius:12px;
+    }
+    html,body{background:#3a1931;color:#f5eaf1}
+    body{background:linear-gradient(180deg,#3a1931 0%,#3b1930 55%,#35162b 100%)}
+    .app{display:block;min-height:100vh}
+    .sidebar{display:none!important}
+    .main{width:100%;max-width:none;min-width:0;margin:0;padding:0 18px 34px}
+    .topbar{
+      height:35px;position:sticky;top:0;z-index:50;display:block;margin:0 -18px;
+      border-bottom:1px solid rgba(255,225,242,.10);background:#2d1226;
+      box-shadow:0 2px 12px rgba(13,3,10,.16);backdrop-filter:blur(12px)
+    }
+    .topbar:before{content:"";position:absolute;left:16px;top:12px;width:12px;height:12px;border-radius:50%;background:#ff625d;box-shadow:20px 0 0 #ffbd45,40px 0 0 #35c96b}
+    .topbar:after{content:"Games";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#ead9e4;font-size:12px;font-weight:800;letter-spacing:.1px}
+    .topbar .searchbox{position:absolute;top:45px;right:14px;z-index:70;width:160px;max-width:42vw;flex:none}
+    .topbar .searchbox input{width:100%;height:25px;padding:0 12px;border:1px solid rgba(235,190,218,.20);border-radius:999px;background:#512b43;color:#fff;font-size:10px;box-shadow:none}
+    .topbar .searchbox input::placeholder{color:#c4a5b8}
+    .topbar .searchbox input:focus{border-color:rgba(22,141,255,.8);box-shadow:0 0 0 2px rgba(22,141,255,.16)}
+    .topbar .search-symbol,.topbar .shortcut,.topbar .top-actions{display:none!important}
+    .hero,.toolbar,.section-head,.source-status,footer{display:none!important}
+    .source-chips{
+      display:flex;width:calc(100% - 176px);max-width:none;gap:5px;overflow-x:auto;
+      margin:12px 0 10px;padding:0 0 2px;scrollbar-width:none;white-space:nowrap
+    }
+    .source-chips::-webkit-scrollbar{display:none}
+    .chip{
+      height:25px;flex:none;padding:0 10px;border:1px solid rgba(240,194,223,.08);
+      border-radius:999px;background:#512b43;color:#c5adbd;font-size:10px;
+      font-weight:750;transition:background .16s,border-color .16s,color .16s
+    }
+    .chip:hover{border-color:rgba(255,255,255,.2);background:#61344e;color:#fff}
+    .chip.active{border-color:#168dff;background:#168dff;color:#fff;box-shadow:0 3px 12px rgba(22,141,255,.22)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;padding:0;align-items:start}
+    .card{position:relative;min-width:0;overflow:visible;border:0;border-radius:12px;background:transparent;box-shadow:none;animation:cardIn .22s both;animation-delay:calc(var(--i,0)*7ms)}
+    .card:hover{transform:translateY(-2px);border:0;box-shadow:none}
+    .card-open{display:block;width:100%;padding:0;border:0;border-radius:12px;overflow:hidden;background:transparent;text-align:left}
+    .cover-wrap{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:12px;background:#241321;box-shadow:0 3px 10px rgba(17,4,14,.18)}
+    .cover{display:block;width:100%;height:100%;object-fit:cover;transition:transform .28s,filter .2s}
+    .card:hover .cover{transform:scale(1.055);filter:saturate(1.08)}
+    .cover-shade{display:none}
+    .cover-fallback{inset:0;border-radius:12px;background:radial-gradient(circle at 50% 20%,rgba(255,198,229,.16),transparent 55%),linear-gradient(145deg,#71445f,#392036);color:#fff;font-size:11px}
+    .cover-fallback span{width:34px;height:34px;margin:0 auto 7px;border-radius:11px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.10);font-size:15px}
+    .play-overlay{width:38px;height:38px;border:1px solid rgba(255,255,255,.24);border-radius:50%;background:rgba(35,18,32,.82);color:#fff;font-size:13px;opacity:0;transform:translate(-50%,-50%) scale(.88)}
+    .card:hover .play-overlay{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    .favorite{position:absolute;top:6px;right:6px;z-index:4;width:25px;height:25px;border:1px solid rgba(255,255,255,.20);border-radius:50%;background:rgba(30,12,25,.70);color:#fff;font-size:13px;backdrop-filter:blur(6px);opacity:0;transition:opacity .16s,background .16s,color .16s}
+    .card:hover .favorite,.favorite.on{opacity:1}
+    .favorite:hover,.favorite.on{color:#ffb6d4;border-color:rgba(255,182,212,.36);background:rgba(57,16,40,.88)}
+    .card-info{display:none!important}
+    .card-actions{position:absolute;z-index:3;left:7px;right:7px;bottom:7px;padding:0;opacity:0;transform:translateY(4px);transition:opacity .16s,transform .16s;pointer-events:none}
+    .card:hover .card-actions{opacity:1;transform:translateY(0);pointer-events:auto}
+    .download-button{width:100%;height:27px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:rgba(33,15,29,.88);color:#fff;font-size:9px;font-weight:850;backdrop-filter:blur(7px)}
+    .download-button:hover{border-color:rgba(22,141,255,.65);background:rgba(22,101,181,.92);color:#fff}
+    .empty{grid-column:1/-1;border:1px dashed rgba(255,215,239,.22);border-radius:14px;background:rgba(255,255,255,.025);color:#c6aabd}
+    .empty b{color:#fff}
+    .empty-icon{border-color:rgba(255,220,241,.14);background:rgba(255,255,255,.06);color:#f0bfd9}
+    .load-more{display:flex;justify-content:center;padding:24px 0}
+    .load-more button{height:36px;padding:0 19px;border:1px solid rgba(255,217,239,.17);border-radius:999px;background:#512b43;color:#f7eaf2;font-size:11px;font-weight:800}
+    .load-more button:hover{border-color:#168dff;background:#168dff}
+    .player-overlay{background:rgba(19,5,16,.88);backdrop-filter:blur(12px)}
+    .player-shell{border-color:rgba(255,214,237,.18);border-radius:13px;background:#170d17}
+    .player-head{border-bottom-color:rgba(255,214,237,.12);background:#35172e}
+    .player-title{color:#fff}
+    .player-btn,.player-close{border-color:rgba(255,214,237,.15);border-radius:8px;background:#512b43;color:#f5eaf1}
+    .player-btn:hover,.player-close:hover{background:#168dff;color:#fff}
+    .player-loading{background:rgba(24,9,21,.9);color:#c3aabd}
+    .spinner{border-top-color:#168dff}
+    @media(max-width:720px){
+      .main{padding:0 12px 28px}
+      .topbar{margin:0 -12px;height:35px}
+      .topbar .searchbox{top:43px;left:12px;right:12px;width:auto;max-width:none}
+      .source-chips{width:100%;margin:40px 0 10px;gap:5px}
+      .grid{grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:9px}
+      .favorite{opacity:.92}
+      .card-actions{opacity:1;transform:none;pointer-events:auto;left:5px;right:5px;bottom:5px}
+      .download-button{height:24px;font-size:8px;background:rgba(33,15,29,.78)}
+    }
+    @media(max-width:390px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.source-chips{gap:4px}.chip{padding:0 9px}}
+    @media(min-width:721px){.grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}}
+
+
+    /* Larger controls and cleaner top edge: remove the traffic lights and centered title */
+    .topbar{
+      height:58px!important;display:flex!important;align-items:center!important;
+      justify-content:flex-end;padding:0 18px!important;margin:0 -18px!important;
+      border-bottom:1px solid rgba(255,225,242,.12);
+    }
+    .topbar::before,.topbar::after{display:none!important;content:none!important}
+    .topbar .searchbox{
+      position:relative!important;top:auto!important;right:auto!important;left:auto!important;
+      width:min(100%,520px)!important;max-width:520px!important;flex:1 1 520px!important;
+      margin:0 0 0 auto!important;z-index:2;
+    }
+    .topbar .searchbox input{
+      height:38px!important;padding:0 16px 0 40px!important;font-size:12px!important;
+      border-radius:12px!important;background:#512b43!important;
+      border:1px solid rgba(235,190,218,.22)!important;
+    }
+    .topbar .search-symbol{display:block!important;left:14px!important;font-size:16px!important;color:#d0b3c5!important}
+    .topbar .shortcut,.topbar .top-actions{display:none!important}
+    .source-chips{
+      width:100%!important;max-width:none!important;gap:8px!important;
+      margin:13px 0 15px!important;padding:0 0 3px!important;
+    }
+    .chip{
+      height:32px!important;padding:0 13px!important;font-size:11px!important;
+      border-radius:999px!important;
+    }
+    .grid{
+      grid-template-columns:repeat(auto-fill,minmax(128px,1fr))!important;
+      gap:14px!important;
+    }
+    .cover-wrap{border-radius:13px!important}
+    .favorite{width:30px!important;height:30px!important;font-size:15px!important;top:7px!important;right:7px!important}
+    .download-button{height:31px!important;font-size:10px!important;border-radius:8px!important}
+    .cover-fallback{font-size:13px!important}
+    .cover-fallback span{width:38px!important;height:38px!important;font-size:17px!important}
+    .load-more button{height:40px!important;padding:0 22px!important;font-size:12px!important}
+    .player-head{min-height:62px!important}
+    .player-btn,.player-close{min-height:38px!important;padding:0 12px!important;font-size:11px!important}
+    @media(max-width:720px){
+      .main{padding:0 14px 30px!important}
+      .topbar{height:54px!important;margin:0 -14px!important;padding:0 14px!important}
+      .topbar .searchbox{width:100%!important;max-width:none!important;flex:1 1 100%!important}
+      .topbar .searchbox input{height:37px!important;font-size:12px!important}
+      .source-chips{width:100%!important;margin:12px 0 14px!important;gap:7px!important}
+      .chip{height:32px!important;padding:0 12px!important;font-size:10.5px!important}
+      .grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;gap:11px!important}
+      .favorite{opacity:.95!important;width:29px!important;height:29px!important}
+      .card-actions{left:6px!important;right:6px!important;bottom:6px!important}
+      .download-button{height:29px!important;font-size:9px!important}
+      .player-head{min-height:56px!important;padding:0 8px!important;gap:6px!important}
+      .player-btn,.player-close{min-height:34px!important;padding:0 8px!important;font-size:9px!important}
+    }
+    @media(max-width:390px){
+      .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+      .source-chips{gap:6px!important}
+      .chip{padding:0 10px!important}
+    }
+
+
+    /* Monochrome transparent glass theme */
+    :root{
+      color-scheme:dark!important;
+      --bg:transparent;
+      --panel:rgba(0,0,0,.34);
+      --panel2:rgba(255,255,255,.075);
+      --panel3:rgba(255,255,255,.12);
+      --line:rgba(255,255,255,.16);
+      --line2:rgba(255,255,255,.28);
+      --text:#fff;
+      --muted:rgba(255,255,255,.72);
+      --muted2:rgba(255,255,255,.52);
+      --accent:#fff;
+      --accent2:#d8d8d8;
+      --mint:#fff;
+      --shadow:0 16px 44px rgba(0,0,0,.22);
+    }
+    html,body{
+      background:transparent!important;
+      background-color:transparent!important;
+      color:#fff!important;
+    }
+    body,.app,.main{background:transparent!important}
+    .topbar{
+      background:rgba(0,0,0,.28)!important;
+      border-bottom:1px solid rgba(255,255,255,.16)!important;
+      box-shadow:0 8px 26px rgba(0,0,0,.12)!important;
+      -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
+      backdrop-filter:blur(18px) saturate(125%)!important;
+    }
+    .topbar .searchbox input{
+      color:#fff!important;
+      background:rgba(0,0,0,.28)!important;
+      border:1px solid rgba(255,255,255,.22)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important;
+      -webkit-backdrop-filter:blur(14px)!important;
+      backdrop-filter:blur(14px)!important;
+    }
+    .topbar .searchbox input::placeholder{color:rgba(255,255,255,.62)!important}
+    .topbar .searchbox input:focus{
+      border-color:rgba(255,255,255,.56)!important;
+      box-shadow:0 0 0 3px rgba(255,255,255,.10)!important;
+    }
+    .topbar .search-symbol{color:rgba(255,255,255,.76)!important}
+    .source-chips{background:transparent!important}
+    .chip{
+      color:rgba(255,255,255,.84)!important;
+      background:rgba(0,0,0,.25)!important;
+      border-color:rgba(255,255,255,.17)!important;
+      -webkit-backdrop-filter:blur(13px)!important;
+      backdrop-filter:blur(13px)!important;
+    }
+    .chip:hover,.chip.active{
+      color:#fff!important;
+      background:rgba(255,255,255,.15)!important;
+      border-color:rgba(255,255,255,.48)!important;
+      box-shadow:0 5px 18px rgba(0,0,0,.12)!important;
+    }
+    .card,.card-open{background:transparent!important}
+    .cover-wrap{
+      background:rgba(0,0,0,.20)!important;
+      box-shadow:0 5px 18px rgba(0,0,0,.16)!important;
+      border:1px solid rgba(255,255,255,.10)!important;
+    }
+    .cover-fallback{
+      color:#fff!important;
+      background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(0,0,0,.60))!important;
+      -webkit-backdrop-filter:blur(8px)!important;
+      backdrop-filter:blur(8px)!important;
+    }
+    .cover-fallback span{
+      color:#fff!important;
+      border-color:rgba(255,255,255,.25)!important;
+      background:rgba(0,0,0,.22)!important;
+    }
+    .favorite{
+      color:#fff!important;
+      background:rgba(0,0,0,.42)!important;
+      border-color:rgba(255,255,255,.28)!important;
+      -webkit-backdrop-filter:blur(13px)!important;
+      backdrop-filter:blur(13px)!important;
+    }
+    .favorite:hover,.favorite.on{
+      color:#fff!important;
+      background:rgba(255,255,255,.20)!important;
+      border-color:rgba(255,255,255,.58)!important;
+    }
+    .download-button{
+      color:#fff!important;
+      background:rgba(0,0,0,.48)!important;
+      border-color:rgba(255,255,255,.28)!important;
+      -webkit-backdrop-filter:blur(14px)!important;
+      backdrop-filter:blur(14px)!important;
+    }
+    .download-button:hover{
+      color:#000!important;
+      background:rgba(255,255,255,.88)!important;
+      border-color:#fff!important;
+    }
+    .empty{
+      color:rgba(255,255,255,.76)!important;
+      background:rgba(0,0,0,.22)!important;
+      border-color:rgba(255,255,255,.25)!important;
+      -webkit-backdrop-filter:blur(14px)!important;
+      backdrop-filter:blur(14px)!important;
+    }
+    .empty b,.empty-icon{color:#fff!important}
+    .empty-icon{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.2)!important}
+    .load-more button{
+      color:#fff!important;
+      background:rgba(0,0,0,.32)!important;
+      border-color:rgba(255,255,255,.22)!important;
+      -webkit-backdrop-filter:blur(14px)!important;
+      backdrop-filter:blur(14px)!important;
+    }
+    .load-more button:hover{color:#000!important;background:rgba(255,255,255,.9)!important;border-color:#fff!important}
+    .player-overlay{background:rgba(0,0,0,.58)!important;backdrop-filter:blur(18px)!important}
+    .player-shell{
+      background:rgba(0,0,0,.72)!important;
+      border-color:rgba(255,255,255,.22)!important;
+      -webkit-backdrop-filter:blur(22px)!important;
+      backdrop-filter:blur(22px)!important;
+    }
+    .player-head{background:rgba(255,255,255,.08)!important;border-bottom-color:rgba(255,255,255,.16)!important}
+    .player-title{color:#fff!important}
+    .player-btn,.player-close{
+      color:#fff!important;
+      background:rgba(0,0,0,.28)!important;
+      border-color:rgba(255,255,255,.22)!important;
+    }
+    .player-btn:hover,.player-close:hover{color:#000!important;background:rgba(255,255,255,.9)!important}
+    .player-loading{color:#fff!important;background:rgba(0,0,0,.76)!important}
+    .spinner{border-top-color:#fff!important}
 
   </style>
 </head>
