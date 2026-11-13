@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100%" height="100%"
+     style="display:block;width:100vw;height:100vh;overflow:hidden;"
+     role="document"
+     aria-label="SIFT interactive website">
+  <rect x="0" y="0" width="100%" height="100%" fill="#07080c" />
+
+  <!-- No viewBox: SVG user units stay 1:1 with CSS pixels. This gives the
+       iframe the actual available viewport dimensions instead of a 100x100
+       layout viewport that gets enlarged after the HTML has laid out. -->
+  <foreignObject x="0" y="0" width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml"
+         style="position:relative;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;overflow:hidden;background:#07080c;">
+      <iframe id="sift-site"
+              title="SIFT"
+              style="display:block;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;background:#07080c;"
+              allow="autoplay; fullscreen; clipboard-read; clipboard-write; gamepad; pointer-lock"
+              allowfullscreen="allowfullscreen"></iframe>
+      <div id="sift-load-error"
+           style="display:none;position:absolute;inset:0;box-sizing:border-box;padding:32px;background:#07080c;color:#f4f6fb;font:14px/1.6 system-ui,sans-serif;">
+        <div style="max-width:560px;margin:12vh auto 0;padding:24px;border:1px solid #30394e;border-radius:16px;background:#111827;">
+          <strong style="display:block;font-size:18px;margin-bottom:8px;">SIFT could not load</strong>
+          <span id="sift-load-error-message">Open this SVG from its jsDelivr URL and check your internet connection.</span>
+        </div>
+      </div>
+    </div>
+  </foreignObject>
+
+  <script type="application/ecmascript"><![CDATA[
+    (function () {
+      "use strict";
+
+      // Resolve index.html from the same jsDelivr package version as this SVG.
+      const base = new URL(".", window.location.href).href;
+      const source = new URL("index.html", base).href;
+      const mainBase = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
+      const frame = document.getElementById("sift-site");
+      const errorPanel = document.getElementById("sift-load-error");
+      const errorMessage = document.getElementById("sift-load-error-message");
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorPanel.style.display = "block";
+      }
+
+      fetch(source, { cache: "no-cache" })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("The SIFT HTML returned HTTP " + response.status + ".");
+          }
+          return response.text();
+        })
+        .then(function (html) {
+          if (!/<html[\s>]/i.test(html) || !/<body[\s>]/i.test(html)) {
+            throw new Error("The repository did not return the expected index.html page.");
+          }
+
+          // Preserve the package tag in the resource base. Keep the existing
+          // main-branch URL replacement for resources hard-coded to that path.
+          html = html.split(mainBase).join(base);
+          const baseTag = '<base href="' + base + '">';
+          if (/<head(?:\s[^>]*)?>/i.test(html)) {
+            html = html.replace(/<head(?:\s[^>]*)?>/i, function (head) {
+              return head + baseTag;
+            });
+          } else {
+            html = html.replace(/<html(?:\s[^>]*)?>/i, function (root) {
+              return root + "<head>" + baseTag + "</head>";
+            });
+          }
+
+          frame.srcdoc = html;
+        })
+        .catch(function (error) {
+          showError(error && error.message
+            ? error.message
+            : "Could not fetch the SIFT website. Check the network and try again.");
+        });
+    })();
+  ]]></script>
+</svg>
