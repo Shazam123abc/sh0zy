@@ -7,7 +7,7 @@
 <link rel="icon" id="fav" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 <style>
 :root{
@@ -26,18 +26,11 @@
   --shadow:0 24px 64px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.24);
 }
 
-/* Theme Variations */
 body[data-theme="obsidian"]{
   --glass:rgba(8,9,13,.68);
   --glass-heavy:rgba(5,6,9,.78);
   --glass-card:rgba(255,255,255,.055);
   --bar:rgba(10,11,16,.70);
-}
-body[data-theme="aurora"]{
-  --glass:rgba(16,28,42,.38);
-  --glass-heavy:rgba(12,22,36,.54);
-  --glass-card:rgba(110,231,183,.08);
-  --bar:rgba(16,32,46,.42);
 }
 body[data-theme="crystal"]{
   --txt:#111827;
@@ -51,12 +44,6 @@ body[data-theme="crystal"]{
   --bar:rgba(255,255,255,.50);
   --shadow:0 24px 64px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.85);
 }
-body[data-theme="cyber"]{
-  --glass:rgba(22,12,38,.44);
-  --glass-heavy:rgba(16,8,30,.62);
-  --glass-card:rgba(236,72,153,.085);
-  --bar:rgba(26,14,44,.48);
-}
 
 *{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
@@ -68,61 +55,253 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 /* GLASS BUTTONS */
 .ib{height:34px;padding:0 15px;border:1px solid var(--line);border-radius:11px;background:var(--glass-card);backdrop-filter:blur(12px);transition:all .18s cubic-bezier(.2,.8,.2,1);font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .ib:hover:not(:disabled){background:var(--glass-card-hover);border-color:var(--line-bright);transform:translateY(-1px)}
-.ib:active:not(:disabled){transform:translateY(0) scale(.98)}
-.ib:disabled{opacity:.4;cursor:default}
 .ib.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;color:#fff;box-shadow:0 6px 20px rgba(106,149,255,.35)}
-.ib.primary:hover:not(:disabled){filter:brightness(1.08);box-shadow:0 8px 24px rgba(106,149,255,.5)}
-.ib.active-pill{background:rgba(16,185,129,.22);border-color:rgba(16,185,129,.55);color:#34d399}
 
 .spin{width:28px;height:28px;border-radius:50%;border:2.5px solid rgba(255,255,255,.16);border-top-color:var(--acc);animation:sp .8s linear infinite}@keyframes sp{to{rotate:360deg}}
 
-/* BOOT / OPENING ANIMATION */
+/* CLASSIC MAC OS "HELLO" BOOT ANIMATION (PACIFICO FONT, THIN SINGLE STROKE) */
 #boot{
   position:fixed;inset:0;z-index:9999;
-  background:radial-gradient(circle at 50% 42%, #151b2e 0%, #06080f 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  transition:opacity .75s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1), visibility 0s .85s;
+  background:#05060a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .85s cubic-bezier(.22,1,.36,1), transform .95s cubic-bezier(.22,1,.36,1), visibility 0s .95s;
 }
-#boot.done{opacity:0;transform:scale(1.06);pointer-events:none;visibility:hidden}
-.boot-orb{
-  width:86px;height:86px;border-radius:26px;
-  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.03));
-  backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.28);
-  box-shadow:0 20px 50px rgba(0,0,0,.6), 0 0 40px rgba(106,149,255,.3), inset 0 1px 0 rgba(255,255,255,.4);
-  display:grid;place-items:center;font-size:34px;color:#fff;
-  animation:bootFloat 2.4s ease-in-out infinite;
+#boot::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 45%, rgba(255,190,110,.12) 0%, rgba(56,115,215,.14) 45%, rgba(5,6,10,.96) 100%);
+  filter:blur(32px);
+  pointer-events:none;
 }
-@keyframes bootFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.03)}}
-.boot-title{font-size:20px;font-weight:600;letter-spacing:.28em;text-indent:.28em;color:#fff;opacity:.92}
-.boot-bar{width:190px;height:4px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;position:relative}
-.boot-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--acc2));box-shadow:0 0 12px var(--acc);animation:bootLoad 1.15s cubic-bezier(.22,1,.36,1) forwards}
-@keyframes bootLoad{0%{width:0%}60%{width:78%}100%{width:100%}}
+#boot.done{opacity:0;transform:scale(1.05);pointer-events:none;visibility:hidden}
+.hello-wrap{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.hello-svg{
+  width:min(420px, 74vw);height:auto;overflow:visible;
+}
+.hello-stroke{
+  font-family:'Pacifico', cursive;
+  font-size:104px;
+  fill:none;
+  stroke:#ffffff;
+  stroke-width:1.2px;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:1200;
+  stroke-dashoffset:1200;
+  animation:helloDraw 2.2s cubic-bezier(.37,0,.2,1) .15s forwards;
+  filter:drop-shadow(0 2px 14px rgba(255,255,255,.25));
+}
+@keyframes helloDraw{
+  to{stroke-dashoffset:0}
+}
+.hello-start-btn{
+  position:absolute;bottom:54px;z-index:2;
+  background:none;border:0;color:rgba(255,255,255,.72);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:11.5px;font-weight:400;letter-spacing:.02em;
+  cursor:pointer;opacity:0;transform:translateY(10px);
+  animation:helloBtnIn .8s cubic-bezier(.22,1,.36,1) 1.6s forwards;
+  transition:color .2s, transform .2s;
+}
+.hello-start-btn:hover{color:#fff;transform:translateY(-2px)}
+@keyframes helloBtnIn{
+  to{opacity:1;transform:translateY(0)}
+}
+.hello-start-ico{
+  width:26px;height:26px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.32);
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.05);
+  font-size:9.5px;
+  transition:background .2s, border-color .2s;
+}
+.hello-start-btn:hover .hello-start-ico{
+  background:rgba(255,255,255,.14);
+  border-color:rgba(255,255,255,.65);
+}
 
 /* WALLPAPER */
 #wall{position:fixed;inset:0;background:#07080c center/cover no-repeat;transition:background-image .5s ease, transform 1.1s cubic-bezier(.22,1,.36,1);transform:scale(1.04)}
 body.booted #wall{transform:scale(1)}
 #wall::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(0,0,0,.08),rgba(0,0,0,.38))}
 
-/* MACOS GLASS TOP MENU BAR */
+/* AUTHENTIC MACOS TOP MENU BAR */
 #top{
-  position:fixed;top:0;left:0;right:0;z-index:15;height:32px;
+  position:fixed;top:0;left:0;right:0;z-index:26;height:30px;
   display:flex;align-items:center;justify-content:space-between;padding:0 14px;
-  background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border-bottom:1px solid var(--line);
-  font-size:12px;
+  background:rgba(16,19,28,.55);
+  backdrop-filter:blur(32px) saturate(190%);
+  -webkit-backdrop-filter:blur(32px) saturate(190%);
+  border-bottom:1px solid rgba(255,255,255,.1);
+  font-size:12.5px;
   transform:translateY(-100%);transition:transform .6s cubic-bezier(.22,1,.36,1) .15s;
 }
 body.booted #top{transform:translateY(0)}
-.top-left,.top-right{display:flex;align-items:center;gap:6px}
-#top button{height:24px;padding:0 9px;border:0;border-radius:6px;background:none;display:inline-flex;align-items:center;gap:6px;font-weight:500;transition:background .15s}
-#top button:hover{background:rgba(255,255,255,.14)}
-.brand-pill{font-weight:700;letter-spacing:.04em}
-.top-menu-item{opacity:.82;font-weight:400}
-.top-menu-item:hover{opacity:1}
-.status-pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:11px}
-.status-dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399}
-#clock{font-weight:600;letter-spacing:.02em;padding:0 6px}
+.top-left,.top-right{display:flex;align-items:center;gap:2px}
+#top button{
+  height:22px;padding:0 9px;border:0;border-radius:5px;background:none;
+  display:inline-flex;align-items:center;gap:6px;font-weight:500;color:rgba(255,255,255,.92);
+  transition:background .14s, color .14s;
+}
+#top button:hover{background:rgba(255,255,255,.14);color:#fff}
+.brand-diamond{padding:0 8px!important;font-size:14px}
+.brand-diamond svg{width:14px;height:14px;display:block}
+.top-active-app{font-weight:700!important;letter-spacing:-.01em}
+.top-menu-item{font-weight:400!important;opacity:.9}
+.top-icon-btn{width:28px;height:22px;padding:0!important;justify-content:center!important;font-size:12.5px}
+.cc-toggle-icon{width:15px;height:14px;display:block}
+#clock{font-weight:500;padding:0 4px 0 8px;color:rgba(255,255,255,.94);letter-spacing:-.01em;white-space:nowrap}
+
+/* MISSION CONTROL WINDOW OVERVIEW EXPOSE */
+#expose{
+  position:fixed;inset:0;z-index:22;
+  background:rgba(10,13,22,.48);
+  backdrop-filter:blur(38px) saturate(185%);
+  -webkit-backdrop-filter:blur(38px) saturate(185%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:56px 42px 96px;overflow-y:auto;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s cubic-bezier(.22,1,.36,1), visibility 0s .28s;
+}
+#expose.open{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .28s cubic-bezier(.22,1,.36,1), visibility 0s 0s;
+}
+.ex-grid{
+  width:min(1260px, 95vw);
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 260px));
+  justify-content:center;gap:34px 26px;
+}
+.ex-item{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  cursor:pointer;position:relative;
+  transition:transform .22s cubic-bezier(.2,.85,.25,1.2);
+}
+.ex-item:hover{transform:translateY(-4px) scale(1.03)}
+.ex-win-box{
+  width:100%;aspect-ratio:16/10.5;border-radius:11px;
+  background:linear-gradient(145deg, rgba(32,37,50,.92), rgba(20,23,32,.96));
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 22px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22);
+  overflow:hidden;display:flex;flex-direction:column;position:relative;
+  transition:border-color .18s, box-shadow .18s;
+}
+.ex-item:hover .ex-win-box{
+  border-color:rgba(106,149,255,.85);
+  box-shadow:0 26px 56px rgba(0,0,0,.65), 0 0 0 2px rgba(106,149,255,.45);
+}
+.ex-win-chrome{
+  height:20px;padding:0 8px;
+  background:rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:4px;
+}
+.ex-dot{width:6px;height:6px;border-radius:50%}
+.ex-dot.r{background:#ff5f57}.ex-dot.y{background:#febc2e}.ex-dot.g{background:#28c840}
+.ex-win-body{
+  flex:1;display:grid;place-items:center;position:relative;
+  background:radial-gradient(circle at 50% 35%, rgba(255,255,255,.06), transparent 70%);
+}
+.ex-win-ico{
+  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+  font-size:21px;color:#fff;
+  background:var(--ex-c, linear-gradient(160deg, #38bdf8, #0284c7));
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+.ex-close-btn{
+  position:absolute;top:-8px;left:-8px;z-index:4;
+  width:24px;height:24px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.35);
+  background:rgba(28,32,42,.92);color:#fff;
+  display:grid;place-items:center;font-size:11px;
+  box-shadow:0 4px 12px rgba(0,0,0,.5);
+  opacity:0;transform:scale(.85);
+  transition:opacity .16s, transform .16s, background .15s;
+}
+.ex-item:hover .ex-close-btn,.ex-close-btn:focus-visible{opacity:1;transform:scale(1)}
+.ex-close-btn:hover{background:#ef4444;border-color:#fca5a5}
+.ex-label{
+  font-size:12.5px;font-weight:500;color:rgba(255,255,255,.94);
+  text-shadow:0 2px 8px rgba(0,0,0,.75);
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* MACOS SPOTLIGHT SEARCH OVERLAY */
+#spotlight{
+  position:fixed;inset:0;z-index:35;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:16vh;
+  background:rgba(0,0,0,.18);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .16s ease, visibility 0s .16s;
+}
+#spotlight.open{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .16s ease, visibility 0s 0s;
+}
+.sp-box{
+  width:min(640px, 92vw);
+  border-radius:14px;
+  background:rgba(36,38,48,.88);
+  backdrop-filter:blur(44px) saturate(190%);
+  -webkit-backdrop-filter:blur(44px) saturate(190%);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 32px 80px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.22);
+  overflow:hidden;
+  transform:scale(.97) translateY(-6px);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1);
+}
+#spotlight.open .sp-box{transform:scale(1) translateY(0)}
+.sp-input-row{
+  display:flex;align-items:center;gap:14px;
+  height:56px;padding:0 18px;
+}
+.sp-input-row i{
+  font-size:20px;color:rgba(255,255,255,.52);
+}
+.sp-input-row input{
+  flex:1;border:0;background:none;outline:none;
+  font-size:23px;font-weight:400;color:#fff;
+  caret-color:#fff;
+}
+.sp-input-row input::placeholder{color:rgba(255,255,255,.35)}
+.sp-results{
+  border-top:1px solid rgba(255,255,255,.1);
+  padding:6px;
+  max-height:340px;overflow-y:auto;
+}
+.sp-results:empty{display:none}
+.sp-row{
+  width:100%;display:flex;align-items:center;gap:12px;
+  padding:7px 12px;border:0;border-radius:9px;
+  background:none;text-align:left;color:#fff;
+  transition:background .08s;
+}
+.sp-row.active{
+  background:#ff5c93;
+  box-shadow:0 4px 14px rgba(255,92,147,.32);
+}
+.sp-ico{
+  width:28px;height:28px;border-radius:7px;flex-shrink:0;
+  display:grid;place-items:center;font-size:14px;color:#fff;
+  background:var(--sp-c, linear-gradient(160deg, #3b82f6, #1d4ed8));
+  box-shadow:0 2px 6px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);
+}
+.sp-ico.safari{
+  background:linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  color:#2563eb;
+}
+.sp-name{
+  flex:1;font-size:14px;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.sp-cat{
+  font-size:12.5px;font-weight:500;
+  color:rgba(255,255,255,.52);
+}
+.sp-row.active .sp-cat{color:rgba(255,255,255,.92)}
 
 /* DAY / DATE DISPLAY */
 #day{
@@ -149,31 +328,39 @@ body.booted #widgets{opacity:1;transform:translateX(0)}
 .u{margin:6px;padding:12px 14px;border-radius:15px;background:var(--glass-card);border:1px solid rgba(255,255,255,.08)}
 .u small{color:var(--mut);font-size:11px;font-weight:500}.u b{display:block;margin-top:3px;font-size:14px;font-weight:600}.u p{margin-top:4px;color:var(--mut);font-size:12px}.u ul{margin:6px 0 0 18px;color:var(--mut);font-size:12px}
 
-/* MACOS FROSTED GLASS DOCK */
+/* MACOS VIBRANT SQUIRCLE DOCK */
 #dock{
   position:fixed;left:50%;bottom:14px;translate:-50% 0;z-index:16;
-  display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:24px;
-  background:var(--glass);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);
-  border:1px solid var(--line-bright);
-  box-shadow:0 22px 55px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.32);
+  display:flex;align-items:center;gap:11px;padding:10px 14px 12px;border-radius:24px;
+  background:rgba(24,30,38,.52);
+  backdrop-filter:blur(34px) saturate(190%);
+  -webkit-backdrop-filter:blur(34px) saturate(190%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 22px 55px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.25);
   transform:translateY(120%);transition:transform .65s cubic-bezier(.22,1,.36,1) .2s;
 }
 body.booted #dock{transform:translateY(0)}
-.dk{position:relative;width:48px;height:48px;padding:0;border:0;background:none;transition:transform .22s cubic-bezier(.2,.85,.25,1.2)}
+.dk{
+  position:relative;width:50px;height:50px;padding:0;border:0;background:none;
+  transition:transform .22s cubic-bezier(.2,.85,.25,1.2);
+}
 .dk .ti{
-  width:100%;height:100%;display:grid;place-items:center;border-radius:14px;
-  color:#fff;
-  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
-  border:1px solid rgba(255,255,255,.28);
-  backdrop-filter:blur(12px) saturate(145%);
-  -webkit-backdrop-filter:blur(12px) saturate(145%);
-  box-shadow:0 8px 18px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.45);
+  width:100%;height:100%;display:grid;place-items:center;
+  border-radius:15px;color:#fff;
+  background:var(--tile-bg, linear-gradient(160deg, #38bdf8, #0284c7));
+  border:1.5px solid rgba(255,255,255,.35);
+  box-shadow:0 6px 14px rgba(0,0,0,.32), inset 0 1.5px 1px rgba(255,255,255,.55);
   transition:filter .18s, box-shadow .18s;
 }
-.dk:hover .ti{filter:brightness(1.1);box-shadow:0 12px 24px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.6)}
-.dk .ic{font-size:20px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
-.dk:hover,.dk:focus-visible{transform:translateY(-9px) scale(1.15)}
-.dk:active{transform:translateY(-3px) scale(1.04)}
+.dk:hover .ti{
+  filter:brightness(1.08);
+  box-shadow:0 10px 22px rgba(0,0,0,.42), inset 0 1.5px 1px rgba(255,255,255,.75);
+}
+.dk .ic{font-size:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.22))}
+.dk:hover,.dk:focus-visible{transform:translateY(-8px) scale(1.13)}
+.dk:active{transform:translateY(-2px) scale(1.03)}
+.dk.start-dk .ti{background:linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);color:#3b82f6;border-color:rgba(255,255,255,.9)}
+.dk.start-dk .ic{filter:none}
 .dk::before{
   content:attr(data-tip);position:absolute;bottom:calc(100% + 12px);left:50%;translate:-50% 0;
   padding:5px 10px;border-radius:8px;
@@ -183,138 +370,137 @@ body.booted #dock{transform:translateY(0)}
   box-shadow:0 8px 20px rgba(0,0,0,.35);transition:opacity .15s, transform .15s;transform:translateY(4px);
 }
 .dk:hover::before,.dk:focus-visible::before{opacity:1;transform:translateY(0)}
-.dk::after{content:"";position:absolute;bottom:-5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--txt);opacity:0;transition:.15s}
-.dk.open::after{opacity:.65}.dk.act::after{opacity:1;box-shadow:0 0 8px var(--acc);background:var(--acc)}
-.sep{align-self:stretch;width:1px;margin:6px 3px;background:var(--line)}
+.dk::after{
+  content:"";position:absolute;bottom:-7px;left:50%;width:4.5px;height:4.5px;margin-left:-2.25px;
+  border-radius:50%;background:rgba(255,255,255,.78);opacity:0;transition:.15s;
+}
+.dk.open::after{opacity:.75}
+.dk.act::after{opacity:1;background:#60a5fa;box-shadow:0 0 6px #60a5fa}
+.sep{align-self:stretch;width:1px;margin:4px 2px;background:rgba(255,255,255,.22)}
 
-/* WINDOWS 11 INSPIRED START MENU */
+/* MACOS FULL-SCREEN LAUNCHPAD START MENU */
 #startMenu{
-  position:fixed;left:50%;bottom:88px;translate:-50% 0;z-index:18;
-  width:min(640px,94vw);max-height:calc(100vh - 132px);
-  border-radius:24px;
-  background:var(--glass-heavy);backdrop-filter:blur(36px) saturate(200%);-webkit-backdrop-filter:blur(36px) saturate(200%);
-  border:1px solid var(--line-bright);
-  box-shadow:0 32px 80px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.28);
-  display:flex;flex-direction:column;overflow:hidden;
-  transform-origin:bottom center;
-  animation:startPop .24s cubic-bezier(.16,1,.3,1);
+  position:fixed;inset:0;z-index:14;
+  background:rgba(12,15,24,.38);
+  backdrop-filter:blur(44px) saturate(185%);
+  -webkit-backdrop-filter:blur(44px) saturate(185%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:54px 24px 108px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .32s cubic-bezier(.22,1,.36,1), visibility 0s .32s, backdrop-filter .32s ease;
 }
-@keyframes startPop{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.sm-top{padding:20px 22px 12px}
-.sm-search{
-  display:flex;align-items:center;gap:10px;height:40px;padding:0 15px;border-radius:99px;
-  background:var(--glass-card);border:1px solid var(--line);
-  transition:border-color .18s, background .18s;
+#startMenu.open{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .32s cubic-bezier(.22,1,.36,1), visibility 0s 0s, backdrop-filter .32s ease;
 }
-.sm-search:focus-within{border-color:var(--acc);background:var(--glass-card-hover)}
-.sm-search input{flex:1;border:0;background:none;outline:none;font-size:13px}
-.sm-search input::placeholder{color:var(--mut)}
-.sm-body{flex:1;overflow-y:auto;padding:6px 22px 18px;display:grid;gap:20px;scrollbar-width:thin}
-.sm-sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.sm-sec-head h4{font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--txt)}
-.sm-sec-head span{font-size:11px;color:var(--mut);background:var(--glass-card);padding:3px 9px;border-radius:7px;border:1px solid var(--line)}
-.sm-pinned{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
-.sm-app{
-  display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px;
-  border:1px solid transparent;border-radius:14px;background:none;text-align:center;
-  transition:all .16s ease;
+.lp-inner{
+  width:min(860px,92vw);display:flex;flex-direction:column;align-items:center;gap:42px;
+  transform:scale(1.08);
+  transition:transform .36s cubic-bezier(.22,1,.36,1);
 }
-.sm-app:hover{background:var(--glass-card-hover);border-color:var(--line);transform:translateY(-2px)}
-.sm-app-ico{
-  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:rgba(255,255,255,.97);font-size:17px;
-  background:linear-gradient(145deg,rgba(232,236,244,.27),rgba(148,156,171,.14));
-  border:1px solid rgba(255,255,255,.30);
-  -webkit-backdrop-filter:blur(15px) saturate(150%);
-  backdrop-filter:blur(15px) saturate(150%);
-  box-shadow:0 8px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.42);
-  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
+#startMenu.open .lp-inner{transform:scale(1)}
+.lp-search{
+  display:flex;align-items:center;gap:8px;
+  width:min(270px,80vw);height:32px;padding:0 12px;border-radius:8px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 4px 16px rgba(0,0,0,.18);
 }
-.sm-app:hover .sm-app-ico{
-  background:linear-gradient(145deg,rgba(245,247,251,.34),rgba(168,176,190,.20));
-  border-color:rgba(255,255,255,.42);
-  box-shadow:0 10px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.48);
+.lp-search input{flex:1;border:0;background:none;outline:none;font-size:13px;color:#fff;text-align:center}
+.lp-search input:focus{text-align:left}
+.lp-search input::placeholder{color:rgba(255,255,255,.62)}
+.lp-grid{
+  width:100%;max-height:calc(100vh - 210px);overflow-y:auto;scrollbar-width:none;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:34px 20px;
+  justify-items:center;padding:8px;
 }
-.sm-app span{font-size:11px;font-weight:500;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sm-recent{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.sm-rec-item{
-  display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:13px;
-  border:1px solid transparent;background:var(--glass-card);text-align:left;transition:.15s;
+.lp-item{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:none;border:0;padding:6px;border-radius:18px;width:110px;
+  transition:transform .2s cubic-bezier(.2,.85,.25,1.2);
 }
-.sm-rec-item:hover{background:var(--glass-card-hover);border-color:var(--line)}
-.sm-rec-ico{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:rgba(106,149,255,.18);color:var(--acc);font-size:14px;flex-shrink:0}
-.sm-rec-meta b{display:block;font-size:12px;font-weight:600}
-.sm-rec-meta small{display:block;font-size:11px;color:var(--mut)}
-.sm-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.sm-cat{padding:11px;border-radius:16px;background:var(--glass-card);border:1px solid var(--line)}
-.sm-cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:8px}
-.sm-cat-mini{height:32px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);font-size:13px;border:0;transition:.15s}
-.sm-cat-mini:hover{background:rgba(106,149,255,.28);transform:scale(1.06)}
-.sm-cat-lbl{font-size:11px;font-weight:600;text-align:center;color:var(--mut)}
-.sm-foot{
-  padding:12px 22px;background:rgba(0,0,0,.18);border-top:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
+.lp-item:hover{transform:translateY(-4px) scale(1.06)}
+.lp-ico{
+  width:74px;height:74px;border-radius:19px;
+  display:grid;place-items:center;color:#fff;font-size:32px;
+  background:var(--c, linear-gradient(160deg, #38bdf8, #0284c7));
+  border:1.5px solid rgba(255,255,255,.34);
+  box-shadow:0 14px 30px rgba(0,0,0,.35), inset 0 1.5px 1px rgba(255,255,255,.55);
 }
-.sm-user{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600}
-.sm-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;color:#fff;font-size:12px;box-shadow:0 2px 10px rgba(106,149,255,.4)}
-.sm-power{display:flex;gap:6px}
-.sm-power button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--glass-card);display:grid;place-items:center;transition:.15s}
-.sm-power button:hover{background:var(--glass-card-hover);border-color:var(--line-bright)}
+.lp-item span{
+  font-size:12.5px;font-weight:500;color:rgba(255,255,255,.95);
+  text-shadow:0 2px 8px rgba(0,0,0,.6);
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 
 /* MACOS GLASS WINDOWS */
 #desk{position:fixed;inset:0;z-index:6;pointer-events:none}
 .win{
   position:absolute;pointer-events:auto;display:flex;flex-direction:column;
   min-width:360px;min-height:260px;overflow:hidden;border-radius:18px;
-  background:var(--glass-heavy);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid var(--line-bright);
-  box-shadow:0 28px 80px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.24);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.17) 0%, rgba(255,255,255,.055) 42%, rgba(255,255,255,.085) 100%),
+    rgba(24,30,45,.27);
+  -webkit-backdrop-filter: blur(42px) saturate(205%);
+  backdrop-filter: blur(42px) saturate(205%);
+  border: 1px solid rgba(255,255,255,.34);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.48);
   animation:pop .24s cubic-bezier(.2,.8,.2,1);
   transition:box-shadow .2s,opacity .2s,transform .2s;
 }
 @keyframes pop{from{opacity:0;transform:scale(.95) translateY(10px)}}
-.win.focus{box-shadow:0 34px 95px rgba(0,0,0,.78),0 0 0 1px rgba(138,164,255,.45), inset 0 1px 0 rgba(255,255,255,.32)}
-.win.min{opacity:0;transform:scale(.82) translateY(50px);pointer-events:none;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s}
-.win.max{left:0!important;top:32px!important;width:100%!important;height:calc(100% - 32px - 82px)!important;border-radius:0;border-left:0;border-right:0}
+.win.focus{
+  box-shadow:
+    0 34px 96px rgba(0,0,0,.40),
+    0 0 0 1px rgba(190,207,255,.38),
+    inset 0 1px 0 rgba(255,255,255,.52);
+}
+.win.min{opacity:0;transform:scale(.82) translateY(50px);pointer-events:none;visibility:hidden}
+.win.max{left:0!important;top:32px!important;width:100%!important;height:calc(100% - 32px - 86px)!important;border-radius:0}
 .tb{
   display:grid;grid-template-columns:80px 1fr 80px;align-items:center;height:40px;padding:0 14px;
-  background:var(--bar);border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.19), rgba(255,255,255,.065)), rgba(220,228,245,.095);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  border-bottom:1px solid rgba(255,255,255,.20);
   cursor:grab;touch-action:none;user-select:none;
 }
 .wb{display:flex;align-items:center;gap:8px}
 .wb button{width:13px;height:13px;padding:0;border:0;border-radius:50%;transition:transform .15s,filter .15s;position:relative}
 .wb button:hover{transform:scale(1.12);filter:brightness(1.1)}
-.wb .b-c{background:#ff5f57;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.wb .b-m{background:#febc2e;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.wb .b-x{background:#28c840;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.wb .b-c{background:#ff5f57}
+.wb .b-m{background:#febc2e}
+.wb .b-x{background:#28c840}
 .tt{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:13px;color:var(--txt)}
 .tt .ic{font-size:13px;color:var(--acc)}
-.wbody{position:relative;flex:1;min-height:0;background:rgba(8,9,14,.55)}
+.wbody{position:relative;flex:1;min-height:0;background:rgba(255,255,255,.018)}
 .wbody iframe{display:block;width:100%;height:100%;border:0;background:transparent}
-.ph{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:var(--mut);background:var(--glass-heavy)}
+.ph{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:var(--mut);background:var(--glass-heavy);backdrop-filter:blur(24px)}
 .rs{position:absolute;right:0;bottom:0;z-index:2;width:18px;height:18px;cursor:nwse-resize;touch-action:none}
 #desk.drag iframe{pointer-events:none}
 
 /* TOP BAR DROPDOWN MENU */
 #menu{
-  position:fixed;z-index:25;min-width:236px;padding:6px;border-radius:14px;
+  position:fixed;z-index:30;min-width:236px;padding:6px;border-radius:14px;
   background:var(--glass-heavy);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid var(--line-bright);box-shadow:var(--shadow);
   animation:pop .16s ease;
 }
 #menu button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;border-radius:9px;background:none;text-align:left;font-size:12.5px;transition:background .12s}
-#menu button:hover:not(:disabled),#menu button:focus-visible{background:rgba(106,149,255,.24)}#menu button:disabled{opacity:.4;cursor:default}
+#menu button:hover{background:rgba(106,149,255,.24)}
 #menu hr{margin:5px 8px;border:0;border-top:1px solid var(--line)}#menu .ic{width:16px;text-align:center;color:var(--acc)}
 
-/* MODERN MULTI-SIDEBAR SETTINGS APP (MATCHING SCREENSHOT) */
+/* SETTINGS APP */
 .st-shell{display:grid;grid-template-columns:196px 1fr;height:100%;background:transparent}
 .st-side{
   padding:16px 12px;border-right:1px solid var(--line);
-  background:rgba(0,0,0,.16);display:flex;flex-direction:column;gap:4px;
+  background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:4px;
 }
 .st-nav{
   display:flex;align-items:center;gap:10px;padding:10px 13px;border:0;border-radius:11px;
-  background:none;text-align:left;font-size:13px;font-weight:500;color:var(--mut);
-  transition:all .15s;
+  background:none;text-align:left;font-size:13px;font-weight:500;color:var(--mut);transition:all .15s;
 }
 .st-nav:hover{background:var(--glass-card);color:var(--txt)}
 .st-nav.active{background:var(--glass-card-hover);color:var(--txt);font-weight:600;border:1px solid var(--line)}
@@ -325,8 +511,8 @@ body.booted #dock{transform:translateY(0)}
 .st-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
 .st-card{
   padding:18px 20px;border-radius:16px;
-  background:var(--glass-card);border:1px solid var(--line);
-  box-shadow:0 8px 24px rgba(0,0,0,.16);
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),var(--glass-card);
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.16);
   margin-bottom:14px;transition:border-color .18s, background .18s;
 }
 .st-card:hover{border-color:var(--line-bright);background:var(--glass-card-hover)}
@@ -337,8 +523,7 @@ body.booted #dock{transform:translateY(0)}
 .st-presets{display:flex;flex-wrap:wrap;gap:8px}
 .st-preset-chip{
   display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:11px;
-  background:var(--glass-card);border:1px solid var(--line);font-size:12px;font-weight:500;
-  transition:all .15s;
+  background:var(--glass-card);border:1px solid rgba(255,255,255,.13);font-size:12px;font-weight:500;transition:all .15s;
 }
 .st-preset-chip:hover{background:var(--glass-card-hover);border-color:var(--acc);transform:translateY(-1px)}
 .st-preset-chip img{width:15px;height:15px;border-radius:3px}
@@ -346,9 +531,8 @@ body.booted #dock{transform:translateY(0)}
 .st-field label{display:block;font-size:11.5px;font-weight:500;color:var(--mut);margin-bottom:5px}
 .st-field input,.st-field select{
   width:100%;height:36px;padding:0 12px;border-radius:10px;
-  border:1px solid var(--line);background:rgba(0,0,0,.28);color:var(--txt);
+  border:1px solid rgba(255,255,255,.18);background:rgba(12,16,26,.22);color:var(--txt);
 }
-.st-field input:focus,.st-field select:focus{border-color:var(--acc);outline:none}
 .theme-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
 .theme-card{
   padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--glass-card);
@@ -368,7 +552,7 @@ body.booted #dock{transform:translateY(0)}
   background:rgba(0,0,0,.65);backdrop-filter:blur(8px);color:#fff;font-size:10.5px;font-weight:500;
 }
 
-/* GLASS TOAST NOTIFICATION */
+/* GLASS TOAST */
 #toast{
   position:fixed;top:44px;right:18px;z-index:100;
   padding:10px 16px;border-radius:14px;
@@ -388,241 +572,91 @@ dialog label{display:block;margin-top:12px;font-size:12px;color:var(--mut)}
 dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35)}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
 .acts{display:grid;gap:8px;margin-top:14px}.acts .ib{height:36px;justify-content:flex-start}
-#adm-info div{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid var(--line)}#adm-info span{color:var(--mut);text-align:right;overflow-wrap:anywhere}
+#adm-info div{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid var(--line)}#adm-info span{color:var(--mut);text-align:right}
 #wp-msg,#pw-msg{min-height:18px;margin-top:8px;font-size:12px;color:#ffb4a8}
 #doc{width:min(92vw,560px)}
 #doc-b{max-height:55vh;margin-top:8px;padding-right:6px;overflow:auto}
 #doc-b h3{margin:14px 0 4px;font-size:13px}
-#doc-b p{color:var(--mut);font-size:13px;line-height:1.55}#doc-b small{color:var(--mut)}
+#doc-b p{color:var(--mut);font-size:13px;line-height:1.55}
 .gp{margin-top:10px;color:var(--mut);font-size:13px;line-height:1.55}
 .lk{padding:0;border:0;background:none;color:var(--acc);text-decoration:underline}
 
 @media(max-width:900px){#widgets{display:none}}
 @media(max-width:720px){
   #day b{letter-spacing:.2em;padding-left:.2em}
-  .dk{width:42px;height:42px}
-  .sm-pinned{grid-template-columns:repeat(4,1fr)}
-  .sm-cats,.sm-recent{grid-template-columns:1fr}
+  .dk{width:44px;height:44px}
+  .top-menu-item{display:none!important}
+  .lp-grid{grid-template-columns:repeat(3,1fr);gap:24px 12px}
+  .lp-ico{width:62px;height:62px;font-size:26px;border-radius:16px}
   .st-shell{grid-template-columns:1fr}
   .st-side{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:10px}
-  .st-grid-2,.theme-cards,.wp-grid{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-/* ===== MATCHED NEUTRAL GLASS APP ICONS ===== */
-/* Every dock tile shares the same soft grey glass finish as the Start icon. */
-#dock .dk .ti,
-#dock .dk.start-dk .ti {
-  background:linear-gradient(145deg,rgba(232,236,244,.27),rgba(148,156,171,.14));
-  border:1px solid rgba(255,255,255,.30);
-  -webkit-backdrop-filter:blur(15px) saturate(150%);
-  backdrop-filter:blur(15px) saturate(150%);
-  box-shadow:0 8px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.42);
-}
-#dock .dk:hover .ti {
-  background:linear-gradient(145deg,rgba(245,247,251,.34),rgba(168,176,190,.20));
-  border-color:rgba(255,255,255,.42);
-}
-#dock .dk .ic {
-  color:rgba(255,255,255,.96);
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.30));
-}
-
-/* ===== REFINED FROSTED GLASS FINISH ===== */
-/* Softer translucent layers let the wallpaper show through like a native desktop. */
-#top,
-.wg,
-#dock,
-#startMenu,
-.win,
-#menu,
-#toast,
-dialog {
-  -webkit-backdrop-filter: blur(30px) saturate(185%);
-  backdrop-filter: blur(30px) saturate(185%);
-}
-
-#top {
-  background:var(--glass);
-  box-shadow:0 1px 18px rgba(0,0,0,.12);
-}
-
-.wg {
-  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025)),var(--glass);
-  border-color:rgba(255,255,255,.20);
-  box-shadow:0 18px 48px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.24);
-}
-
-#dock {
-  background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.035)),var(--glass);
-  border-color:rgba(255,255,255,.27);
-  box-shadow:0 20px 52px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.34);
-}
-
-#startMenu,
-#menu,
-dialog,
-#toast {
-  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025)),var(--glass-heavy);
-  border-color:rgba(255,255,255,.25);
-  box-shadow:0 28px 76px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.28);
-}
-
-.win {
-  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025) 48%,rgba(255,255,255,.045)),var(--glass-heavy);
-  border-color:rgba(255,255,255,.27);
-  box-shadow:0 28px 76px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.28);
-}
-
-.win.focus {
-  box-shadow:0 32px 88px rgba(0,0,0,.48),0 0 0 1px rgba(138,164,255,.42),inset 0 1px 0 rgba(255,255,255,.34);
-}
-
-.tb {
-  background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.035)),var(--bar);
-  border-bottom-color:rgba(255,255,255,.16);
-}
-
-.wbody {
-  background:rgba(255,255,255,.025);
-}
-
-.wbody iframe {
-  background:transparent;
-}
-
-.ph {
-  background:var(--glass-heavy);
-  -webkit-backdrop-filter:blur(24px) saturate(175%);
-  backdrop-filter:blur(24px) saturate(175%);
-}
-
-.st-side {
-  background:rgba(255,255,255,.035);
-}
-
-.st-card {
-  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),var(--glass-card);
-  border-color:rgba(255,255,255,.14);
-}
-
-.st-card:hover {
-  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04)),var(--glass-card-hover);
-}
-
-.st-field input,
-.st-field select,
-dialog input {
-  background:rgba(12,16,26,.22);
-  border-color:rgba(255,255,255,.18);
-}
-
-.sm-foot {
-  background:rgba(255,255,255,.035);
-}
-
-.u,
-.sm-rec-item,
-.sm-cat,
-.sm-search,
-.st-preset-chip {
-  border-color:rgba(255,255,255,.13);
-}
-
-.status-pill {
-  background:rgba(255,255,255,.10);
-  -webkit-backdrop-filter:blur(12px);
-  backdrop-filter:blur(12px);
-}
-
-@media(prefers-reduced-transparency:reduce) {
-  :root {
-    --glass:rgba(18,22,34,.88);
-    --glass-heavy:rgba(15,19,31,.96);
-    --bar:rgba(25,30,44,.92);
-  }
-}
-
-
-
-/* ===== CLEARLY TRANSLUCENT WINDOW GLASS ===== */
-/* Keep the window shell visibly see-through, including on systems that request
-   reduced transparency. The wallpaper should remain visible through the chrome. */
-.win {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.17) 0%, rgba(255,255,255,.055) 42%, rgba(255,255,255,.085) 100%),
-    rgba(24,30,45,.27) !important;
-  -webkit-backdrop-filter: blur(42px) saturate(205%) !important;
-  backdrop-filter: blur(42px) saturate(205%) !important;
-  border: 1px solid rgba(255,255,255,.34) !important;
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.34),
-    inset 0 1px 0 rgba(255,255,255,.48),
-    inset 0 -1px 0 rgba(255,255,255,.08) !important;
-}
-
-.win.focus {
-  box-shadow:
-    0 34px 96px rgba(0,0,0,.40),
-    0 0 0 1px rgba(190,207,255,.38),
-    inset 0 1px 0 rgba(255,255,255,.52) !important;
-}
-
-.tb {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.19), rgba(255,255,255,.065)),
-    rgba(220,228,245,.095) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
-  backdrop-filter: blur(28px) saturate(190%) !important;
-  border-bottom: 1px solid rgba(255,255,255,.20) !important;
-}
-
-.wbody {
-  background: rgba(255,255,255,.018) !important;
-}
-
-/* Preserve a little transparency even when OS accessibility asks for less blur. */
-@media (prefers-reduced-transparency: reduce) {
-  .win {
-    background:
-      linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.045)),
-      rgba(24,30,45,.48) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-  .tb {
-    background: rgba(190,200,220,.20) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-}
-
 </style>
 </head>
 <body>
 
-<!-- OPENING BOOT ANIMATION -->
+<!-- CLASSIC MAC OS "HELLO" BOOT ANIMATION -->
 <div id="boot" aria-hidden="true">
-  <div class="boot-orb"><i class="fa-solid fa-layer-group"></i></div>
-  <div class="boot-title">SIFT OS</div>
-  <div class="boot-bar"><div class="boot-fill"></div></div>
+  <div class="hello-wrap">
+    <svg class="hello-svg" viewBox="0 0 420 160" aria-label="hello">
+      <text x="50%" y="66%" text-anchor="middle" class="hello-stroke">hello</text>
+    </svg>
+  </div>
+  <button type="button" class="hello-start-btn" id="helloBtn">
+    <span class="hello-start-ico"><i class="fa-solid fa-chevron-right"></i></span>
+    <span>Get Started</span>
+  </button>
 </div>
 
 <!-- WALLPAPER -->
 <div id="wall" aria-hidden="true"></div>
 
-<!-- MACOS GLASS TOP BAR -->
+<!-- MISSION CONTROL WINDOW OVERVIEW EXPOSE -->
+<div id="expose" aria-label="Mission Control Window Overview">
+  <div class="ex-grid" id="exGrid"></div>
+</div>
+
+<!-- MACOS SPOTLIGHT SEARCH OVERLAY -->
+<div id="spotlight" aria-label="Spotlight Search">
+  <div class="sp-box">
+    <div class="sp-input-row">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="spInput" type="text" placeholder="Spotlight Search" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="sp-results" id="spResults"></div>
+  </div>
+</div>
+
+<!-- AUTHENTIC MACOS TOP MENU BAR -->
 <header id="top">
   <div class="top-left">
-    <button type="button" id="menuBtn" aria-label="SIFT Menu" aria-haspopup="menu" class="brand-pill">
-      <i class="fa-solid fa-sparkles" style="color:var(--acc)"></i> SIFT
+    <button type="button" id="menuBtn" class="brand-diamond" aria-label="System Menu" aria-haspopup="menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4.5" y="4.5" width="15" height="15" rx="3.2" transform="rotate(45 12 12)"/>
+      </svg>
     </button>
-    <button type="button" class="top-menu-item" id="topStartBtn">Start</button>
-    <button type="button" class="top-menu-item" id="topSettingsBtn">Settings</button>
-    <button type="button" class="top-menu-item" id="topWallBtn">Wallpaper</button>
+    <button type="button" class="top-active-app" id="topActiveApp">Finder</button>
+    <button type="button" class="top-menu-item" id="topFileBtn">File</button>
+    <button type="button" class="top-menu-item" id="topEditBtn">Edit</button>
+    <button type="button" class="top-menu-item" id="topViewBtn">View</button>
+    <button type="button" class="top-menu-item" id="topWindowBtn">Window</button>
+    <button type="button" class="top-menu-item" id="topHelpBtn">Help</button>
   </div>
   <div class="top-right">
-    <span class="status-pill"><span class="status-dot"></span> Glass OS</span>
+    <button type="button" class="top-icon-btn" id="topWifiBtn" aria-label="Wi-Fi Status" title="Connected">
+      <i class="fa-solid fa-wifi"></i>
+    </button>
+    <button type="button" class="top-icon-btn" id="topSearchBtn" aria-label="Spotlight / Launchpad Search" title="Search Apps">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+    <button type="button" class="top-icon-btn" id="topExposeBtn" aria-label="Mission Control / Open Windows" title="Show All Open Windows">
+      <svg class="cc-toggle-icon" viewBox="0 0 18 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="1.5" y="1.5" width="15" height="5" rx="2.5"/>
+        <circle cx="13.5" cy="4" r="1.4" fill="currentColor" stroke="none"/>
+        <rect x="1.5" y="9.5" width="15" height="5" rx="2.5"/>
+        <circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
     <span id="clock"></span>
   </div>
 </header>
@@ -641,38 +675,15 @@ dialog input {
 <!-- DESKTOP WINDOW LAYER -->
 <main id="desk"></main>
 
-<!-- WINDOWS 11 STYLE START MENU -->
-<section id="startMenu" aria-label="Start Menu" hidden>
-  <div class="sm-top">
-    <div class="sm-search">
-      <i class="fa-solid fa-magnifying-glass" style="color:var(--acc)"></i>
-      <input id="smSearch" type="search" placeholder="Search for apps, settings, and cloaking tools..." autocomplete="off">
+<!-- MACOS LAUNCHPAD START MENU -->
+<section id="startMenu" aria-label="Launchpad">
+  <div class="lp-inner">
+    <div class="lp-search">
+      <i class="fa-solid fa-magnifying-glass" style="color:rgba(255,255,255,.6)"></i>
+      <input id="smSearch" type="search" placeholder="Search Apps" autocomplete="off">
     </div>
+    <div class="lp-grid" id="lpGrid"></div>
   </div>
-  <div class="sm-body" id="smBody">
-    <div>
-      <div class="sm-sec-head"><h4>Pinned</h4><span>All Apps</span></div>
-      <div class="sm-pinned" id="smPinned"></div>
-    </div>
-    <div>
-      <div class="sm-sec-head"><h4>Recent</h4><span>Quick Launch</span></div>
-      <div class="sm-recent" id="smRecent"></div>
-    </div>
-    <div>
-      <div class="sm-sec-head"><h4>Categories</h4><span>View: Category</span></div>
-      <div class="sm-cats" id="smCats"></div>
-    </div>
-  </div>
-  <footer class="sm-foot">
-    <div class="sm-user">
-      <div class="sm-avatar"><i class="fa-solid fa-user"></i></div>
-      <span>SIFT User</span>
-    </div>
-    <div class="sm-power">
-      <button type="button" id="smSettingsBtn" title="Settings"><i class="fa-solid fa-gear"></i></button>
-      <button type="button" id="smReloadBtn" title="Reload OS"><i class="fa-solid fa-rotate-right"></i></button>
-    </div>
-  </footer>
 </section>
 
 <!-- MACOS GLASS DOCK -->
@@ -680,7 +691,8 @@ dialog input {
 
 <!-- TOP BAR DROPDOWN MENU -->
 <div id="menu" role="menu" hidden>
-  <button role="menuitem" data-a="start"><i class="ic fa-brands fa-windows"></i>Open Start Menu</button>
+  <button role="menuitem" data-a="start"><i class="ic fa-solid fa-grip"></i>Open Launchpad</button>
+  <button role="menuitem" data-a="expose"><i class="ic fa-solid fa-window-restore"></i>Mission Control (Open Windows)</button>
   <button role="menuitem" data-a="wall"><i class="ic fa-regular fa-image"></i>Change Wallpaper</button>
   <button role="menuitem" data-a="settings"><i class="ic fa-solid fa-gear"></i>System Settings</button>
   <hr>
@@ -690,12 +702,9 @@ dialog input {
   <button role="menuitem" data-doc="tos"><i class="ic fa-regular fa-file-lines"></i>Terms of Service</button>
   <button role="menuitem" data-doc="privacy"><i class="ic fa-solid fa-user-shield"></i>Privacy Policy</button>
   <button role="menuitem" data-a="discord"><i class="ic fa-brands fa-discord"></i>Join our Discord</button>
-  <hr>
-  <button role="menuitem" data-a="dl-site"><i class="ic fa-solid fa-download"></i>Download site HTML</button>
-  <button role="menuitem" data-a="dl-app"><i class="ic fa-solid fa-download"></i>Download active app HTML</button>
 </div>
 
-<!-- TOAST NOTIFICATION -->
+<!-- TOAST -->
 <div id="toast" role="status"><i class="fa-solid fa-circle-check" style="color:var(--acc)"></i><span id="toastTxt"></span></div>
 
 <!-- WALLPAPER DIALOG -->
@@ -707,7 +716,7 @@ dialog input {
     <button type="button" class="ib" id="wp-up"><i class="fa-solid fa-upload"></i> Upload an image</button>
   </div>
   <div class="acts">
-    <button type="button" class="ib" id="wp-p1"><i class="fa-regular fa-image"></i> Default Mountain Glass</button>
+    <button type="button" class="ib" id="wp-p1"><i class="fa-regular fa-image"></i> Default Alpine Vista</button>
     <button type="button" class="ib" id="wp-p2"><i class="fa-regular fa-image"></i> Sunset Peak</button>
   </div>
   <input id="wp-file" type="file" accept="image/*" hidden>
@@ -732,7 +741,6 @@ dialog input {
   <div class="acts">
     <button type="button" class="ib" id="a-cache"><i class="fa-solid fa-rotate-right"></i> Clear page cache &amp; reload</button>
     <button type="button" class="ib" id="a-site"><i class="fa-solid fa-download"></i> Download site HTML</button>
-    <button type="button" class="ib" id="a-page"><i class="fa-solid fa-download"></i> Download this page's HTML</button>
     <button type="button" class="ib" id="a-wall"><i class="fa-regular fa-image"></i> Change wallpaper</button>
     <button type="button" class="ib" id="a-reset"><i class="fa-solid fa-triangle-exclamation"></i> Reset all saved data</button>
   </div>
@@ -752,35 +760,28 @@ dialog input {
 
 <script>
 "use strict";
-/* ===== CONFIG ===== */
 const BASE = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
 const LINKS = { discord: "https://discord.com/invite/2zZTRMZPa4" };
-const FORCED_WALLPAPER = "https://images.unsplash.com/photo-1459278558918-f94278c0f022?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const FORCED_WALLPAPER = "https://images.unsplash.com/photo-1459278558918-f94278c0f022?fm=jpg&q=60&w=3000&auto=format&fit=crop";
 const PRESET_WALLPAPERS = [
   { name: "Alpine Vista", url: FORCED_WALLPAPER },
   { name: "Twilight Ridge", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2400&q=80" },
-  { name: "Aurora Mist", url: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=2400&q=80" },
-  { name: "macOS Dusk", url: "https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=2400&q=80" }
+  { name: "Aurora Mist", url: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=2400&q=80" }
 ];
 const TAB_PRESETS = [
   { name: "Canva", title: "Home - Canva", icon: "https://static.canva.com/static/images/favicon-1.ico" },
   { name: "Desmos", title: "Desmos | Graphing Calculator", icon: "https://www.desmos.com/assets/img/apps/graphing/favicon.ico" },
-  { name: "Quill", title: "Quill.org | Interactive Writing and Grammar", icon: "https://www.quill.org/favicon.ico" },
-  { name: "Quizizz", title: "Quizizz — The world's most engaging learning platform", icon: "https://cf.quizizz.com/img/favicon/favicon-32x32.png" },
-  { name: "Quizlet", title: "Learning tools, flashcards, and textbook solutions | Quizlet", icon: "https://assets.quizlet.com/a/j/dist/i/favicon.6e263725c926227.ico" },
-  { name: "CommonLit", title: "CommonLit | Free Reading Passages and Literacy Resources", icon: "https://www.commonlit.org/favicon.ico" },
   { name: "Google Drive", title: "My Drive - Google Drive", icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" }
 ];
 const UPDATES = [
-  { date: "2026-11-11", tag: "Glass OS", title: "macOS Glass & Start Menu", text: "Sleek frosted glass UI, Windows-inspired Start Menu, and Tab Cloaking.", bullets: ["Frosted glass dock & windows", "Start Menu with app search", "About:Blank, Blob & Anti-Close"] },
-  { date: "2026-11-06", tag: "AI", title: "AI assistant", text: "Ask the AI app anything directly inside a window." }
+  { date: "2026-11-12", tag: "macOS Glass", title: "Authentic Menu Bar & Expose", text: "Added macOS 'hello' boot animation, top bar menus, and Mission Control window overview.", bullets: ["Live window thumbnails & close buttons", "Authentic macOS menu items", "Instant Launchpad search"] }
 ];
 const FWD = '<script>addEventListener("keydown",function(e){if(e.shiftKey&&e.altKey&&e.code==="KeyA"){e.preventDefault();parent.postMessage({sh:"key",key:"admin"},"*")}})<\/script>';
 const ICONS = {
   gamepad:'fa-solid fa-gamepad', games:'fa-solid fa-gamepad', chat:'fa-regular fa-comment-dots',
   robot:'fa-solid fa-robot', ai:'fa-solid fa-robot', discord:'fa-brands fa-discord',
   settings:'fa-solid fa-gear', reload:'fa-solid fa-rotate-right', download:'fa-solid fa-download',
-  upload:'fa-solid fa-upload', image:'fa-regular fa-image', alert:'fa-solid fa-triangle-exclamation'
+  upload:'fa-solid fa-upload', image:'fa-regular fa-image'
 };
 const ico = n => '<i class="ic ' + (/^fa-[\w -]+$/.test(n) ? n : ICONS[n] || 'fa-solid fa-window-maximize') + '" aria-hidden="true"></i>';
 const $ = id => document.getElementById(id);
@@ -791,9 +792,9 @@ const ls = {
   del(k) { try { localStorage.removeItem(k); } catch {} }
 };
 
-let pages = [], focused = null, zTop = 10, toastTimer = null;
+let pages = [], focused = null, zTop = 10, toastTimer = null, spIndex = 0, spItems = [];
 const apps = new Map(), cache = new Map(), wins = new Map(), dockBtns = new Map();
-const desk = $("desk"), menu = $("menu"), startMenu = $("startMenu");
+const desk = $("desk"), menu = $("menu"), startMenu = $("startMenu"), expose = $("expose"), spotlight = $("spotlight");
 const slugOf = p => p.file.replace(/\.html$/, "");
 
 function notify(msg) {
@@ -803,7 +804,6 @@ function notify(msg) {
   toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2600);
 }
 
-/* ===== CLOAKING: ABOUT BLANK, BLOB, ANTI-CLOSE ===== */
 function launchAboutBlank() {
   const win = window.open("about:blank", "_blank");
   if (!win) { notify("Popup blocked! Allow popups for about:blank."); return; }
@@ -822,24 +822,9 @@ function launchBlob() {
     const win = window.open(url, "_blank");
     if (!win) { notify("Popup blocked! Allow popups for Blob."); return; }
     notify("Opened in Blob URL!");
-  } catch {
-    notify("Could not create Blob session.");
-  }
+  } catch { notify("Could not create Blob session."); }
 }
 
-function handleBeforeUnload(e) {
-  e.preventDefault();
-  e.returnValue = "Changes you made may not be saved.";
-  return e.returnValue;
-}
-
-function syncAntiClose() {
-  const on = ls.get("sh0zy.anticlose") === "1";
-  if (on) window.addEventListener("beforeunload", handleBeforeUnload);
-  else window.removeEventListener("beforeunload", handleBeforeUnload);
-}
-
-/* ===== PAGES & WALLPAPER ===== */
 async function getPage(file, fresh) {
   if (!/^[\w-]+\.html$/.test(file)) throw new Error("bad file");
   if (!fresh && cache.has(file)) return cache.get(file);
@@ -850,8 +835,7 @@ async function getPage(file, fresh) {
 
 function setWall() {
   const custom = ls.get("sh0zy.bg");
-  const targetBg = custom || FORCED_WALLPAPER;
-  $("wall").style.backgroundImage = 'url("' + targetBg + '")';
+  $("wall").style.backgroundImage = 'url("' + (custom || FORCED_WALLPAPER) + '")';
 }
 
 function applySettings() {
@@ -861,130 +845,269 @@ function applySettings() {
 
   const acc = ls.get("sh0zy.acc") || "#6a95ff";
   document.documentElement.style.setProperty("--acc", acc);
-
   const theme = ls.get("sh0zy.theme") || "glass";
   document.body.dataset.theme = theme;
-
-  const hideDate = ls.get("sh0zy.hidedate") === "1";
-  $("day").style.display = hideDate ? "none" : "block";
-
-  syncAntiClose();
+  $("day").style.display = ls.get("sh0zy.hidedate") === "1" ? "none" : "block";
   setWall();
 }
 
-/* ===== WINDOWS 11 INSPIRED START MENU ===== */
-function toggleStartMenu(force) {
-  const show = typeof force === "boolean" ? force : startMenu.hidden;
+/* ===== MISSION CONTROL WINDOW OVERVIEW (EXPOSE) ===== */
+function toggleExpose(force) {
+  const isOpen = expose.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
   if (show) {
     menu.hidden = true;
-    renderStartMenu($("smSearch").value);
-    startMenu.hidden = false;
-    $("smSearch").focus();
+    toggleStartMenu(false);
+    toggleSpotlight(false);
+    renderExpose();
+    expose.classList.add("open");
   } else {
-    startMenu.hidden = true;
+    expose.classList.remove("open");
   }
 }
 
-function recordRecent(name, desc, icon, actionKey) {
-  let rec = [];
-  try { rec = JSON.parse(ls.get("sh0zy.recent", "[]")); } catch {}
-  rec = rec.filter(r => r.key !== actionKey);
-  rec.unshift({ key: actionKey, name, desc, icon, time: "Just now" });
-  ls.set("sh0zy.recent", JSON.stringify(rec.slice(0, 4)));
+function renderExpose() {
+  const list = [...wins.values()];
+  if (list.length === 0) {
+    $("exGrid").replaceChildren(
+      h("div", { style: "grid-column:1/-1;text-align:center;padding:48px 20px;color:rgba(255,255,255,.78);" },
+        h("i", { className: "fa-regular fa-window-restore", style: "font-size:38px;margin-bottom:12px;opacity:.55;display:block" }),
+        h("div", { style: "font-size:17px;font-weight:600;color:#fff", textContent: "No Open Windows" }),
+        h("div", { style: "font-size:12.5px;margin-top:4px;opacity:.7", textContent: "Open an app from the Dock or Launchpad to see it here." })
+      )
+    );
+    return;
+  }
+
+  $("exGrid").replaceChildren(...list.map((w, idx) => {
+    const item = h("div", { className: "ex-item" });
+    const closeBtn = h("button", {
+      type: "button",
+      className: "ex-close-btn",
+      title: "Close " + w.app.name,
+      "aria-label": "Close " + w.app.name,
+      onclick: e => {
+        e.stopPropagation();
+        closeWin(w);
+        renderExpose();
+      }
+    }, h("i", { className: "fa-solid fa-xmark" }));
+
+    const box = h("div", { className: "ex-win-box" });
+    const chrome = h("div", { className: "ex-win-chrome" },
+      h("span", { className: "ex-dot r" }),
+      h("span", { className: "ex-dot y" }),
+      h("span", { className: "ex-dot g" })
+    );
+    const body = h("div", { className: "ex-win-body" });
+    const icoWrap = h("div", { className: "ex-win-ico" });
+    icoWrap.style.setProperty("--ex-c", w.app.key === "settings-win" ? "linear-gradient(160deg, #94a3b8, #64748b)" : tileGradient(w.app.key, idx));
+    icoWrap.innerHTML = ico(w.app.icon || "settings");
+    body.append(icoWrap);
+    box.append(chrome, body);
+
+    const label = h("div", { className: "ex-label", textContent: w.app.name });
+    item.append(closeBtn, box, label);
+    item.onclick = () => {
+      toggleExpose(false);
+      focusWin(w);
+    };
+    return item;
+  }));
+}
+
+/* ===== MACOS LAUNCHPAD START MENU ===== */
+function toggleStartMenu(force) {
+  const isOpen = startMenu.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
+  if (show) {
+    menu.hidden = true;
+    toggleExpose(false);
+    toggleSpotlight(false);
+    $("smSearch").value = "";
+    renderStartMenu("");
+    startMenu.classList.add("open");
+    setTimeout(() => $("smSearch").focus(), 60);
+  } else {
+    startMenu.classList.remove("open");
+  }
+}
+
+const APP_TILE_GRADIENTS = [
+  "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)",
+  "linear-gradient(160deg, #60a5fa 0%, #2563eb 100%)",
+  "linear-gradient(160deg, #e879f9 0%, #8b5cf6 52%, #3b82f6 100%)",
+  "linear-gradient(160deg, #fb923c 0%, #ea580c 100%)",
+  "linear-gradient(160deg, #fb7185 0%, #e11d48 100%)",
+  "linear-gradient(160deg, #34d399 0%, #059669 100%)"
+];
+
+function tileGradient(k, idx = 0) {
+  const fixed = {
+    games: "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)",
+    chat: "linear-gradient(160deg, #60a5fa 0%, #2563eb 100%)",
+    ai: "linear-gradient(160deg, #e879f9 0%, #8b5cf6 52%, #3b82f6 100%)"
+  };
+  return fixed[k] || APP_TILE_GRADIENTS[idx % APP_TILE_GRADIENTS.length];
 }
 
 function renderStartMenu(filter = "") {
   const q = filter.trim().toLowerCase();
-  const pinnedList = [
-    ...[...apps.values()].map(a => ({
-      name: a.name, icon: a.icon, color: tint(a.key),
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
+  const items = [
+    ...userApps.map((a, i) => ({
+      name: a.name, icon: a.icon, color: tileGradient(a.key, i),
       fn: () => { toggleStartMenu(false); openApp(a.key, false); }
     })),
-    { name: "Settings", icon: "settings", color: "#64748b", fn: () => { toggleStartMenu(false); openSettings(); } },
-    { name: "Wallpaper", icon: "image", color: "#ec4899", fn: () => { toggleStartMenu(false); $("wp").showModal(); } },
-    { name: "About Blank", icon: "fa-solid fa-ghost", color: "#8b5cf6", fn: () => { toggleStartMenu(false); launchAboutBlank(); } },
-    { name: "Blob Mode", icon: "fa-solid fa-shield-halved", color: "#10b981", fn: () => { toggleStartMenu(false); launchBlob(); } },
-    { name: "Discord", icon: "discord", color: "#5865f2", fn: () => { toggleStartMenu(false); window.open(LINKS.discord, "_blank", "noopener"); } }
+    { name: "Settings", icon: "settings", color: "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", fn: () => { toggleStartMenu(false); openSettings("preferences"); } },
+    { name: "Wallpaper", icon: "image", color: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)", fn: () => { toggleStartMenu(false); $("wp").showModal(); } },
+    { name: "About Blank", icon: "fa-solid fa-ghost", color: "linear-gradient(160deg, #a78bfa 0%, #7c3aed 100%)", fn: () => { toggleStartMenu(false); launchAboutBlank(); } },
+    { name: "Blob Mode", icon: "fa-solid fa-shield-halved", color: "linear-gradient(160deg, #34d399 0%, #059669 100%)", fn: () => { toggleStartMenu(false); launchBlob(); } },
+    { name: "Discord", icon: "discord", color: "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", fn: () => { toggleStartMenu(false); window.open(LINKS.discord, "_blank", "noopener"); } }
   ].filter(item => !q || item.name.toLowerCase().includes(q));
 
-  $("smPinned").replaceChildren(...pinnedList.map(item => {
-    const b = h("button", { type: "button", className: "sm-app", onclick: item.fn });
+  $("lpGrid").replaceChildren(...items.map(item => {
+    const b = h("button", { type: "button", className: "lp-item", onclick: item.fn });
     b.style.setProperty("--c", item.color);
-    b.innerHTML = `<div class="sm-app-ico">${ico(item.icon)}</div><span>${item.name}</span>`;
+    b.innerHTML = `<div class="lp-ico">${ico(item.icon)}</div><span>${item.name}</span>`;
     return b;
-  }));
-
-  let rec = [];
-  try { rec = JSON.parse(ls.get("sh0zy.recent", "[]")); } catch {}
-  if (rec.length === 0) {
-    rec = [
-      { key: "games", name: "Games Library", desc: "Recently added", icon: "gamepad", time: "Pinned" },
-      { key: "settings", name: "System Settings", desc: "Cloaking & Themes", icon: "settings", time: "System" }
-    ];
-  }
-  $("smRecent").replaceChildren(...rec.map(r => {
-    const b = h("button", {
-      type: "button", className: "sm-rec-item",
-      onclick: () => {
-        toggleStartMenu(false);
-        if (r.key === "settings") openSettings();
-        else openApp(r.key, false);
-      }
-    });
-    b.innerHTML = `<div class="sm-rec-ico">${ico(r.icon)}</div><div class="sm-rec-meta"><b>${r.name}</b><small>${r.desc || r.time}</small></div>`;
-    return b;
-  }));
-
-  const categories = [
-    {
-      label: "Entertainment",
-      items: [
-        { icon: "gamepad", title: "Games", fn: () => { toggleStartMenu(false); openApp("games", false); } },
-        { icon: "discord", title: "Discord", fn: () => { toggleStartMenu(false); window.open(LINKS.discord, "_blank", "noopener"); } }
-      ]
-    },
-    {
-      label: "AI & Chat",
-      items: [
-        { icon: "chat", title: "Chat", fn: () => { toggleStartMenu(false); openApp("chat", false); } },
-        { icon: "robot", title: "AI", fn: () => { toggleStartMenu(false); openApp("ai", false); } }
-      ]
-    },
-    {
-      label: "Cloaking",
-      items: [
-        { icon: "fa-solid fa-ghost", title: "About Blank", fn: () => { toggleStartMenu(false); launchAboutBlank(); } },
-        { icon: "fa-solid fa-shield-halved", title: "Blob Tab", fn: () => { toggleStartMenu(false); launchBlob(); } }
-      ]
-    },
-    {
-      label: "System",
-      items: [
-        { icon: "settings", title: "Settings", fn: () => { toggleStartMenu(false); openSettings(); } },
-        { icon: "image", title: "Wallpaper", fn: () => { toggleStartMenu(false); $("wp").showModal(); } }
-      ]
-    }
-  ];
-
-  $("smCats").replaceChildren(...categories.map(cat => {
-    const box = h("div", { className: "sm-cat" });
-    const grid = h("div", { className: "sm-cat-grid" }, ...cat.items.map(it => {
-      const mb = h("button", { type: "button", className: "sm-cat-mini", title: it.title, onclick: it.fn });
-      mb.innerHTML = ico(it.icon);
-      return mb;
-    }));
-    box.append(grid, h("div", { className: "sm-cat-lbl", textContent: cat.label }));
-    return box;
   }));
 }
 
 $("smSearch").oninput = e => renderStartMenu(e.target.value);
-$("smSettingsBtn").onclick = () => { toggleStartMenu(false); openSettings(); };
-$("smReloadBtn").onclick = () => location.reload();
+startMenu.addEventListener("pointerdown", e => {
+  if (e.target === startMenu || e.target.classList.contains("lp-inner") || e.target.classList.contains("lp-grid")) {
+    toggleStartMenu(false);
+  }
+});
+expose.addEventListener("pointerdown", e => {
+  if (e.target === expose || e.target === $("exGrid")) {
+    toggleExpose(false);
+  }
+});
 
-/* ===== UPGRADED MULTI-SIDEBAR SETTINGS WINDOW ===== */
+/* ===== MACOS SPOTLIGHT SEARCH ===== */
+function toggleSpotlight(force) {
+  const isOpen = spotlight.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
+  if (show) {
+    menu.hidden = true;
+    toggleStartMenu(false);
+    toggleExpose(false);
+    $("spInput").value = "";
+    spIndex = 0;
+    renderSpotlight("");
+    spotlight.classList.add("open");
+    setTimeout(() => $("spInput").focus(), 30);
+  } else {
+    spotlight.classList.remove("open");
+  }
+}
+
+function renderSpotlight(rawQuery = "") {
+  const q = rawQuery.trim();
+  const ql = q.toLowerCase();
+  if (!q) {
+    spItems = [];
+    $("spResults").replaceChildren();
+    return;
+  }
+
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
+  const catalog = [
+    ...userApps.map((a, i) => ({
+      name: a.name,
+      cat: "Application",
+      icon: a.icon,
+      color: tileGradient(a.key, i),
+      fn: () => { toggleSpotlight(false); openApp(a.key, false); }
+    })),
+    { name: "Settings", cat: "Application", icon: "settings", color: "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", fn: () => { toggleSpotlight(false); openSettings("preferences"); } },
+    { name: "Wallpaper", cat: "System", icon: "image", color: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)", fn: () => { toggleSpotlight(false); $("wp").showModal(); } },
+    { name: "Mission Control", cat: "System", icon: "fa-solid fa-window-restore", color: "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)", fn: () => { toggleSpotlight(false); toggleExpose(true); } },
+    { name: "About Blank", cat: "System", icon: "fa-solid fa-ghost", color: "linear-gradient(160deg, #a78bfa 0%, #7c3aed 100%)", fn: () => { toggleSpotlight(false); launchAboutBlank(); } },
+    { name: "Blob Mode", cat: "System", icon: "fa-solid fa-shield-halved", color: "linear-gradient(160deg, #34d399 0%, #059669 100%)", fn: () => { toggleSpotlight(false); launchBlob(); } },
+    { name: "Discord", cat: "Application", icon: "discord", color: "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", fn: () => { toggleSpotlight(false); window.open(LINKS.discord, "_blank", "noopener"); } }
+  ];
+
+  const matched = catalog
+    .filter(item => item.name.toLowerCase().includes(ql))
+    .sort((a, b) => {
+      const aStarts = a.name.toLowerCase().startsWith(ql) ? 0 : 1;
+      const bStarts = b.name.toLowerCase().startsWith(ql) ? 0 : 1;
+      return aStarts - bStarts;
+    });
+
+  spItems = [
+    ...matched,
+    {
+      name: `Search the web for “${q}”`,
+      cat: "Safari",
+      isSafari: true,
+      fn: () => {
+        toggleSpotlight(false);
+        window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank", "noopener");
+      }
+    }
+  ];
+
+  if (spIndex >= spItems.length) spIndex = 0;
+
+  $("spResults").replaceChildren(...spItems.map((item, idx) => {
+    const row = h("button", {
+      type: "button",
+      className: "sp-row" + (idx === spIndex ? " active" : ""),
+      onclick: item.fn,
+      onmouseenter: () => {
+        if (spIndex !== idx) {
+          spIndex = idx;
+          $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+        }
+      }
+    });
+
+    const icoEl = h("span", { className: "sp-ico" + (item.isSafari ? " safari" : "") });
+    if (item.isSafari) {
+      icoEl.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="10" fill="#2563eb"/><polygon points="15.5,8.5 13.2,13.2 8.5,15.5 10.8,10.8" fill="#ef4444"/><polygon points="15.5,8.5 13.2,13.2 10.8,10.8" fill="#ffffff"/></svg>`;
+    } else {
+      icoEl.style.setProperty("--sp-c", item.color);
+      icoEl.innerHTML = ico(item.icon);
+    }
+
+    row.append(
+      icoEl,
+      h("span", { className: "sp-name", textContent: item.name }),
+      h("span", { className: "sp-cat", textContent: item.cat })
+    );
+    return row;
+  }));
+}
+
+$("spInput").addEventListener("input", e => {
+  spIndex = 0;
+  renderSpotlight(e.target.value);
+});
+$("spInput").addEventListener("keydown", e => {
+  if (!spItems.length) return;
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    spIndex = (spIndex + 1) % spItems.length;
+    $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    spIndex = (spIndex - 1 + spItems.length) % spItems.length;
+    $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    if (spItems[spIndex]) spItems[spIndex].fn();
+  }
+});
+spotlight.addEventListener("pointerdown", e => {
+  if (e.target === spotlight) toggleSpotlight(false);
+});
+
+/* ===== MULTI-SIDEBAR SETTINGS WINDOW ===== */
 function openSettings(initialTab = "preferences") {
-  recordRecent("System Settings", "Preferences & Cloaking", "settings", "settings");
   if (wins.has("settings-win")) {
     const existing = wins.get("settings-win");
     focusWin(existing);
@@ -1000,7 +1123,7 @@ function openSettings(initialTab = "preferences") {
         <button type="button" class="b-m" aria-label="Minimize"></button>
         <button type="button" class="b-x" aria-label="Maximize"></button>
       </div>
-      <span class="tt"><i class="ic fa-solid fa-gear" aria-hidden="true"></i><b>Settings</b></span>
+      <span class="tt"><i class="ic fa-solid fa-gear"></i><b>Settings</b></span>
       <span></span>
     </div>
     <div class="wbody">
@@ -1011,406 +1134,120 @@ function openSettings(initialTab = "preferences") {
           <button type="button" class="st-nav" data-tab="themes"><i class="ic fa-solid fa-palette"></i>Themes</button>
           <button type="button" class="st-nav" data-tab="background"><i class="ic fa-regular fa-image"></i>Background</button>
           <button type="button" class="st-nav" data-tab="data"><i class="ic fa-solid fa-database"></i>Data</button>
-          <button type="button" class="st-nav" data-tab="about"><i class="ic fa-solid fa-circle-info"></i>About</button>
         </aside>
         <div class="st-main" id="stMain"></div>
       </div>
     </div>
     <i class="rs"></i>
   `;
-
   const W = Math.min(760, Math.round(innerWidth * 0.86)), H = Math.min(540, Math.round(innerHeight * 0.8));
-  Object.assign(el.style, {
-    width: W + "px",
-    height: H + "px",
-    left: Math.max(12, Math.round((innerWidth - W) / 2)) + "px",
-    top: Math.max(44, Math.round((innerHeight - H) / 2)) + "px"
-  });
-
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2)) + "px", top: Math.max(44, Math.round((innerHeight - H) / 2)) + "px" });
   const main = el.querySelector("#stMain");
 
   function renderTab(tab) {
     el.querySelectorAll(".st-nav").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-    const antiOn = ls.get("sh0zy.anticlose") === "1";
-    const autoAbOn = ls.get("sh0zy.autoab") === "1";
-    const autoBlobOn = ls.get("sh0zy.autoblob") === "1";
-
     if (tab === "preferences") {
       main.innerHTML = `
         <h2 class="st-heading">Preferences</h2>
-        <p class="st-sub">Stealth launch modes, tab protection, and quick disguises.</p>
+        <p class="st-sub">Stealth launch modes and quick disguises.</p>
         <div class="st-grid-2">
           <div class="st-card">
             <h3><i class="fa-solid fa-ghost" style="color:var(--acc)"></i> About Blank</h3>
-            <p>Opens the OS inside an invisible <code>about:blank</code> frame so it stays hidden from browsing history.</p>
-            <div class="st-btn-row">
-              <button type="button" class="ib primary" id="st-ab-launch">Launch</button>
-              <button type="button" class="ib ${autoAbOn ? "active-pill" : ""}" id="st-ab-auto">${autoAbOn ? "Auto AB: On" : "Auto AB"}</button>
-            </div>
+            <p>Opens the OS inside an invisible <code>about:blank</code> frame.</p>
+            <div class="st-btn-row"><button type="button" class="ib primary" id="st-ab">Launch</button></div>
           </div>
           <div class="st-card">
             <h3><i class="fa-solid fa-shield-halved" style="color:var(--acc2)"></i> Blob</h3>
-            <p>Creates a temporary encrypted <code>blob:</code> session URL that prevents direct URL history logging.</p>
-            <div class="st-btn-row">
-              <button type="button" class="ib primary" id="st-blob-launch">Launch</button>
-              <button type="button" class="ib ${autoBlobOn ? "active-pill" : ""}" id="st-blob-auto">${autoBlobOn ? "Auto Blob: On" : "Auto Blob"}</button>
-            </div>
+            <p>Creates a temporary encrypted <code>blob:</code> session URL.</p>
+            <div class="st-btn-row"><button type="button" class="ib primary" id="st-blob">Launch</button></div>
           </div>
         </div>
-
-        <div class="st-card">
-          <h3><i class="fa-solid fa-lock" style="color:#34d399"></i> Anti-Close</h3>
-          <p>Prevents accidental tab closure by triggering the browser's <code>Changes you made may not be saved</code> confirmation prompt.</p>
-          <div class="st-btn-row">
-            <button type="button" class="ib ${antiOn ? "active-pill" : ""}" id="st-anticlose">${antiOn ? "Enabled" : "Toggle"}</button>
-          </div>
-        </div>
-
         <div class="st-card">
           <h3><i class="fa-solid fa-masks-theater" style="color:#f59e0b"></i> Tab Presets</h3>
-          <p>Instantly disguise your browser tab title and icon with one click.</p>
+          <p>Instantly disguise your browser tab title and icon.</p>
           <div class="st-presets" id="stPresets"></div>
         </div>
       `;
-
-      main.querySelector("#st-ab-launch").onclick = launchAboutBlank;
-      main.querySelector("#st-ab-auto").onclick = () => {
-        const next = ls.get("sh0zy.autoab") === "1" ? "0" : "1";
-        ls.set("sh0zy.autoab", next);
-        notify(next === "1" ? "Auto about:blank enabled" : "Auto about:blank disabled");
-        renderTab("preferences");
-      };
-      main.querySelector("#st-blob-launch").onclick = launchBlob;
-      main.querySelector("#st-blob-auto").onclick = () => {
-        const next = ls.get("sh0zy.autoblob") === "1" ? "0" : "1";
-        ls.set("sh0zy.autoblob", next);
-        notify(next === "1" ? "Auto Blob enabled" : "Auto Blob disabled");
-        renderTab("preferences");
-      };
-      main.querySelector("#st-anticlose").onclick = () => {
-        const next = ls.get("sh0zy.anticlose") === "1" ? "0" : "1";
-        ls.set("sh0zy.anticlose", next);
-        syncAntiClose();
-        notify(next === "1" ? "Anti-Close enabled" : "Anti-Close disabled");
-        renderTab("preferences");
-      };
-
+      main.querySelector("#st-ab").onclick = launchAboutBlank;
+      main.querySelector("#st-blob").onclick = launchBlob;
       const pBox = main.querySelector("#stPresets");
       TAB_PRESETS.forEach(p => {
         const btn = h("button", { type: "button", className: "st-preset-chip" });
         btn.innerHTML = `<img src="${p.icon}" alt="" onerror="this.style.display='none'"><span>${p.name}</span>`;
-        btn.onclick = () => {
-          ls.set("sh0zy.title", p.title);
-          ls.set("sh0zy.icon", p.icon);
-          applySettings();
-          notify(`Tab disguised as ${p.name}`);
-        };
+        btn.onclick = () => { ls.set("sh0zy.title", p.title); ls.set("sh0zy.icon", p.icon); applySettings(); notify(`Tab disguised as ${p.name}`); };
         pBox.append(btn);
       });
     } else if (tab === "cloaking") {
       main.innerHTML = `
         <h2 class="st-heading">Tab Cloaker</h2>
-        <p class="st-sub">Customize your tab's appearance or pick a preset disguise.</p>
+        <p class="st-sub">Customize your tab's appearance.</p>
         <div class="st-card">
-          <h3>Custom Tab Identity</h3>
-          <div class="st-field">
-            <label>Custom Tab Title</label>
-            <input id="st-custom-title" maxlength="60" value="${ls.get("sh0zy.title") || "SIFT"}" placeholder="My Drive - Google Drive">
-          </div>
-          <div class="st-field">
-            <label>Custom Favicon (Emoji or HTTPS Icon URL)</label>
-            <input id="st-custom-icon" maxlength="300" value="${ls.get("sh0zy.icon")}" placeholder="📚 or https://...">
-          </div>
-          <div class="st-btn-row" style="margin-top:14px">
-            <button type="button" class="ib primary" id="st-cloak-save">Apply Cloak</button>
-            <button type="button" class="ib" id="st-cloak-reset">Reset to SIFT</button>
-          </div>
+          <div class="st-field"><label>Custom Tab Title</label><input id="st-c-title" value="${ls.get("sh0zy.title") || "SIFT"}"></div>
+          <div class="st-field"><label>Custom Favicon URL</label><input id="st-c-icon" value="${ls.get("sh0zy.icon")}"></div>
+          <div class="st-btn-row" style="margin-top:14px"><button type="button" class="ib primary" id="st-c-save">Apply</button></div>
         </div>
       `;
-      main.querySelector("#st-cloak-save").onclick = () => {
-        ls.set("sh0zy.title", main.querySelector("#st-custom-title").value.trim());
-        ls.set("sh0zy.icon", main.querySelector("#st-custom-icon").value.trim());
-        applySettings();
-        notify("Tab identity updated!");
-      };
-      main.querySelector("#st-cloak-reset").onclick = () => {
-        ls.del("sh0zy.title");
-        ls.del("sh0zy.icon");
-        applySettings();
-        renderTab("cloaking");
-        notify("Tab identity reset to SIFT");
+      main.querySelector("#st-c-save").onclick = () => {
+        ls.set("sh0zy.title", main.querySelector("#st-c-title").value.trim());
+        ls.set("sh0zy.icon", main.querySelector("#st-c-icon").value.trim());
+        applySettings(); notify("Tab identity updated!");
       };
     } else if (tab === "themes") {
-      const curTheme = ls.get("sh0zy.theme") || "glass";
-      const curAcc = ls.get("sh0zy.acc") || "#6a95ff";
-      const themes = [
-        { id: "glass", name: "macOS Frosted Glass", desc: "Balanced translucent glass", bg: "linear-gradient(135deg,rgba(30,41,59,.8),rgba(106,149,255,.45))" },
-        { id: "obsidian", name: "Midnight Obsidian", desc: "Deep dark smoked glass", bg: "linear-gradient(135deg,#090a0f,#1e293b)" },
-        { id: "aurora", name: "Aurora Borealis", desc: "Cool emerald & teal tint", bg: "linear-gradient(135deg,#0f293a,#10b981)" },
-        { id: "crystal", name: "Crystal Light", desc: "Bright airy frosted glass", bg: "linear-gradient(135deg,#f8fafc,#cbd5e1)" },
-        { id: "cyber", name: "Cyber Nebula", desc: "Vibrant violet & magenta glass", bg: "linear-gradient(135deg,#1e1035,#ec4899)" }
-      ];
+      const cur = ls.get("sh0zy.theme") || "glass";
       main.innerHTML = `
-        <h2 class="st-heading">Themes & Glass</h2>
-        <p class="st-sub">Customize the frosted glass translucency, accent colors, and desktop clock.</p>
-        <div class="theme-cards" id="themeCards"></div>
-        <div class="st-card">
-          <h3>Accent & Desktop Widgets</h3>
-          <div class="st-field">
-            <label>System Accent Color</label>
-            <select id="st-acc-sel">
-              <option value="#6a95ff" ${curAcc === "#6a95ff" ? "selected" : ""}>macOS Blue (#6a95ff)</option>
-              <option value="#a78bfa" ${curAcc === "#a78bfa" ? "selected" : ""}>Orchid Purple (#a78bfa)</option>
-              <option value="#10b981" ${curAcc === "#10b981" ? "selected" : ""}>Emerald Mint (#10b981)</option>
-              <option value="#f43f5e" ${curAcc === "#f43f5e" ? "selected" : ""}>Rose Coral (#f43f5e)</option>
-              <option value="#f59e0b" ${curAcc === "#f59e0b" ? "selected" : ""}>Solar Amber (#f59e0b)</option>
-            </select>
-          </div>
-          <div class="st-field">
-            <label>Desktop Center Clock & Date</label>
-            <select id="st-date-sel">
-              <option value="0" ${ls.get("sh0zy.hidedate") !== "1" ? "selected" : ""}>Visible</option>
-              <option value="1" ${ls.get("sh0zy.hidedate") === "1" ? "selected" : ""}>Hidden</option>
-            </select>
-          </div>
+        <h2 class="st-heading">Themes</h2>
+        <p class="st-sub">Switch visual theme.</p>
+        <div class="theme-cards">
+          <button type="button" class="theme-card ${cur==="glass"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','glass');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#1e293b,#6a95ff)"></div><b>macOS Glass</b></button>
+          <button type="button" class="theme-card ${cur==="obsidian"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','obsidian');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#090a0f,#1e293b)"></div><b>Obsidian</b></button>
+          <button type="button" class="theme-card ${cur==="crystal"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','crystal');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc,#cbd5e1)"></div><b>Crystal Light</b></button>
         </div>
       `;
-      const tc = main.querySelector("#themeCards");
-      themes.forEach(t => {
-        const card = h("button", { type: "button", className: "theme-card" + (curTheme === t.id ? " selected" : "") });
-        card.innerHTML = `<div class="theme-swatch" style="background:${t.bg}"></div><b style="display:block;font-size:13px">${t.name}</b><small style="color:var(--mut);font-size:11px">${t.desc}</small>`;
-        card.onclick = () => {
-          ls.set("sh0zy.theme", t.id);
-          applySettings();
-          renderTab("themes");
-          notify(`Theme switched to ${t.name}`);
-        };
-        tc.append(card);
-      });
-      main.querySelector("#st-acc-sel").onchange = e => {
-        ls.set("sh0zy.acc", e.target.value);
-        applySettings();
-        notify("Accent color updated");
-      };
-      main.querySelector("#st-date-sel").onchange = e => {
-        ls.set("sh0zy.hidedate", e.target.value);
-        applySettings();
-      };
     } else if (tab === "background") {
       main.innerHTML = `
         <h2 class="st-heading">Wallpaper</h2>
-        <p class="st-sub">Choose a curated high-resolution backdrop or apply your own.</p>
-        <div class="st-card">
-          <h3>Curated Wallpapers</h3>
-          <div class="wp-grid" id="stWpGrid"></div>
-        </div>
-        <div class="st-card">
-          <h3>Custom Image</h3>
-          <div class="st-field">
-            <label>Image URL</label>
-            <input id="st-wp-url" type="url" placeholder="https://images.unsplash.com/...">
-          </div>
-          <div class="st-btn-row" style="margin-top:12px">
-            <button type="button" class="ib primary" id="st-wp-apply">Apply URL</button>
-            <button type="button" class="ib" id="st-wp-upload"><i class="fa-solid fa-upload"></i> Upload File</button>
-            <button type="button" class="ib" id="st-wp-reset">Reset Default</button>
-          </div>
-        </div>
+        <p class="st-sub">Choose a wallpaper.</p>
+        <div class="wp-grid" id="stWpGrid"></div>
       `;
       const wg = main.querySelector("#stWpGrid");
       PRESET_WALLPAPERS.forEach(w => {
         const item = h("button", { type: "button", className: "wp-item" });
         item.style.backgroundImage = `url("${w.url}")`;
         item.innerHTML = `<span>${w.name}</span>`;
-        item.onclick = () => {
-          setBg(w.url);
-          notify(`Wallpaper set to ${w.name}`);
-        };
+        item.onclick = () => { ls.set("sh0zy.bg", w.url); applySettings(); notify(`Wallpaper set to ${w.name}`); };
         wg.append(item);
       });
-      main.querySelector("#st-wp-apply").onclick = () => {
-        const u = main.querySelector("#st-wp-url").value.trim();
-        if (/^https?:\/\//.test(u)) { setBg(u); notify("Custom wallpaper applied"); }
-        else notify("Please enter a valid https:// URL");
-      };
-      main.querySelector("#st-wp-upload").onclick = () => $("wp-file").click();
-      main.querySelector("#st-wp-reset").onclick = () => { setBg(""); notify("Wallpaper reset to default"); };
     } else if (tab === "data") {
       main.innerHTML = `
-        <h2 class="st-heading">Data & Storage</h2>
-        <p class="st-sub">Manage cached apps, offline HTML backups, and local settings.</p>
-        <div class="st-card">
-          <h3>Offline Backup</h3>
-          <p>Download a standalone HTML copy of SIFT OS to keep locally.</p>
-          <button type="button" class="ib primary" id="st-dl-html"><i class="fa-solid fa-download"></i> Download SIFT HTML</button>
-        </div>
-        <div class="st-card">
-          <h3>Cache & Reset</h3>
-          <p>Clear cached app pages or reset all SIFT OS preferences to factory defaults.</p>
-          <div class="st-btn-row">
-            <button type="button" class="ib" id="st-clear-cache"><i class="fa-solid fa-broom"></i> Clear App Cache</button>
-            <button type="button" class="ib" id="st-factory-reset"><i class="fa-solid fa-rotate-left"></i> Reset All Settings</button>
-          </div>
-        </div>
+        <h2 class="st-heading">Data</h2>
+        <p class="st-sub">Clear cache and settings.</p>
+        <div class="st-card"><button type="button" class="ib" onclick="localStorage.clear();location.reload()"><i class="fa-solid fa-rotate-left"></i> Reset All Settings</button></div>
       `;
-      main.querySelector("#st-dl-html").onclick = () => download("site");
-      main.querySelector("#st-clear-cache").onclick = () => {
-        cache.clear();
-        notify("App cache cleared!");
-      };
-      main.querySelector("#st-factory-reset").onclick = () => {
-        Object.keys(localStorage).filter(k => k.startsWith("sh0zy.")).forEach(k => localStorage.removeItem(k));
-        applySettings();
-        renderTab("preferences");
-        notify("All settings restored to default");
-      };
-    } else if (tab === "about") {
-      main.innerHTML = `
-        <h2 class="st-heading">About SIFT Glass OS</h2>
-        <p class="st-sub">Modern frosted-glass web desktop environment.</p>
-        <div class="st-card">
-          <h3>System Specifications</h3>
-          <p>
-            <strong>Version:</strong> SIFT OS 2.6 (macOS Glass Edition)<br>
-            <strong>Installed Apps:</strong> ${apps.size} active modules<br>
-            <strong>Cloaking Engine:</strong> about:blank, Blob URL &amp; Anti-Close ready
-          </p>
-          <div class="st-btn-row">
-            <button type="button" class="ib" id="st-tos">Terms of Service</button>
-            <button type="button" class="ib" id="st-priv">Privacy Policy</button>
-            <button type="button" class="ib primary" id="st-disc"><i class="fa-brands fa-discord"></i> Discord</button>
-          </div>
-        </div>
-      `;
-      main.querySelector("#st-tos").onclick = () => openDoc("tos");
-      main.querySelector("#st-priv").onclick = () => openDoc("privacy");
-      main.querySelector("#st-disc").onclick = () => window.open(LINKS.discord, "_blank", "noopener");
     }
   }
 
-  el.querySelectorAll(".st-nav").forEach(btn => {
-    btn.onclick = () => renderTab(btn.dataset.tab);
-  });
+  el.querySelectorAll(".st-nav").forEach(btn => btn.onclick = () => renderTab(btn.dataset.tab));
   renderTab(initialTab);
 
-  const tb = el.querySelector(".tb"), rs = el.querySelector(".rs");
-  const wObj = { app: { key: "settings-win", name: "Settings" }, el, min: false };
-
+  const tb = el.querySelector(".tb"), rs = el.querySelector(".rs"), wObj = { app: { key: "settings-win", name: "Settings" }, el, min: false };
   el.addEventListener("pointerdown", () => focusWin(wObj), true);
-  tb.addEventListener("dblclick", e => { if (!e.target.closest("button")) toggleMax(wObj); });
   el.querySelector(".b-m").onclick = () => minimize(wObj);
   el.querySelector(".b-x").onclick = () => toggleMax(wObj);
   el.querySelector(".b-c").onclick = () => closeWin(wObj);
-
-  const drag = (handle, start, move) => handle.addEventListener("pointerdown", e => {
-    if (e.button || e.target.closest("button") || el.classList.contains("max")) return;
-    const s = start(e); handle.setPointerCapture(e.pointerId); desk.classList.add("drag");
-    const mv = ev => move(ev, s), up = () => { handle.removeEventListener("pointermove", mv); handle.removeEventListener("pointerup", up); desk.classList.remove("drag"); };
-    handle.addEventListener("pointermove", mv); handle.addEventListener("pointerup", up);
-  });
-  drag(tb, e => ({ x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop }), (e, s) => {
-    el.style.left = Math.min(innerWidth - 80, Math.max(80 - el.offsetWidth, s.l + e.clientX - s.x)) + "px";
-    el.style.top = Math.min(innerHeight - 60, Math.max(32, s.t + e.clientY - s.y)) + "px";
-  });
-  drag(rs, e => ({ x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }), (e, s) => {
-    el.style.width = Math.max(360, s.w + e.clientX - s.x) + "px";
-    el.style.height = Math.max(260, s.h + e.clientY - s.y) + "px";
-  });
-
-  desk.append(el);
-  wins.set("settings-win", wObj);
-  if (innerWidth < 700) el.classList.add("max");
-  focusWin(wObj);
+  desk.append(el); wins.set("settings-win", wObj); focusWin(wObj);
 }
-
-/* ===== DOWNLOAD & WALLPAPER HELPERS ===== */
-function save(name, text) {
-  const a = h("a", { href: URL.createObjectURL(new Blob([text], { type: "text/html" })), download: name });
-  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-}
-function download(what) {
-  if (what === "site") {
-    const c = document.documentElement.cloneNode(true);
-    ["desk", "dock"].forEach(i => c.querySelector("#" + i).replaceChildren());
-    return save("sift.html", "<!DOCTYPE html>\n" + c.outerHTML);
-  }
-  if (focused && focused.frame && cache.has(focused.app.file)) save(focused.app.file, cache.get(focused.app.file));
-  else notify("Focus an app window first to download its HTML.");
-}
-
-function setBg(v) {
-  v ? ls.set("sh0zy.bg", v) : ls.del("sh0zy.bg");
-  $("wp-msg").textContent = v && ls.get("sh0zy.bg") !== v ? "That image is too big to save. Try a smaller one." : "";
-  applySettings();
-}
-$("wp-file").onchange = e => {
-  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
-  r.onload = () => {
-    const im = new Image(); im.onload = () => {
-      const s = Math.min(1, 1920 / im.width), c = h("canvas", { width: Math.round(im.width * s), height: Math.round(im.height * s) });
-      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); setBg(c.toDataURL("image/jpeg", 0.82));
-      notify("Uploaded wallpaper applied!");
-    }; im.src = r.result;
-  };
-  r.readAsDataURL(f); e.target.value = "";
-};
-$("wp-up").onclick = () => $("wp-file").click();
-$("wp-apply").onclick = () => { const u = $("wp-url").value.trim(); /^https?:\/\//.test(u) ? (setBg(u), notify("Wallpaper updated!")) : ($("wp-msg").textContent = "Enter a link that starts with https://"); };
-$("wp-reset").onclick = () => { setBg(""); $("wp-url").value = ""; notify("Wallpaper reset"); };
-$("wp-p1").onclick = () => { setBg(FORCED_WALLPAPER); notify("Default Mountain Glass applied"); };
-$("wp-p2").onclick = () => { setBg(PRESET_WALLPAPERS[1].url); notify("Sunset Peak applied"); };
-$("wp-x").onclick = () => $("wp").close();
-
-/* ===== ADMIN PANEL ===== */
-const ADMIN_HASH = "f27eee50f9d3bc3a9ba83177abf2fb229a380c9b110de7df1e15814ee316bc57";
-let adminOK = false;
-const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
-function askAdmin() { if (adminOK) return openAdmin(); $("pw-in").value = ""; $("pw-msg").textContent = ""; $("pw").showModal(); }
-$("pw-f").addEventListener("submit", async e => {
-  e.preventDefault();
-  let ok = false; try { ok = await sha($("pw-in").value) === ADMIN_HASH; } catch {}
-  if (ok) { adminOK = true; $("pw").close(); openAdmin(); } else { $("pw-msg").textContent = "Wrong password."; $("pw-in").select(); }
-});
-$("pw-x").onclick = () => $("pw").close();
-function openAdmin() {
-  const rows = [["Site", "SIFT Glass OS"], ["Source", BASE], ["Pages", pages.map(p => p.name).join(", ") || "none"], ["Cached", [...cache.keys()].join(", ") || "none"], ["Open windows", wins.size]];
-  $("adm-info").replaceChildren(...rows.map(([k, v]) => h("div", {}, h("b", { textContent: k }), h("span", { textContent: String(v) }))));
-  $("adm").showModal();
-}
-$("a-cache").onclick = () => { cache.clear(); $("adm").close(); wins.forEach(w => { if (w.load) w.load(true); }); notify("Cache cleared & reloaded"); };
-$("a-site").onclick = () => download("site");
-$("a-page").onclick = () => download("page");
-$("a-wall").onclick = () => { $("adm").close(); $("wp").showModal(); };
-$("a-reset").onclick = () => {
-  try { Object.keys(localStorage).filter(k => k.startsWith("sh0zy.")).forEach(k => localStorage.removeItem(k)); } catch {}
-  applySettings(); $("adm").close(); notify("All saved data cleared");
-};
-$("adm-x").onclick = () => $("adm").close();
-
-/* ===== DOCS & AGREEMENT GATE ===== */
-const DOCS = {
-  tos: ["Terms of Service", `<p><small>Last updated: October 12, 2026</small></p>
-<h3>1. What SIFT is</h3><p>SIFT is a hobby website with games, links and a public chat. It is not affiliated with, endorsed by, or run by any school, school district or employer.</p>
-<h3>2. Use it responsibly, and not at school</h3><p>SIFT is meant for personal time. You are responsible for following the rules of your school, teachers, network and device. Do not use SIFT during class, on school devices or on school networks where that is not allowed.</p>
-<h3>3. Your behavior</h3><p>Follow the law and be decent. No harassment, hate, threats, sexual content, spam, or sharing personal information.</p>
-<h3>4. Third-party content</h3><p>Games, links and files come from third parties and may change or disappear. SIFT does not own them and their own terms apply.</p>
-<h3>5. No warranty</h3><p>SIFT is provided "as is", with no promise that it will work, stay online or be safe.</p>`],
-  privacy: ["Privacy Policy", `<p><small>Last updated: October 12, 2026</small></p>
-<h3>No accounts</h3><p>SIFT has no sign-up. Please do not share personal details in chat.</p>
-<h3>Saved in your browser</h3><p>Your wallpaper, tab title, theme, and preferences are kept in your browser's local storage on your own device.</p>
-<h3>School and network monitoring</h3><p>Your school or network may log the sites you visit and the devices you use. SIFT cannot prevent that.</p>`]
-};
-function openDoc(k) { $("doc-t").textContent = DOCS[k][0]; $("doc-b").innerHTML = DOCS[k][1]; $("doc").showModal(); $("doc-b").scrollTop = 0; }
-document.querySelectorAll("[data-doc]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); openDoc(a.dataset.doc); }));
-$("doc-x").onclick = () => $("doc").close();
-$("g-tos").onclick = () => openDoc("tos"); $("g-priv").onclick = () => openDoc("privacy");
-$("gate").addEventListener("cancel", e => e.preventDefault());
-$("g-ok").onclick = () => { ls.set("sh0zy.agreed", "1"); $("gate").close(); };
-if (!ls.get("sh0zy.agreed")) $("gate").showModal();
 
 /* ===== WINDOW MANAGER ===== */
 const topWin = () => [...wins.values()].filter(x => !x.min).sort((a, b) => a.el.style.zIndex - b.el.style.zIndex).pop() || null;
-function paintDock() { dockBtns.forEach((b, k) => { b.classList.toggle("open", wins.has(k)); b.classList.toggle("act", !!focused && focused.app.key === k); }); }
+function paintDock() {
+  dockBtns.forEach((b, k) => {
+    b.classList.toggle("open", wins.has(k));
+    b.classList.toggle("act", !!focused && focused.app.key === k);
+  });
+  if ($("topActiveApp")) {
+    $("topActiveApp").textContent = focused && !focused.min ? focused.app.name : "Finder";
+  }
+}
 function focusWin(w) {
   if (w.min) { w.min = false; w.el.classList.remove("min"); }
   w.el.style.zIndex = ++zTop; focused = w; wins.forEach(x => x.el.classList.toggle("focus", x === w)); paintDock();
@@ -1435,24 +1272,29 @@ function createWin(app) {
     <div class="wbody"><div class="ph"></div></div>
     <i class="rs"></i>
   `;
-  el.querySelector(".tt").innerHTML = ico(app.icon) + "<b></b>"; el.querySelector(".tt b").textContent = app.name;
+  el.querySelector(".tt").innerHTML = ico(app.icon) + "<b>" + app.name + "</b>";
   const W = Math.min(980, Math.round(innerWidth * 0.74)), H = Math.min(640, Math.round(innerHeight * 0.72));
   Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(8, Math.round((innerWidth - W) / 2) + n * 24 - 24) + "px", top: Math.max(42, 58 + n * 24) + "px" });
   const frame = h("iframe", { title: app.name });
   frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-fullscreen");
-  frame.setAttribute("allow", "fullscreen; autoplay; pointer-lock; gamepad; clipboard-write"); frame.setAttribute("allowfullscreen", "");
+  frame.setAttribute("allow", "fullscreen; autoplay; pointer-lock; gamepad; clipboard-write");
   const ph = el.querySelector(".ph"), w = { app, el, frame, min: false };
+
   w.load = async fresh => {
     ph.hidden = false; ph.replaceChildren(h("div", { className: "spin" }), h("span", { textContent: "Loading " + app.name + "…" }));
     try { const html = await getPage(app.file, fresh); frame.srcdoc = html + FWD; }
-    catch { ph.replaceChildren(h("span", { textContent: "Couldn't load " + app.name + ". Check your connection." }), h("button", { className: "ib primary", textContent: "Retry", onclick: () => w.load(true) })); }
+    catch { ph.replaceChildren(h("span", { textContent: "Couldn't load " + app.name + "." }), h("button", { className: "ib primary", textContent: "Retry", onclick: () => w.load(true) })); }
   };
   frame.addEventListener("load", () => { if (frame.srcdoc) ph.hidden = true; });
   el.querySelector(".wbody").append(frame);
+
   const tb = el.querySelector(".tb"), rs = el.querySelector(".rs");
   el.addEventListener("pointerdown", () => focusWin(w), true);
   tb.addEventListener("dblclick", e => { if (!e.target.closest("button")) toggleMax(w); });
-  el.querySelector(".b-m").onclick = () => minimize(w); el.querySelector(".b-x").onclick = () => toggleMax(w); el.querySelector(".b-c").onclick = () => closeWin(w);
+  el.querySelector(".b-m").onclick = () => minimize(w);
+  el.querySelector(".b-x").onclick = () => toggleMax(w);
+  el.querySelector(".b-c").onclick = () => closeWin(w);
+
   const drag = (handle, start, move) => handle.addEventListener("pointerdown", e => {
     if (e.button || e.target.closest("button") || el.classList.contains("max")) return;
     const s = start(e); handle.setPointerCapture(e.pointerId); desk.classList.add("drag");
@@ -1460,34 +1302,29 @@ function createWin(app) {
     handle.addEventListener("pointermove", mv); handle.addEventListener("pointerup", up);
   });
   drag(tb, e => ({ x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop }), (e, s) => {
-    el.style.left = Math.min(innerWidth - 80, Math.max(80 - el.offsetWidth, s.l + e.clientX - s.x)) + "px"; el.style.top = Math.min(innerHeight - 60, Math.max(32, s.t + e.clientY - s.y)) + "px";
+    el.style.left = Math.min(innerWidth - 80, Math.max(80 - el.offsetWidth, s.l + e.clientX - s.x)) + "px";
+    el.style.top = Math.min(innerHeight - 60, Math.max(32, s.t + e.clientY - s.y)) + "px";
   });
   drag(rs, e => ({ x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }), (e, s) => {
     el.style.width = Math.max(360, s.w + e.clientX - s.x) + "px";
     el.style.height = Math.max(260, s.h + e.clientY - s.y) + "px";
   });
-  desk.append(el); wins.set(app.key, w); if (innerWidth < 700) el.classList.add("max");
+
+  desk.append(el); wins.set(app.key, w);
   focusWin(w); w.load(); return w;
 }
 
 function openApp(key, toggle) {
   const app = apps.get(key); if (!app) return;
-  recordRecent(app.name, "Application", app.icon, key);
   const w = wins.get(key);
   if (!w) createWin(app); else if (w.min || focused !== w || !toggle) focusWin(w); else minimize(w);
 }
 
-addEventListener("blur", () => {
-  menu.hidden = true;
-  setTimeout(() => { wins.forEach(w => { if (w.frame && document.activeElement === w.frame) focusWin(w); }); });
-});
-
-/* ===== MACOS GLASS DOCK ===== */
-const tint = k => ({ games: "#6a95ff", chat: "#a78bfa", ai: "#22d3ee" })[k] || "hsl(" + ([...k].reduce((a, c) => a + c.charCodeAt(0) * 17, 0) % 360) + " 75% 58%)";
-function dockBtn(label, icon, color, fn, key, extraClass = "") {
+/* ===== DOCK ===== */
+function dockBtn(label, icon, tileBg, fn, key, extraClass = "") {
   const b = h("button", { type: "button", onclick: fn, className: ("dk " + extraClass).trim() });
   b.setAttribute("aria-label", label);
-  b.style.setProperty("--c", color);
+  if (tileBg) b.style.setProperty("--tile-bg", tileBg);
   b.dataset.tip = label;
   b.innerHTML = '<span class="ti">' + ico(icon) + "</span>";
   if (key) dockBtns.set(key, b);
@@ -1495,13 +1332,14 @@ function dockBtn(label, icon, color, fn, key, extraClass = "") {
 }
 
 function buildDock() {
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
   $("dock").replaceChildren(
-    dockBtn("Start Menu", "fa-brands fa-windows", "#6a95ff", e => { e.stopPropagation(); toggleStartMenu(); }, null, "start-dk"),
+    dockBtn("Launchpad", "fa-solid fa-grip", null, e => { e.stopPropagation(); toggleStartMenu(); }, null, "start-dk"),
     h("i", { className: "sep" }),
-    ...[...apps.values()].filter(a => a.key !== "home" && a.key !== "index").map(a => dockBtn(a.name, a.icon, tint(a.key), () => openApp(a.key, true), a.key)),
+    ...userApps.map((a, i) => dockBtn(a.name, a.icon, tileGradient(a.key, i), () => openApp(a.key, true), a.key, "app-" + a.key)),
     h("i", { className: "sep" }),
-    dockBtn("Discord", "discord", "#5865f2", () => window.open(LINKS.discord, "_blank", "noopener")),
-    dockBtn("Settings", "settings", "#64748b", () => openSettings("preferences"), "settings-win")
+    dockBtn("Discord", "discord", null, () => window.open(LINKS.discord, "_blank", "noopener"), null, "app-discord"),
+    dockBtn("Settings", "settings", null, () => openSettings("preferences"), "settings-win", "app-settings")
   );
 }
 
@@ -1516,7 +1354,11 @@ $("updBtn").onclick = () => $("upd").classList.toggle("shut");
 
 function tick() {
   const d = new Date();
-  $("clock").textContent = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const wk = d.toLocaleDateString([], { weekday: "short" });
+  const mo = d.toLocaleDateString([], { month: "short" });
+  const dy = d.getDate();
+  const tm = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  $("clock").textContent = `${wk} ${mo} ${dy}  ${tm}`;
   $("dayName").textContent = d.toLocaleDateString([], { weekday: "long" }).toUpperCase();
   $("dateTxt").textContent = d.toLocaleDateString([], { month: "long", day: "numeric" });
 }
@@ -1525,6 +1367,7 @@ tick(); setInterval(tick, 10000);
 /* ===== TOP MENU BAR INTERACTIONS ===== */
 function showMenu(x, y) {
   menu.querySelector('[data-a="start"]').onclick = () => { menu.hidden = true; toggleStartMenu(true); };
+  menu.querySelector('[data-a="expose"]').onclick = () => { menu.hidden = true; toggleExpose(true); };
   menu.querySelector('[data-a="wall"]').onclick = () => { menu.hidden = true; $("wp").showModal(); };
   menu.querySelector('[data-a="settings"]').onclick = () => { menu.hidden = true; openSettings("preferences"); };
   menu.querySelector('[data-a="ab"]').onclick = () => { menu.hidden = true; launchAboutBlank(); };
@@ -1539,20 +1382,35 @@ function showMenu(x, y) {
 
 $("menuBtn").onclick = e => {
   e.stopPropagation();
-  startMenu.hidden = true;
+  toggleStartMenu(false);
+  toggleExpose(false);
   const r = $("menuBtn").getBoundingClientRect();
   showMenu(r.left, r.bottom + 6);
 };
-$("topStartBtn").onclick = e => { e.stopPropagation(); toggleStartMenu(); };
-$("topSettingsBtn").onclick = () => openSettings("preferences");
-$("topWallBtn").onclick = () => $("wp").showModal();
+$("topActiveApp").onclick = e => { e.stopPropagation(); toggleStartMenu(true); };
+$("topFileBtn").onclick = e => { e.stopPropagation(); toggleStartMenu(true); };
+$("topEditBtn").onclick = () => openSettings("cloaking");
+$("topViewBtn").onclick = () => openSettings("themes");
+$("topWindowBtn").onclick = e => { e.stopPropagation(); toggleExpose(true); };
+$("topHelpBtn").onclick = () => openDoc("tos");
+$("topWifiBtn").onclick = () => notify("Connected to SIFT Network");
+$("topSearchBtn").onclick = e => { e.stopPropagation(); toggleSpotlight(); };
+$("topExposeBtn").onclick = e => { e.stopPropagation(); toggleExpose(); };
 
 window.onpointerdown = e => {
   if (!menu.contains(e.target) && !$("menuBtn").contains(e.target)) menu.hidden = true;
-  if (!startMenu.contains(e.target) && !e.target.closest(".start-dk") && e.target !== $("topStartBtn")) {
-    startMenu.hidden = true;
-  }
 };
+window.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    toggleSpotlight();
+  }
+  if (e.key === "Escape") {
+    if (spotlight.classList.contains("open")) toggleSpotlight(false);
+    if (startMenu.classList.contains("open")) toggleStartMenu(false);
+    if (expose.classList.contains("open")) toggleExpose(false);
+  }
+});
 
 /* ===== INIT & BOOT ANIMATION ===== */
 async function init() {
@@ -1562,42 +1420,44 @@ async function init() {
     if (r.ok) {
       pages = await r.json();
       pages.forEach(p => {
-        const k = slugOf(p);
+        let k = slugOf(p);
         if (k !== "home" && k !== "index") {
-          apps.set(k, { key: k, name: p.name, icon: p.icon, file: p.file });
+          let file = p.file;
+          if (k === "games") file = "ofcgames.html";
+          apps.set(k, { key: k, name: p.name, icon: p.icon, file: file });
         }
       });
     }
   } catch {}
   if (apps.size === 0) {
-    apps.set("games", { key: "games", name: "Games", icon: "gamepad", file: "games.html" });
+    apps.set("games", { key: "games", name: "Games", icon: "gamepad", file: "ofcgames.html" });
     apps.set("chat", { key: "chat", name: "Chat", icon: "chat", file: "chat.html" });
     apps.set("ai", { key: "ai", name: "AI", icon: "robot", file: "ai.html" });
     pages = [
-      { name: "Games", icon: "gamepad", file: "games.html" },
+      { name: "Games", icon: "gamepad", file: "ofcgames.html" },
       { name: "Chat", icon: "chat", file: "chat.html" },
       { name: "AI", icon: "robot", file: "ai.html" }
     ];
+  } else {
+    if (apps.has("games")) {
+      apps.get("games").file = "ofcgames.html";
+    }
   }
   buildDock();
   renderStartMenu();
 
-  // Trigger smooth boot animation reveal
-  setTimeout(() => {
+  const finishBoot = () => {
     $("boot").classList.add("done");
     document.body.classList.add("booted");
-  }, 1150);
+  };
+  $("helloBtn").onclick = finishBoot;
+  setTimeout(finishBoot, 2900);
 
-  // Auto cloak checks if enabled
   if (window.self === window.top && location.protocol !== "blob:") {
     if (ls.get("sh0zy.autoab") === "1") launchAboutBlank();
     else if (ls.get("sh0zy.autoblob") === "1") launchBlob();
   }
 }
-
-window.addEventListener("message", e => {
-  if (e.data && e.data.sh === "key" && e.data.key === "admin") askAdmin();
-});
 
 init();
 </script>
