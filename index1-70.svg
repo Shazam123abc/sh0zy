@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" width="100%" height="100%" viewBox="0 0 1000 700">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 700">
   <foreignObject x="0" y="0" width="100%" height="100%">
-    <xhtml:div style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
-      <xhtml:div id="sift-scale-root" style="position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
+      <div id="sift-scale-root" style="position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden">
         
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1296,7 +1296,7 @@ function launchAboutBlank() {
   const doc = win.document;
   doc.open();
   doc.write(`<!DOCTYPE html><html><head><title>${document.title || "My Drive - Google Drive"}</title><link rel="icon" href="${$("fav").href}"><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden;background:#07080c}</style></head><body><iframe src="${location.href}" allowfullscreen></iframe>
-      </xhtml:div>
-    </xhtml:div>
+      </div>
+    </div>
   </foreignObject>
 </svg>
