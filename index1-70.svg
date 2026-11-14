@@ -4,14 +4,14 @@
     <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
       <div id="sift-scale-root" style="position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden">
         
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>SIFT macOS</title>
-<link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2307080c'/%3E%3Crect x='22' y='22' width='56' height='56' rx='14' transform='rotate(45 50 50)' fill='none' stroke='white' stroke-width='11'/%3E%3Crect x='39' y='39' width='22' height='22' rx='6' transform='rotate(45 50 50)' fill='white'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+<link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2307080c'/%3E%3Crect x='22' y='22' width='56' height='56' rx='14' transform='rotate(45 50 50)' fill='none' stroke='white' stroke-width='11'/%3E%3Crect x='39' y='39' width='22' height='22' rx='6' transform='rotate(45 50 50)' fill='white'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Pacifico&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"/>
 <style>
 :root{
   --txt:#f4f6fb;
@@ -952,25 +952,25 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   </button>
 
   <!-- Stage 2: Create a Computer Account -->
-  <div class="setup-step" id="setupAccountCard" hidden>
+  <div class="setup-step" id="setupAccountCard" hidden="hidden">
     <h2>Create a Computer Account</h2>
     <p class="setup-desc">Fill out the following information to create your account. A password is optional.</p>
     <div class="setup-table">
       <div class="setup-row">
         <label for="setupName">Full name</label>
-        <input id="setupName" type="text" placeholder="Required" autocomplete="name">
+        <input id="setupName" type="text" placeholder="Required" autocomplete="name"/>
       </div>
       <div class="setup-row">
         <label for="setupPass">Password</label>
-        <input id="setupPass" type="password" placeholder="Optional" autocomplete="new-password">
+        <input id="setupPass" type="password" placeholder="Optional" autocomplete="new-password"/>
       </div>
-      <div class="setup-row" id="rowVerify" hidden>
+      <div class="setup-row" id="rowVerify" hidden="hidden">
         <label for="setupVerify">Verify</label>
-        <input id="setupVerify" type="password" placeholder="Required" autocomplete="new-password">
+        <input id="setupVerify" type="password" placeholder="Required" autocomplete="new-password"/>
       </div>
-      <div class="setup-row" id="rowHint" hidden>
+      <div class="setup-row" id="rowHint" hidden="hidden">
         <label for="setupHint">Hint</label>
-        <input id="setupHint" type="text" placeholder="Recommended">
+        <input id="setupHint" type="text" placeholder="Recommended"/>
       </div>
     </div>
     <div class="setup-footnote">This password only locks the desktop in this browser.</div>
@@ -980,7 +980,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   </div>
 
   <!-- Stage 3: Choose Your Look -->
-  <div class="setup-step" id="setupLookCard" hidden>
+  <div class="setup-step" id="setupLookCard" hidden="hidden">
     <h2>Choose Your Look</h2>
     <p class="setup-desc">Select an appearance and accent colour. You can change these later in Settings.</p>
     <div class="look-options">
@@ -1020,13 +1020,13 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   </div>
 
   <!-- Stage 4: Welcome / Password Lock Screen -->
-  <div class="setup-step" id="setupWelcomeCard" hidden>
+  <div class="setup-step" id="setupWelcomeCard" hidden="hidden">
     <div class="welcome-circle" id="setupAvatarInitial">F</div>
     <div class="welcome-title" id="setupWelcomeTitle">Welcome, user</div>
     <p class="welcome-sub" id="setupWelcomeSub">Your desktop will ask for your password each time it starts.</p>
-    <div class="lock-login-box" id="lockLoginBox" hidden>
+    <div class="lock-login-box" id="lockLoginBox" hidden="hidden">
       <div class="lock-pass-pill" id="lockPassPill">
-        <input id="lockPassInput" type="password" placeholder="Enter Password" autocomplete="current-password">
+        <input id="lockPassInput" type="password" placeholder="Enter Password" autocomplete="current-password"/>
         <button type="button" class="lock-go-btn" id="lockUnlockBtn" aria-label="Unlock"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
       <div class="lock-hint-txt" id="lockHintTxt"></div>
@@ -1060,7 +1060,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
         <button type="button" data-step="3" style="width:6px;height:6px;border-radius:50%;background:var(--mut);border:0;cursor:pointer"></button>
       </div>
       <div style="display:flex;gap:8px">
-        <button type="button" id="guideBackBtn" class="ib" style="height:32px;padding:0 14px;font-size:12px" hidden>Back</button>
+        <button type="button" id="guideBackBtn" class="ib" style="height:32px;padding:0 14px;font-size:12px" hidden="hidden">Back</button>
         <button type="button" id="guideNextBtn" class="ib primary" style="height:32px;padding:0 16px;font-size:12px">Next <i class="fa-solid fa-arrow-right" style="font-size:10px;margin-left:4px"></i></button>
       </div>
     </div>
@@ -1080,7 +1080,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   <div class="sp-box">
     <div class="sp-input-row">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input id="spInput" type="text" placeholder="Spotlight Search" autocomplete="off" spellcheck="false">
+      <input id="spInput" type="text" placeholder="Spotlight Search" autocomplete="off" spellcheck="false"/>
     </div>
     <div class="sp-results" id="spResults"></div>
   </div>
@@ -1104,7 +1104,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   </div>
   <div class="top-right">
     <button type="button" class="top-user" id="topUser" aria-label="Account menu" aria-haspopup="menu" title="Your account"><span class="top-av" id="topAv">U</span><span id="topUserName">User</span></button>
-    <span class="top-status" id="topDnd" hidden title="Do Not Disturb"><i class="fa-solid fa-moon"></i></span>
+    <span class="top-status" id="topDnd" hidden="hidden" title="Do Not Disturb"><i class="fa-solid fa-moon"></i></span>
     <button type="button" class="top-icon-btn" id="topWifiBtn" aria-label="Wi-Fi Status" title="Connected">
       <i class="fa-solid fa-wifi"></i>
     </button>
@@ -1124,9 +1124,9 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 </header>
 
 <!-- HELP MENU DROPDOWN -->
-<div id="helpMenu" role="menu" hidden>
+<div id="helpMenu" role="menu" hidden="hidden">
   <button type="button" id="helpReplayGuideBtn" role="menuitem"><i class="ic fa-solid fa-compass"></i>Desktop Quick Guide</button>
-  <hr>
+  <hr/>
   <button type="button" data-doc="tos" role="menuitem"><i class="ic fa-regular fa-file-lines"></i>Terms of Service</button>
 </div>
 
@@ -1149,7 +1149,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   <div class="lp-inner">
     <div class="lp-search">
       <i class="fa-solid fa-magnifying-glass" style="color:rgba(255,255,255,.6)"></i>
-      <input id="smSearch" type="search" placeholder="Search Apps" autocomplete="off">
+      <input id="smSearch" type="search" placeholder="Search Apps" autocomplete="off"/>
     </div>
     <div class="lp-grid" id="lpGrid"></div>
   </div>
@@ -1159,15 +1159,15 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 <nav id="dock" aria-label="Apps"></nav>
 
 <!-- TOP BAR DROPDOWN MENU -->
-<div id="menu" role="menu" hidden>
+<div id="menu" role="menu" hidden="hidden">
   <button role="menuitem" data-a="start"><i class="ic fa-solid fa-grip"></i>Open Launchpad</button>
   <button role="menuitem" data-a="expose"><i class="ic fa-solid fa-window-restore"></i>Mission Control (Open Windows)</button>
   <button role="menuitem" data-a="wall"><i class="ic fa-regular fa-image"></i>Change Wallpaper</button>
   <button role="menuitem" data-a="settings"><i class="ic fa-solid fa-gear"></i>System Settings</button>
-  <hr>
+  <hr/>
   <button role="menuitem" data-a="ab"><i class="ic fa-solid fa-ghost"></i>Launch in about:blank</button>
   <button role="menuitem" data-a="blob"><i class="ic fa-solid fa-shield-halved"></i>Launch in Blob URL</button>
-  <hr>
+  <hr/>
   <button role="menuitem" data-doc="tos"><i class="ic fa-regular fa-file-lines"></i>Terms of Service</button>
   <button role="menuitem" data-doc="privacy"><i class="ic fa-solid fa-user-shield"></i>Privacy Policy</button>
   <button role="menuitem" data-a="discord"><i class="ic fa-brands fa-discord"></i>Join our Discord</button>
@@ -1191,12 +1191,12 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   </div>
   <div class="cc-tile cc-sl">
     <button type="button" class="cc-h" data-open="display">Display</button>
-    <div class="cc-rw"><i class="fa-solid fa-sun"></i><input type="range" class="cc-range" id="ccBright" min="25" max="100" aria-label="Display brightness"></div>
+    <div class="cc-rw"><i class="fa-solid fa-sun"></i><input type="range" class="cc-range" id="ccBright" min="25" max="100" aria-label="Display brightness"/></div>
   </div>
   <div class="cc-tile cc-sl">
     <button type="button" class="cc-h" data-open="sound">Sound</button>
     <div class="cc-snd">
-      <div class="cc-rw"><i id="ccVolIco" class="fa-solid fa-volume-high"></i><input type="range" class="cc-range" id="ccVol" min="0" max="100" aria-label="Volume"></div>
+      <div class="cc-rw"><i id="ccVolIco" class="fa-solid fa-volume-high"></i><input type="range" class="cc-range" id="ccVol" min="0" max="100" aria-label="Volume"/></div>
       <button type="button" class="cc-dot cc-mute" id="ccMute" aria-label="Mute"><i class="fa-solid fa-volume-xmark"></i></button>
     </div>
   </div>
@@ -1209,12 +1209,12 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 </div>
 
 <!-- ACCOUNT MENU -->
-<div id="userMenu" role="menu" hidden>
+<div id="userMenu" role="menu" hidden="hidden">
   <div class="um-head"><span class="top-av um-av" id="umAv">U</span><div><b id="umName">User</b><small>Local account</small></div></div>
-  <hr>
+  <hr/>
   <button role="menuitem" data-u="acct"><i class="ic fa-solid fa-user-circle"></i>Account Settings</button>
   <button role="menuitem" data-u="sys"><i class="ic fa-solid fa-gear"></i>System Settings</button>
-  <hr>
+  <hr/>
   <button role="menuitem" data-u="lock"><i class="ic fa-solid fa-lock"></i>Lock Screen</button>
 </div>
 
@@ -1224,7 +1224,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 <!-- WALLPAPER DIALOG -->
 <dialog id="wp">
   <h2>Wallpaper</h2>
-  <label>Image link<input id="wp-url" type="url" placeholder="https://example.com/wallpaper.jpg"></label>
+  <label>Image link<input id="wp-url" type="url" placeholder="https://example.com/wallpaper.jpg"/></label>
   <div class="acts">
     <button type="button" class="ib primary" id="wp-apply"><i class="fa-solid fa-check"></i> Use this link</button>
     <button type="button" class="ib" id="wp-up"><i class="fa-solid fa-upload"></i> Upload an image</button>
@@ -1233,7 +1233,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
     <button type="button" class="ib" id="wp-p1"><i class="fa-regular fa-image"></i> Default Alpine Vista</button>
     <button type="button" class="ib" id="wp-p2"><i class="fa-regular fa-image"></i> Sunset Peak</button>
   </div>
-  <input id="wp-file" type="file" accept="image/*" hidden>
+  <input id="wp-file" type="file" accept="image/*" hidden="hidden"/>
   <p id="wp-msg" role="status"></p>
   <div class="row"><button type="button" class="ib" id="wp-reset">Reset</button><button type="button" class="ib" id="wp-x">Close</button></div>
 </dialog>
@@ -1295,7 +1295,7 @@ function launchAboutBlank() {
   if (!win) { notify("Popup blocked! Allow popups for about:blank."); return; }
   const doc = win.document;
   doc.open();
-  doc.write(`<!DOCTYPE html><html><head><title>${document.title || "My Drive - Google Drive"}</title><link rel="icon" href="${$("fav").href}"><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden;background:#07080c}</style></head><body><iframe src="${location.href}" allowfullscreen></iframe>
+  doc.write(`<!DOCTYPE html><html><head><title>${document.title || "My Drive - Google Drive"}</title><link rel="icon" href="${$("fav").href}"/><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden;background:#07080c}</style></head><body><iframe src="${location.href}" allowfullscreen="allowfullscreen"></iframe>
       </div>
     </div>
   </foreignObject>
