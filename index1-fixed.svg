@@ -54,7 +54,7 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 
 .spin{width:28px;height:28px;border-radius:50%;border:2.5px solid rgba(255,255,255,.16);border-top-color:var(--acc);animation:sp .8s linear infinite}@keyframes sp{to{rotate:360deg}}
 
-/* AUTHENTIC MACOS "HELLO" STARTUP & SETUP WIZARD SCREEN */
+/* AUTHENTIC MACOS "HELLO" STARTUP &amp; SETUP WIZARD SCREEN */
 #boot{
   position:fixed;inset:0;z-index:9999;
   background:#07080c;
@@ -226,7 +226,7 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 .accent-dot.selected{border-color:#fff;transform:scale(1.12)}
 .accent-dot.selected i{opacity:1}
 
-/* Welcome & Login Screen */
+/* Welcome &amp; Login Screen */
 .welcome-circle{
   width:84px;height:84px;border-radius:50%;
   background:linear-gradient(135deg, #22c55e, #16a34a);
@@ -847,7 +847,7 @@ button.cc-tile:hover{background:var(--glass-card-hover)}
 .um-head small{color:var(--mut);font-size:11px}
 @media(max-width:640px){#topUserName{display:none}#top button.top-user{padding:0 6px}#cc{width:min(332px,calc(100vw - 20px))}}
 
-/* SETTINGS ROWS & SWITCHES */
+/* SETTINGS ROWS &amp; SWITCHES */
 .st-card>.st-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
 .st-card>.st-row:first-child{border-top:0;padding-top:0}
 .st-card>.st-row:last-child{padding-bottom:0}
@@ -905,7 +905,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 </style>
 <style id="sift-70-scale">html,body{margin:0!important;width:100%;height:100%;overflow:hidden}#sift-scale-root{position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden}#sift-scale-root>*{box-sizing:border-box}</style>
 
-<!-- AUTHENTIC MACOS "HELLO" STARTUP & SETUP WIZARD SCREEN -->
+<!-- AUTHENTIC MACOS "HELLO" STARTUP &amp; SETUP WIZARD SCREEN -->
 <div id="boot" aria-hidden="true">
   <div id="boot-wall-blur"></div>
 
@@ -1165,7 +1165,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   <button role="menuitem" data-a="discord"><i class="ic fa-brands fa-discord"></i>Join our Discord</button>
 </div>
 
-<!-- SCREEN DIMMER & NIGHT SHIFT -->
+<!-- SCREEN DIMMER &amp; NIGHT SHIFT -->
 <div id="warm" aria-hidden="true"></div>
 <div id="dim" aria-hidden="true"></div>
 
