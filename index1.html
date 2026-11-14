@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SIFT</title>
+<title>SIFT macOS</title>
 <link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2307080c'/%3E%3Crect x='22' y='22' width='56' height='56' rx='14' transform='rotate(45 50 50)' fill='none' stroke='white' stroke-width='11'/%3E%3Crect x='39' y='39' width='22' height='22' rx='6' transform='rotate(45 50 50)' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,24 +14,24 @@
 :root{
   --txt:#f4f6fb;
   --mut:rgba(235,240,250,.62);
-  --line:rgba(255,255,255,.16);
+  --line:rgba(255,255,255,.14);
   --line-bright:rgba(255,255,255,.28);
-  --acc:#6a95ff;
+  --acc:#2b7fff;
   --acc2:#a78bfa;
-  --glass:rgba(18,22,34,.38);
-  --glass-heavy:rgba(15,19,31,.54);
-  --glass-card:rgba(255,255,255,.075);
-  --glass-card-hover:rgba(255,255,255,.13);
-  --bar:rgba(25,30,44,.40);
-  --blur:blur(30px) saturate(185%);
-  --shadow:0 24px 64px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.24);
+  --glass:rgba(18,22,34,.52);
+  --glass-heavy:rgba(14,18,28,.78);
+  --glass-card:rgba(255,255,255,.055);
+  --glass-card-hover:rgba(255,255,255,.095);
+  --bar:rgba(22,27,40,.65);
+  --blur:blur(36px) saturate(190%);
+  --shadow:0 28px 70px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.22);
 }
 
 body[data-theme="obsidian"]{
-  --glass:rgba(8,9,13,.68);
-  --glass-heavy:rgba(5,6,9,.78);
-  --glass-card:rgba(255,255,255,.055);
-  --bar:rgba(10,11,16,.70);
+  --glass:rgba(8,9,13,.74);
+  --glass-heavy:rgba(5,6,9,.88);
+  --glass-card:rgba(255,255,255,.04);
+  --bar:rgba(10,11,16,.78);
 }
 body[data-theme="crystal"]{
   --txt:#111827;
@@ -38,7 +39,7 @@ body[data-theme="crystal"]{
   --line:rgba(255,255,255,.45);
   --line-bright:rgba(255,255,255,.75);
   --glass:rgba(245,247,252,.48);
-  --glass-heavy:rgba(250,252,255,.70);
+  --glass-heavy:rgba(250,252,255,.78);
   --glass-card:rgba(255,255,255,.38);
   --glass-card-hover:rgba(255,255,255,.58);
   --bar:rgba(255,255,255,.50);
@@ -52,117 +53,223 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .ic{font-size:14px;line-height:1}
 
-/* GLASS BUTTONS */
 .ib{height:34px;padding:0 15px;border:1px solid var(--line);border-radius:11px;background:var(--glass-card);backdrop-filter:blur(12px);transition:all .18s cubic-bezier(.2,.8,.2,1);font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .ib:hover:not(:disabled){background:var(--glass-card-hover);border-color:var(--line-bright);transform:translateY(-1px)}
-.ib.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;color:#fff;box-shadow:0 6px 20px rgba(106,149,255,.35)}
+.ib.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;color:#fff;box-shadow:0 6px 20px rgba(43,127,255,.35)}
 
 .spin{width:28px;height:28px;border-radius:50%;border:2.5px solid rgba(255,255,255,.16);border-top-color:var(--acc);animation:sp .8s linear infinite}@keyframes sp{to{rotate:360deg}}
 
-/* AUTHENTIC MACOS "HELLO" STARTUP SCREEN (MATCHING SCREENSHOT + CUSTOM LOGO) */
+/* AUTHENTIC MACOS "HELLO" STARTUP & SETUP WIZARD SCREEN */
 #boot{
   position:fixed;inset:0;z-index:9999;
-  background:#050608;
+  background:#07080c;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;
-  transition:opacity .9s cubic-bezier(.22,1,.36,1), transform 1.05s cubic-bezier(.22,1,.36,1), visibility 0s 1.05s;
+  transition:opacity .85s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.22,1,.36,1), visibility 0s 1s;
 }
-#boot-bg{
+#boot-wall-blur{
   position:absolute;inset:-48px;
-  background:#0a0b0f center/cover no-repeat;
-  filter:blur(46px) saturate(145%) brightness(.68);
-  transform:scale(1.12);
+  background:#07080c center/cover no-repeat;
+  filter:blur(44px) saturate(165%) brightness(.85);
+  transform:scale(1.14);
+  transition:filter .75s ease, transform 1s ease;
   pointer-events:none;
 }
-#boot::after{
+#boot-wall-blur::after{
   content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 44%, rgba(0,0,0,.05) 0%, rgba(0,0,0,.58) 76%, rgba(0,0,0,.88) 100%);
-  pointer-events:none;
+  background:radial-gradient(circle at 50% 45%, rgba(0,0,0,.04) 0%, rgba(0,0,0,.36) 100%);
 }
-#boot.done{opacity:0;transform:scale(1.06);pointer-events:none;visibility:hidden}
+#boot.step-setup #boot-wall-blur{filter:blur(48px) saturate(150%) brightness(.68)}
+#boot.step-welcome #boot-wall-blur{filter:blur(54px) saturate(140%) brightness(.58)}
+#boot.done{opacity:0;transform:scale(1.04);pointer-events:none;visibility:hidden}
 
 .hello-stage{
   position:relative;z-index:2;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  margin-top:-18px;
-}
-.hello-brand{
-  width:42px;height:42px;
-  margin-bottom:14px;
-  color:#ffffff;
-  opacity:0;
-  transform:translateY(10px) scale(.92);
-  animation:helloBrandIn .9s cubic-bezier(.22,1,.36,1) .1s forwards;
-  filter:drop-shadow(0 6px 22px rgba(0,0,0,.45));
-}
-@keyframes helloBrandIn{
-  to{opacity:.95;transform:translateY(0) scale(1)}
+  margin-top:-30px;
 }
 .hello-svg{
-  width:min(460px, 78vw);
+  width:clamp(260px, 32vw, 450px);
   height:auto;
   overflow:visible;
 }
 .hello-stroke{
-  font-family:'Pacifico', cursive;
-  font-size:112px;
-  fill:rgba(255,255,255,0);
+  fill:none;
   stroke:#ffffff;
-  stroke-width:2.6px;
+  stroke-width:9;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:1250;
-  stroke-dashoffset:1250;
-  animation:
-    helloDraw 1.9s cubic-bezier(.35,0,.2,1) .2s forwards,
-    helloFill .65s ease 1.45s forwards;
-  filter:drop-shadow(0 8px 32px rgba(0,0,0,.42));
+  stroke-dasharray:1 2;
+  stroke-dashoffset:1.01;
+  animation:helloDraw 3s cubic-bezier(.38,.04,.25,1) .3s forwards;
+  filter:drop-shadow(0 4px 22px rgba(0,0,0,.38));
 }
-@keyframes helloDraw{
-  to{stroke-dashoffset:0}
-}
-@keyframes helloFill{
-  to{fill:rgba(255,255,255,1)}
-}
+@keyframes helloDraw{to{stroke-dashoffset:0}}
 
 .hello-start-btn{
-  position:absolute;bottom:48px;z-index:3;
-  background:none;border:0;color:rgba(255,255,255,.86);
-  display:flex;flex-direction:column;align-items:center;gap:9px;
-  font-size:12px;font-weight:500;letter-spacing:.01em;
+  position:absolute;bottom:54px;z-index:3;
+  background:none;border:0;color:rgba(255,255,255,.94);
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  font-size:11.5px;font-weight:500;letter-spacing:.02em;
   cursor:pointer;opacity:0;transform:translateY(12px);
-  animation:helloBtnIn .85s cubic-bezier(.22,1,.36,1) 1.55s forwards;
+  animation:helloBtnIn .8s cubic-bezier(.22,1,.36,1) 3.1s forwards;
   transition:color .2s, transform .2s;
-  text-shadow:0 2px 10px rgba(0,0,0,.75);
+  text-shadow:0 2px 12px rgba(0,0,0,.75);
 }
 .hello-start-btn:hover{color:#fff;transform:translateY(-2px)}
-.hello-start-btn:active{transform:translateY(0) scale(.97)}
-@keyframes helloBtnIn{
-  to{opacity:1;transform:translateY(0)}
-}
+@keyframes helloBtnIn{to{opacity:1;transform:translateY(0)}}
 .hello-start-ico{
-  width:28px;height:28px;border-radius:50%;
-  border:1.5px solid rgba(255,255,255,.36);
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.85);
   display:grid;place-items:center;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  font-size:10px;
-  box-shadow:0 4px 16px rgba(0,0,0,.4);
-  transition:background .2s, border-color .2s, transform .2s;
+  font-size:9.5px;
+  transition:background .2s, transform .2s;
 }
-.hello-start-btn:hover .hello-start-ico{
-  background:rgba(255,255,255,.22);
-  border-color:rgba(255,255,255,.8);
-  transform:scale(1.06);
+.hello-start-btn:hover .hello-start-ico{background:rgba(255,255,255,.24);transform:scale(1.08)}
+
+/* Setup Wizard Steps */
+.setup-step{
+  position:relative;z-index:3;
+  width:min(440px, 90vw);
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  animation:pop .35s cubic-bezier(.22,1,.36,1);
 }
+.setup-step h2{
+  font-size:25px;font-weight:700;letter-spacing:-.02em;color:#ffffff;
+  margin-bottom:8px;text-shadow:0 2px 16px rgba(0,0,0,.35);
+}
+.setup-desc{
+  font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.78);
+  max-width:360px;margin-bottom:22px;
+}
+.setup-table{
+  width:100%;border-radius:11px;overflow:hidden;
+  background:rgba(255,255,255,.14);
+  backdrop-filter:blur(26px) saturate(155%);
+  -webkit-backdrop-filter:blur(26px) saturate(155%);
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:0 14px 36px rgba(0,0,0,.22);
+  transition:box-shadow .18s, border-color .18s;
+}
+.setup-table:focus-within{
+  border-color:#2b7fff;
+  box-shadow:0 0 0 2.5px #2b7fff, 0 16px 40px rgba(0,0,0,.28);
+}
+.setup-row{
+  display:flex;align-items:center;justify-content:space-between;
+  height:40px;padding:0 14px;
+  border-bottom:1px solid rgba(255,255,255,.13);
+}
+.setup-row:last-child{border-bottom:0}
+.setup-row label{
+  font-size:13px;font-weight:600;color:#ffffff;
+  white-space:nowrap;margin-right:12px;
+}
+.setup-row input{
+  flex:1;min-width:0;border:0;background:none;outline:none;
+  text-align:right;font-size:13px;color:#ffffff;
+}
+.setup-row input::placeholder{color:rgba(255,255,255,.48);font-weight:400}
+.setup-footnote{
+  margin-top:12px;font-size:11px;color:rgba(255,255,255,.68);
+}
+.setup-continue-row{margin-top:20px}
+.setup-pill-btn{
+  height:30px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.2);backdrop-filter:blur(14px);
+  color:#fff;font-size:12.5px;font-weight:500;
+  transition:background .16s, transform .14s;
+}
+.setup-pill-btn:hover{background:rgba(255,255,255,.32);transform:translateY(-1px)}
+
+/* Choose Your Look Step */
+.look-options{
+  display:flex;gap:14px;justify-content:center;margin-bottom:20px;
+}
+.look-choice{
+  background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:7px;
+  color:rgba(255,255,255,.85);font-size:11.5px;font-weight:500;
+}
+.look-thumb{
+  width:94px;height:62px;border-radius:10px;padding:8px;
+  border:2px solid rgba(255,255,255,.22);
+  display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+  position:relative;overflow:hidden;transition:border-color .16s, transform .16s;
+}
+.look-choice:hover .look-thumb{transform:translateY(-2px)}
+.look-choice.selected .look-thumb{
+  border-color:#2b7fff;box-shadow:0 0 0 2px #2b7fff, 0 8px 20px rgba(0,0,0,.35);
+}
+.look-thumb.light{background:linear-gradient(135deg, #a78bfa 0%, #f472b6 55%, #fbbf24 100%)}
+.look-thumb.dark{background:linear-gradient(135deg, #1e1b4b 0%, #311042 55%, #0f172a 100%)}
+.look-thumb.auto{background:linear-gradient(105deg, #93c5fd 0%, #c084fc 49.5%, #1e1b4b 50.5%, #0f172a 100%)}
+.lt-win{
+  width:62px;height:36px;border-radius:5px;padding:4px 5px;
+  background:#ffffff;box-shadow:0 3px 8px rgba(0,0,0,.22);
+  display:flex;align-items:flex-start;
+}
+.look-thumb.dark .lt-win{background:#1f2430}
+.look-thumb.auto .lt-win{background:linear-gradient(105deg, #ffffff 49.5%, #1f2430 50.5%)}
+.lt-dots{display:flex;gap:2.5px}
+.lt-dots i{width:3.5px;height:3.5px;border-radius:50%;display:block}
+.lt-dots i:nth-child(1){background:#ff5f57}
+.lt-dots i:nth-child(2){background:#febc2e}
+.lt-dots i:nth-child(3){background:#28c840}
+.lt-dock{
+  width:46px;height:5px;border-radius:3px;
+  background:rgba(255,255,255,.55);
+}
+.accent-dots{
+  display:flex;gap:10px;align-items:center;justify-content:center;
+}
+.accent-dot{
+  width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);
+  display:grid;place-items:center;color:#fff;font-size:10px;
+  transition:transform .14s, border-color .14s;
+}
+.accent-dot i{opacity:0;transition:opacity .12s}
+.accent-dot.selected{border-color:#fff;transform:scale(1.12)}
+.accent-dot.selected i{opacity:1}
+
+/* Welcome & Login Screen */
+.welcome-circle{
+  width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(135deg, #22c55e, #16a34a);
+  color:#fff;font-size:36px;font-weight:700;
+  display:grid;place-items:center;margin:0 auto 16px;
+  box-shadow:0 12px 32px rgba(34,197,94,.4);
+}
+.welcome-title{
+  font-size:26px;font-weight:700;color:#fff;margin-bottom:6px;
+  text-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+.welcome-sub{font-size:13px;color:rgba(255,255,255,.72);max-width:320px}
+.lock-login-box{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.lock-pass-pill{
+  width:280px;height:42px;border-radius:999px;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;padding:0 6px 0 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+}
+.lock-pass-pill input{
+  flex:1;border:0;background:none;outline:none;font-size:13.5px;color:#fff;
+}
+.lock-pass-pill input::placeholder{color:rgba(255,255,255,.5)}
+.lock-go-btn{
+  width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#111;
+  display:grid;place-items:center;font-size:12px;transition:transform .15s,background .15s;
+}
+.lock-go-btn:hover{background:#fff;transform:scale(1.08)}
+.lock-hint-txt{font-size:11.5px;color:#fca5a5}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.shake{animation:shake .38s ease}
 
 /* WALLPAPER */
 #wall{position:fixed;inset:0;background:#07080c center/cover no-repeat;transition:background-image .5s ease, transform 1.1s cubic-bezier(.22,1,.36,1);transform:scale(1.04)}
 body.booted #wall{transform:scale(1)}
 #wall::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(0,0,0,.08),rgba(0,0,0,.38))}
 
-/* AUTHENTIC MACOS TOP MENU BAR */
+/* TOP BAR */
 #top{
   position:fixed;top:0;left:0;right:0;z-index:26;height:30px;
   display:flex;align-items:center;justify-content:space-between;padding:0 14px;
@@ -174,6 +281,7 @@ body.booted #wall{transform:scale(1)}
   transform:translateY(-100%);transition:transform .6s cubic-bezier(.22,1,.36,1) .15s;
 }
 body.booted #top{transform:translateY(0)}
+body.in-fullscreen #top{transform:translateY(-110%)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 .top-left,.top-right{display:flex;align-items:center;gap:2px}
 #top button{
   height:22px;padding:0 9px;border:0;border-radius:5px;background:none;
@@ -189,7 +297,7 @@ body.booted #top{transform:translateY(0)}
 .cc-toggle-icon{width:15px;height:14px;display:block}
 #clock{font-weight:500;padding:0 4px 0 8px;color:rgba(255,255,255,.94);letter-spacing:-.01em;white-space:nowrap}
 
-/* MISSION CONTROL WINDOW OVERVIEW EXPOSE */
+/* EXPOSE MISSION CONTROL */
 #expose{
   position:fixed;inset:0;z-index:22;
   background:rgba(10,13,22,.48);
@@ -206,7 +314,7 @@ body.booted #top{transform:translateY(0)}
 }
 .ex-grid{
   width:min(1260px, 95vw);
-  display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 260px));
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 300px));
   justify-content:center;gap:34px 26px;
 }
 .ex-item{
@@ -216,7 +324,7 @@ body.booted #top{transform:translateY(0)}
 }
 .ex-item:hover{transform:translateY(-4px) scale(1.03)}
 .ex-win-box{
-  width:100%;aspect-ratio:16/10.5;border-radius:11px;
+  width:100%;aspect-ratio:16/10.5;border-radius:12px;
   background:linear-gradient(145deg, rgba(32,37,50,.92), rgba(20,23,32,.96));
   border:1px solid rgba(255,255,255,.22);
   box-shadow:0 22px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22);
@@ -228,34 +336,16 @@ body.booted #top{transform:translateY(0)}
   box-shadow:0 26px 56px rgba(0,0,0,.65), 0 0 0 2px rgba(106,149,255,.45);
 }
 .ex-win-chrome{
-  height:20px;padding:0 8px;
+  height:24px;padding:0 10px;
   background:rgba(255,255,255,.06);
   border-bottom:1px solid rgba(255,255,255,.08);
-  display:flex;align-items:center;gap:4px;
+  display:flex;align-items:center;gap:6px;
 }
-.ex-dot{width:6px;height:6px;border-radius:50%}
+.ex-dot{width:7px;height:7px;border-radius:50%}
 .ex-dot.r{background:#ff5f57}.ex-dot.y{background:#febc2e}.ex-dot.g{background:#28c840}
-.ex-win-body{
-  flex:1;display:grid;place-items:center;position:relative;overflow:hidden;
-  background:radial-gradient(circle at 50% 35%, rgba(255,255,255,.06), transparent 70%);
-}
-.ex-preview-stage{
-  position:absolute;top:0;left:0;
-  transform-origin:top left;
-  pointer-events:none;
-}
-.ex-preview-stage .win{
-  position:static!important;
-  animation:none!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-}
-.ex-win-ico{
-  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
-  font-size:21px;color:#fff;
-  background:var(--ex-c, linear-gradient(160deg, #38bdf8, #0284c7));
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
+.ex-win-body{flex:1;position:relative;overflow:hidden;background:#0d111a}
+.ex-preview-stage{position:absolute;top:0;left:0;transform-origin:top left;pointer-events:none}
+.ex-preview-stage .win{position:static!important;animation:none!important;border-radius:0!important;box-shadow:none!important;background:rgba(18,22,34,.92)!important}
 .ex-close-btn{
   position:absolute;top:-8px;left:-8px;z-index:4;
   width:24px;height:24px;border-radius:50%;
@@ -274,7 +364,7 @@ body.booted #top{transform:translateY(0)}
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 
-/* MACOS SPOTLIGHT SEARCH OVERLAY */
+/* SPOTLIGHT */
 #spotlight{
   position:fixed;inset:0;z-index:35;
   display:flex;align-items:flex-start;justify-content:center;
@@ -300,24 +390,11 @@ body.booted #top{transform:translateY(0)}
   transition:transform .18s cubic-bezier(.2,.8,.2,1);
 }
 #spotlight.open .sp-box{transform:scale(1) translateY(0)}
-.sp-input-row{
-  display:flex;align-items:center;gap:14px;
-  height:56px;padding:0 18px;
-}
-.sp-input-row i{
-  font-size:20px;color:rgba(255,255,255,.52);
-}
-.sp-input-row input{
-  flex:1;border:0;background:none;outline:none;
-  font-size:23px;font-weight:400;color:#fff;
-  caret-color:#fff;
-}
+.sp-input-row{display:flex;align-items:center;gap:14px;height:56px;padding:0 18px}
+.sp-input-row i{font-size:20px;color:rgba(255,255,255,.52)}
+.sp-input-row input{flex:1;border:0;background:none;outline:none;font-size:23px;font-weight:400;color:#fff;caret-color:#fff}
 .sp-input-row input::placeholder{color:rgba(255,255,255,.35)}
-.sp-results{
-  border-top:1px solid rgba(255,255,255,.1);
-  padding:6px;
-  max-height:340px;overflow-y:auto;
-}
+.sp-results{border-top:1px solid rgba(255,255,255,.1);padding:6px;max-height:340px;overflow-y:auto}
 .sp-results:empty{display:none}
 .sp-row{
   width:100%;display:flex;align-items:center;gap:12px;
@@ -325,31 +402,19 @@ body.booted #top{transform:translateY(0)}
   background:none;text-align:left;color:#fff;
   transition:background .08s;
 }
-.sp-row.active{
-  background:#ff5c93;
-  box-shadow:0 4px 14px rgba(255,92,147,.32);
-}
+.sp-row.active{background:#ff5c93;box-shadow:0 4px 14px rgba(255,92,147,.32)}
 .sp-ico{
   width:28px;height:28px;border-radius:7px;flex-shrink:0;
   display:grid;place-items:center;font-size:14px;color:#fff;
   background:var(--sp-c, linear-gradient(160deg, #3b82f6, #1d4ed8));
   box-shadow:0 2px 6px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);
 }
-.sp-ico.safari{
-  background:linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-  color:#2563eb;
-}
-.sp-name{
-  flex:1;font-size:14px;font-weight:600;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.sp-cat{
-  font-size:12.5px;font-weight:500;
-  color:rgba(255,255,255,.52);
-}
+.sp-ico.safari{background:linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);color:#2563eb}
+.sp-name{flex:1;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-cat{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.52)}
 .sp-row.active .sp-cat{color:rgba(255,255,255,.92)}
 
-/* DAY / DATE DISPLAY */
+/* DAY HERO */
 #day{
   position:fixed;top:58px;left:0;right:0;text-align:center;pointer-events:none;
   text-shadow:0 4px 28px rgba(0,0,0,.45);
@@ -359,7 +424,7 @@ body.booted #day{opacity:1;transform:translateY(0)}
 #day b{display:block;padding-left:.38em;font-size:clamp(28px,4.5vw,56px);font-weight:300;letter-spacing:.38em;color:rgba(255,255,255,.95)}
 #day span{display:block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.78)}
 
-/* GLASS WIDGETS */
+/* WIDGETS */
 #widgets{
   position:fixed;top:52px;right:16px;z-index:3;width:308px;display:grid;gap:12px;
   max-height:calc(100% - 155px);overflow:auto;scrollbar-width:none;
@@ -374,7 +439,7 @@ body.booted #widgets{opacity:1;transform:translateX(0)}
 .u{margin:6px;padding:12px 14px;border-radius:15px;background:var(--glass-card);border:1px solid rgba(255,255,255,.08)}
 .u small{color:var(--mut);font-size:11px;font-weight:500}.u b{display:block;margin-top:3px;font-size:14px;font-weight:600}.u p{margin-top:4px;color:var(--mut);font-size:12px}.u ul{margin:6px 0 0 18px;color:var(--mut);font-size:12px}
 
-/* MACOS VIBRANT SQUIRCLE DOCK */
+/* DOCK */
 #dock{
   position:fixed;left:50%;bottom:14px;translate:-50% 0;z-index:16;
   display:flex;align-items:center;gap:11px;padding:10px 14px 12px;border-radius:24px;
@@ -386,6 +451,7 @@ body.booted #widgets{opacity:1;transform:translateX(0)}
   transform:translateY(120%);transition:transform .65s cubic-bezier(.22,1,.36,1) .2s;
 }
 body.booted #dock{transform:translateY(0)}
+body.in-fullscreen #dock{transform:translateY(150%)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 .dk{
   position:relative;width:50px;height:50px;padding:0;border:0;background:none;
   transition:transform .22s cubic-bezier(.2,.85,.25,1.2);
@@ -424,7 +490,7 @@ body.booted #dock{transform:translateY(0)}
 .dk.act::after{opacity:1;background:#60a5fa;box-shadow:0 0 6px #60a5fa}
 .sep{align-self:stretch;width:1px;margin:4px 2px;background:rgba(255,255,255,.22)}
 
-/* MACOS FULL-SCREEN LAUNCHPAD START MENU */
+/* LAUNCHPAD */
 #startMenu{
   position:fixed;inset:0;z-index:14;
   background:rgba(12,15,24,.38);
@@ -480,38 +546,39 @@ body.booted #dock{transform:translateY(0)}
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 
-/* MACOS GLASS WINDOWS */
+/* WINDOWS */
 #desk{position:fixed;inset:0;z-index:6;pointer-events:none}
 .win{
   position:absolute;pointer-events:auto;display:flex;flex-direction:column;
   min-width:360px;min-height:260px;overflow:hidden;border-radius:18px;
   background:
-    linear-gradient(135deg, rgba(255,255,255,.17) 0%, rgba(255,255,255,.055) 42%, rgba(255,255,255,.085) 100%),
-    rgba(24,30,45,.27);
-  -webkit-backdrop-filter: blur(42px) saturate(205%);
-  backdrop-filter: blur(42px) saturate(205%);
-  border: 1px solid rgba(255,255,255,.34);
+    linear-gradient(135deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.03) 45%, rgba(255,255,255,.06) 100%),
+    rgba(18,22,33,.62);
+  -webkit-backdrop-filter: blur(48px) saturate(210%);
+  backdrop-filter: blur(48px) saturate(210%);
+  border: 1px solid rgba(255,255,255,.24);
   box-shadow:
-    0 30px 90px rgba(0,0,0,.34),
-    inset 0 1px 0 rgba(255,255,255,.48);
+    0 36px 100px rgba(0,0,0,.52),
+    inset 0 1px 0 rgba(255,255,255,.32);
   animation:pop .24s cubic-bezier(.2,.8,.2,1);
   transition:box-shadow .2s,opacity .2s,transform .2s;
 }
 @keyframes pop{from{opacity:0;transform:scale(.95) translateY(10px)}}
 .win.focus{
   box-shadow:
-    0 34px 96px rgba(0,0,0,.40),
-    0 0 0 1px rgba(190,207,255,.38),
-    inset 0 1px 0 rgba(255,255,255,.52);
+    0 40px 110px rgba(0,0,0,.60),
+    0 0 0 1px rgba(180,205,255,.32),
+    inset 0 1px 0 rgba(255,255,255,.38);
 }
 .win.min{opacity:0;transform:scale(.82) translateY(50px);pointer-events:none;visibility:hidden}
 .win.max{left:0!important;top:32px!important;width:100%!important;height:calc(100% - 32px - 86px)!important;border-radius:0}
+body.in-fullscreen .win.max{top:0!important;height:100%!important}
 .tb{
   display:grid;grid-template-columns:80px 1fr 80px;align-items:center;height:40px;padding:0 14px;
-  background:linear-gradient(180deg, rgba(255,255,255,.19), rgba(255,255,255,.065)), rgba(220,228,245,.095);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  backdrop-filter: blur(28px) saturate(190%);
-  border-bottom:1px solid rgba(255,255,255,.20);
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.03)), rgba(20,24,36,.45);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  backdrop-filter: blur(32px) saturate(190%);
+  border-bottom:1px solid rgba(255,255,255,.14);
   cursor:grab;touch-action:none;user-select:none;
 }
 .wb{display:flex;align-items:center;gap:8px}
@@ -528,29 +595,29 @@ body.booted #dock{transform:translateY(0)}
 .rs{position:absolute;right:0;bottom:0;z-index:2;width:18px;height:18px;cursor:nwse-resize;touch-action:none}
 #desk.drag iframe{pointer-events:none}
 
-/* TOP BAR DROPDOWN MENU */
-#menu{
+/* MENU DROPDOWN */
+#menu,#userMenu{
   position:fixed;z-index:30;min-width:236px;padding:6px;border-radius:14px;
   background:var(--glass-heavy);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid var(--line-bright);box-shadow:var(--shadow);
   animation:pop .16s ease;
 }
-#menu button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;border-radius:9px;background:none;text-align:left;font-size:12.5px;transition:background .12s}
-#menu button:hover{background:rgba(106,149,255,.24)}
-#menu hr{margin:5px 8px;border:0;border-top:1px solid var(--line)}#menu .ic{width:16px;text-align:center;color:var(--acc)}
+#menu button,#userMenu button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;border-radius:9px;background:none;text-align:left;font-size:12.5px;transition:background .12s}
+#menu button:hover,#userMenu button:hover{background:rgba(43,127,255,.24)}
+#menu hr,#userMenu hr{margin:5px 8px;border:0;border-top:1px solid var(--line)}#menu .ic,#userMenu .ic{width:16px;text-align:center;color:var(--acc)}
 
 /* SETTINGS APP */
 .st-shell{display:grid;grid-template-columns:196px 1fr;height:100%;background:transparent}
 .st-side{
-  padding:16px 12px;border-right:1px solid var(--line);
-  background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:4px;
+  padding:16px 12px;border-right:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.02);display:flex;flex-direction:column;gap:4px;overflow-y:auto;scrollbar-width:thin;
 }
 .st-nav{
-  display:flex;align-items:center;gap:10px;padding:10px 13px;border:0;border-radius:11px;
+  flex:none;display:flex;align-items:center;gap:10px;padding:10px 13px;border:0;border-radius:11px;
   background:none;text-align:left;font-size:13px;font-weight:500;color:var(--mut);transition:all .15s;
 }
 .st-nav:hover{background:var(--glass-card);color:var(--txt)}
-.st-nav.active{background:var(--glass-card-hover);color:var(--txt);font-weight:600;border:1px solid var(--line)}
+.st-nav.active{background:rgba(255,255,255,.11);color:var(--txt);font-weight:600;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 16px rgba(0,0,0,.25)}
 .st-nav .ic{width:16px;text-align:center;color:var(--acc)}
 .st-main{padding:26px 28px;overflow-y:auto;scrollbar-width:thin}
 .st-heading{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
@@ -558,11 +625,11 @@ body.booted #dock{transform:translateY(0)}
 .st-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
 .st-card{
   padding:18px 20px;border-radius:16px;
-  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),var(--glass-card);
-  border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.16);
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.015)),rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 32px rgba(0,0,0,.22);
   margin-bottom:14px;transition:border-color .18s, background .18s;
 }
-.st-card:hover{border-color:var(--line-bright);background:var(--glass-card-hover)}
+.st-card:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.065)}
 .st-card h3{font-size:15px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
 .st-card p{font-size:12px;color:var(--mut);line-height:1.5;margin-bottom:14px}
 .st-card code{padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.1);font-family:ui-monospace,monospace;font-size:11px}
@@ -580,15 +647,15 @@ body.booted #dock{transform:translateY(0)}
   width:100%;height:36px;padding:0 12px;border-radius:10px;
   border:1px solid rgba(255,255,255,.18);background:rgba(12,16,26,.22);color:var(--txt);
 }
-.theme-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.theme-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .theme-card{
   padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--glass-card);
   text-align:left;transition:.16s;
 }
 .theme-card:hover{border-color:var(--line-bright);transform:translateY(-1px)}
-.theme-card.selected{border-color:var(--acc);background:rgba(106,149,255,.16)}
+.theme-card.selected{border-color:var(--acc);background:rgba(43,127,255,.16)}
 .theme-swatch{height:34px;border-radius:9px;margin-bottom:9px;border:1px solid rgba(255,255,255,.2)}
-.wp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+.wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
 .wp-item{
   height:92px;border-radius:13px;border:2px solid var(--line);background-size:cover;background-position:center;
   position:relative;overflow:hidden;transition:.18s;
@@ -599,77 +666,216 @@ body.booted #dock{transform:translateY(0)}
   background:rgba(0,0,0,.65);backdrop-filter:blur(8px);color:#fff;font-size:10.5px;font-weight:500;
 }
 
-/* BUILT-IN APPS: CALCULATOR, NOTES & PAINT */
-.calc-app{
-  display:flex;flex-direction:column;height:100%;padding:14px;gap:10px;
-  background:rgba(15,18,26,.65);user-select:none;
-}
+/* NATIVE APPS */
+.calc-app{display:flex;flex-direction:column;height:100%;padding:14px;gap:10px;background:rgba(15,18,26,.65);user-select:none}
 .calc-disp{
   height:74px;padding:8px 14px;border-radius:14px;
   background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);
-  display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;
-  overflow:hidden;
+  display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;overflow:hidden;
 }
 .calc-expr{font-size:12px;color:var(--mut);min-height:16px}
 .calc-val{font-size:34px;font-weight:300;letter-spacing:-.02em;line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.calc-grid{
-  flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-}
-.calc-btn{
-  border:0;border-radius:12px;font-size:18px;font-weight:500;
-  background:rgba(255,255,255,.11);color:#fff;
-  transition:filter .12s, transform .1s;
-}
-.calc-btn:hover{filter:brightness(1.18)}
-.calc-btn:active{transform:scale(.95)}
+.calc-grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc-btn{border:0;border-radius:12px;font-size:18px;font-weight:500;background:rgba(255,255,255,.11);color:#fff;transition:filter .12s, transform .1s}
+.calc-btn:hover{filter:brightness(1.18)}.calc-btn:active{transform:scale(.95)}
 .calc-btn.fn{background:rgba(255,255,255,.22);color:#fff}
 .calc-btn.op{background:#ff9f0a;color:#fff;font-size:20px}
 .calc-btn.zero{grid-column:span 2;text-align:left;padding-left:24px}
 
-.notes-app{
-  display:grid;grid-template-columns:210px 1fr;height:100%;
-}
-.notes-side{
-  border-right:1px solid var(--line);background:rgba(255,255,255,.035);
-  display:flex;flex-direction:column;padding:10px;gap:8px;
-}
+.notes-app{display:grid;grid-template-columns:210px 1fr;height:100%}
+.notes-side{border-right:1px solid var(--line);background:rgba(255,255,255,.035);display:flex;flex-direction:column;padding:10px;gap:8px}
 .notes-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-.note-item{
-  width:100%;padding:9px 11px;border:0;border-radius:10px;
-  background:none;text-align:left;transition:background .12s;
-}
+.note-item{width:100%;padding:9px 11px;border:0;border-radius:10px;background:none;text-align:left;transition:background .12s}
 .note-item:hover{background:var(--glass-card)}
 .note-item.active{background:rgba(251,191,36,.22);border:1px solid rgba(251,191,36,.4)}
 .note-item b{display:block;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .note-item small{display:block;font-size:11px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
 .notes-editor{display:flex;flex-direction:column;padding:16px 20px;gap:10px}
-.notes-title-in{
-  border:0;background:none;outline:none;font-size:20px;font-weight:700;color:var(--txt);
-  border-bottom:1px solid var(--line);padding-bottom:8px;
-}
-.notes-body-in{
-  flex:1;border:0;background:none;outline:none;resize:none;
-  font:13.5px/1.6 'Inter',sans-serif;color:var(--txt);
-}
+.notes-title-in{border:0;background:none;outline:none;font-size:20px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--line);padding-bottom:8px}
+.notes-body-in{flex:1;border:0;background:none;outline:none;resize:none;font:13.5px/1.6 'Inter',sans-serif;color:var(--txt)}
 
 .paint-app{display:flex;flex-direction:column;height:100%}
-.paint-bar{
-  display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;
-  border-bottom:1px solid var(--line);background:rgba(255,255,255,.04);
-}
-.paint-swatch{
-  width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.35);
-  transition:transform .12s;
-}
+.paint-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.04)}
+.paint-swatch{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.35);transition:transform .12s}
 .paint-swatch.active{transform:scale(1.18);border-color:#fff;box-shadow:0 0 0 2px var(--acc)}
 .paint-canvas-wrap{flex:1;position:relative;overflow:hidden;background:#ffffff;cursor:crosshair}
 .paint-canvas-wrap canvas{display:block;width:100%;height:100%;touch-action:none}
 
-/* GLASS TOAST */
+.weather-app{
+  height:100%;padding:24px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(160deg, rgba(14,116,144,.45), rgba(30,58,138,.55));
+}
+.weather-main{text-align:center;margin-top:8px}
+.weather-main i{font-size:46px;color:#fde047;filter:drop-shadow(0 6px 18px rgba(250,204,21,.4))}
+.weather-temp{font-size:58px;font-weight:200;line-height:1.05;margin-top:8px}
+.weather-cond{font-size:15px;font-weight:600}
+.weather-loc{font-size:12px;color:var(--mut);margin-top:2px}
+.weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.weather-card{padding:12px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);text-align:center}
+.weather-card small{display:block;font-size:10px;color:var(--mut);letter-spacing:.08em}
+.weather-card b{display:block;font-size:15px;margin-top:4px}
+
+.music-app{
+  height:100%;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:linear-gradient(160deg, rgba(190,18,60,.35), rgba(15,23,42,.75));
+}
+.music-art{
+  width:136px;height:136px;border-radius:22px;display:grid;place-items:center;
+  background:linear-gradient(135deg, #fb7185, #e11d48);
+  font-size:52px;color:#fff;box-shadow:0 18px 40px rgba(225,29,72,.4);
+}
+.music-meta{text-align:center}
+.music-meta h3{font-size:18px;font-weight:700}
+.music-meta p{font-size:12.5px;color:var(--mut);margin-top:2px}
+.music-controls{display:flex;align-items:center;gap:16px}
+.music-btn{
+  width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;font-size:15px;
+  transition:transform .14s, background .14s;
+}
+.music-btn:hover{background:rgba(255,255,255,.22);transform:scale(1.06)}
+.music-btn.play{width:54px;height:54px;background:#fff;color:#111827;font-size:18px}
+
+.term-app{
+  height:100%;padding:14px 16px;display:flex;flex-direction:column;
+  background:rgba(9,11,16,.88);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:#4ade80;
+}
+.term-output{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;line-height:1.5}
+.term-input-row{display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1)}
+.term-input-row span{color:#38bdf8;white-space:nowrap}
+.term-input-row input{flex:1;border:0;background:none;outline:none;color:#f8fafc;font-family:inherit;font-size:inherit}
+
+.clock-app{
+  height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:radial-gradient(circle at 50% 30%, rgba(56,189,248,.16), rgba(9,13,22,.82));
+}
+.clock-big{font-size:48px;font-weight:300;letter-spacing:.03em;font-variant-numeric:tabular-nums}
+.clock-sub{font-size:13px;color:var(--mut)}
+
+
+/* CONTROL CENTER */
+#cc{position:fixed;top:36px;right:10px;z-index:28;width:332px;padding:12px;border-radius:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  background:var(--glass-heavy);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--line-bright);box-shadow:var(--shadow);
+  opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transform-origin:top right;
+  transition:opacity .2s ease,transform .22s cubic-bezier(.22,1,.36,1),visibility 0s .22s}
+#cc.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s ease,transform .22s cubic-bezier(.22,1,.36,1),visibility 0s 0s}
+body.in-fullscreen #cc{display:none}
+.cc-row{display:flex;align-items:center;gap:10px;width:100%;min-width:0;padding:5px;border:0;border-radius:12px;background:none;text-align:left}
+.cc-row:hover{background:var(--glass-card-hover)}
+.cc-tile{padding:10px;border-radius:16px;background:var(--glass-card);border:1px solid var(--line)}
+button.cc-tile:hover{background:var(--glass-card-hover)}
+.cc-net{grid-row:span 2;display:flex;flex-direction:column;justify-content:space-around;padding:6px}
+.cc-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc-sq{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 4px;text-align:center;font-size:11px;font-weight:500;line-height:1.2}
+.cc-dot{flex:none;width:30px;height:30px;border:0;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#fff;background:rgba(128,136,150,.45);transition:background .2s}
+.on>.cc-dot,.cc-mute.on{background:var(--acc)}
+#ccDnd.on>.cc-dot{background:var(--acc2)}
+#ccNight.on>.cc-dot{background:#f59e0b}
+.cc-row b,.cc-meta b{display:block;font-size:12.5px;font-weight:600;line-height:1.2}
+.cc-row small,.cc-meta small{display:block;font-size:11px;color:var(--mut);white-space:nowrap}
+.cc-sl,.cc-np{grid-column:1/-1}
+.cc-h{display:block;margin:0 0 7px 2px;padding:0;border:0;background:none;font-size:12px;font-weight:600}
+.cc-h:hover{color:var(--acc)}
+.cc-snd{display:flex;align-items:center;gap:8px}
+.cc-snd .cc-rw{flex:1}
+.cc-rw{position:relative}
+.cc-rw>i{position:absolute;left:9px;top:50%;translate:0 -50%;z-index:1;font-size:12px;color:#5b6578;pointer-events:none;width:14px;text-align:center}
+.cc-range{--f:1;-webkit-appearance:none;appearance:none;display:block;width:100%;height:26px;border-radius:13px;border:1px solid var(--line);cursor:pointer;
+  background:linear-gradient(90deg,#fff calc(13px + (100% - 26px) * var(--f)),rgba(128,136,150,.38) calc(13px + (100% - 26px) * var(--f)))}
+.cc-range::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.4)}
+.cc-range::-moz-range-thumb{width:26px;height:26px;border:0;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.4)}
+.cc-np{display:flex;align-items:center;gap:10px}
+.cc-art{flex:none;width:42px;height:42px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#1e293b,#0b1020);color:var(--acc);font-size:16px}
+.cc-meta{flex:1;min-width:0}
+.cc-meta b,.cc-meta small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-np>button{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:none;font-size:14px}
+.cc-np>button:hover{background:var(--glass-card-hover)}
+#dim,#warm{position:fixed;inset:0;pointer-events:none;opacity:0}
+#dim{z-index:99999;background:#000;transition:opacity .08s}
+#warm{z-index:99998;background:#ff9d4d;mix-blend-mode:multiply;transition:opacity .5s}
+
+/* FIRST-TIME GUIDE MODAL (GLASS UI) */
+#firstRunGuide {
+  position: fixed; inset: 0; z-index: 99995;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .3s ease, visibility 0s .3s;
+}
+#firstRunGuide.open {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity .3s ease, visibility 0s 0s;
+}
+#firstRunCard {
+  width: min(440px, 92vw); border-radius: 24px; padding: 28px;
+  background: var(--glass-heavy);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line-bright);
+  box-shadow: var(--shadow);
+  color: var(--txt); transform: scale(.94) translateY(10px);
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+#firstRunGuide.open #firstRunCard {
+  transform: scale(1) translateY(0);
+}
+
+/* MENU BAR DROPDOWNS (GLASS UI) */
+#menu, #userMenu, #helpMenu {
+  position: fixed; z-index: 30; min-width: 236px; padding: 6px; border-radius: 14px;
+  background: var(--glass-heavy) !important;
+  backdrop-filter: var(--blur) !important;
+  -webkit-backdrop-filter: var(--blur) !important;
+  border: 1px solid var(--line-bright) !important;
+  box-shadow: var(--shadow) !important;
+  animation: pop .16s ease;
+  color: var(--txt);
+}
+#menu button, #userMenu button, #helpMenu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border: 0; border-radius: 9px;
+  background: none; text-align: left; font-size: 12.5px; color: var(--txt); transition: background .12s;
+}
+#menu button:hover, #userMenu button:hover, #helpMenu button:hover { background: rgba(43,127,255,.24); }
+#menu hr, #userMenu hr, #helpMenu hr { margin: 5px 8px; border: 0; border-top: 1px solid var(--line); }
+#menu .ic, #userMenu .ic, #helpMenu .ic { width: 16px; text-align: center; color: var(--acc); }
+
+/* MENU BAR USER + STATUS */
+#top button.top-user{padding:0 8px 0 5px;max-width:130px}
+#topUserName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:84px}
+.top-av{flex:none;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--acc),var(--acc2))}
+.top-status{width:22px;height:22px;display:grid;place-items:center;font-size:11px;color:rgba(255,255,255,.9)}
+.um-head{display:flex;align-items:center;gap:10px;padding:8px 10px}
+.um-av{width:32px;height:32px;font-size:14px}
+.um-head b{display:block;font-size:13px}
+.um-head small{color:var(--mut);font-size:11px}
+@media(max-width:640px){#topUserName{display:none}#top button.top-user{padding:0 6px}#cc{width:min(332px,calc(100vw - 20px))}}
+
+/* SETTINGS ROWS & SWITCHES */
+.st-card>.st-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+.st-card>.st-row:first-child{border-top:0;padding-top:0}
+.st-card>.st-row:last-child{padding-bottom:0}
+.st-row b{font-size:13px;font-weight:600}
+.st-card .st-row p{margin:2px 0 0;font-size:12px}
+.st-rg{display:grid!important;grid-template-columns:110px 1fr}
+.sw{flex:none;position:relative;width:42px;height:25px;border:0;border-radius:13px;background:rgba(128,136,150,.45);transition:background .2s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .2s}
+.sw.on{background:var(--acc)}
+.sw.on::after{transform:translateX(17px)}
+
+/* ACCESSIBILITY SWITCHES */
+body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+body.reduce-trans{--glass:rgba(24,28,40,.97);--glass-heavy:rgba(20,24,36,.98);--bar:rgba(22,26,38,.98)}
+body.reduce-trans[data-theme="crystal"]{--glass:rgba(244,246,252,.97);--glass-heavy:rgba(248,250,255,.98);--bar:rgba(250,252,255,.98)}
+body.reduce-trans *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body.reduce-trans #top{background:rgba(18,22,32,.98)}
+
+/* TOAST */
 #toast{
   position:fixed;top:44px;right:18px;z-index:100;
   padding:10px 16px;border-radius:14px;
-  background:var(--glass-heavy);backdrop-filter:var(--blur);
+  background:var(--glass-heavy);backdrop-filter:blur(30px) saturate(185%);
   border:1px solid var(--line-bright);box-shadow:var(--shadow);
   display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:500;
   opacity:0;transform:translateY(-10px);pointer-events:none;
@@ -678,21 +884,18 @@ body.booted #dock{transform:translateY(0)}
 #toast.show{opacity:1;transform:translateY(0)}
 
 /* DIALOGS */
-dialog{margin:auto;width:min(92vw,400px);padding:22px;border-radius:20px;color:var(--txt);background:var(--glass-heavy);backdrop-filter:var(--blur);border:1px solid var(--line-bright);box-shadow:var(--shadow)}
+dialog{margin:auto;width:min(92vw,400px);padding:22px;border-radius:20px;color:var(--txt);background:var(--glass-heavy);backdrop-filter:blur(30px) saturate(185%);border:1px solid var(--line-bright);box-shadow:var(--shadow)}
 dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(6px)}
 dialog h2{font-size:17px;font-weight:700;margin-bottom:6px}
 dialog label{display:block;margin-top:12px;font-size:12px;color:var(--mut)}
 dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35)}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
 .acts{display:grid;gap:8px;margin-top:14px}.acts .ib{height:36px;justify-content:flex-start}
-#adm-info div{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid var(--line)}#adm-info span{color:var(--mut);text-align:right}
-#wp-msg,#pw-msg{min-height:18px;margin-top:8px;font-size:12px;color:#ffb4a8}
+#wp-msg{min-height:18px;margin-top:8px;font-size:12px;color:#ffb4a8}
 #doc{width:min(92vw,560px)}
 #doc-b{max-height:55vh;margin-top:8px;padding-right:6px;overflow:auto}
 #doc-b h3{margin:14px 0 4px;font-size:13px}
 #doc-b p{color:var(--mut);font-size:13px;line-height:1.55}
-.gp{margin-top:10px;color:var(--mut);font-size:13px;line-height:1.55}
-.lk{padding:0;border:0;background:none;color:var(--acc);text-decoration:underline}
 
 @media(max-width:900px){#widgets{display:none}}
 @media(max-width:720px){
@@ -708,22 +911,158 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 </head>
 <body>
 
-<!-- AUTHENTIC MACOS "HELLO" STARTUP SCREEN -->
+<!-- AUTHENTIC MACOS "HELLO" STARTUP & SETUP WIZARD SCREEN -->
 <div id="boot" aria-hidden="true">
-  <div id="boot-bg"></div>
-  <div class="hello-stage">
-    <svg class="hello-brand" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SIFT Logo">
-      <rect x="20" y="20" width="60" height="60" rx="15" transform="rotate(45 50 50)" stroke="currentColor" stroke-width="11"/>
-      <rect x="38" y="38" width="24" height="24" rx="6" transform="rotate(45 50 50)" fill="currentColor"/>
-    </svg>
-    <svg class="hello-svg" viewBox="0 0 440 165" aria-label="hello">
-      <text x="50%" y="68%" text-anchor="middle" class="hello-stroke">hello</text>
+  <div id="boot-wall-blur"></div>
+
+  <!-- Stage 1: Hello cursive animation -->
+  <div class="hello-stage" id="bootHelloStage">
+    <svg class="hello-svg" viewBox="0 0 420 150" role="img" aria-label="hello">
+      <path class="hello-stroke" pathLength="1" d="
+        M 28 108
+        C 50 96, 80 40, 80 22
+        C 80 12, 66 14, 60 34
+        C 52 62, 46 104, 46 112
+        C 52 90, 70 72, 86 72
+        C 98 72, 102 84, 98 100
+        C 95 110, 104 114, 118 106
+        C 136 96, 152 82, 148 72
+        C 144 64, 128 70, 124 90
+        C 120 108, 136 116, 160 104
+        C 186 90, 218 42, 218 22
+        C 218 12, 204 14, 198 36
+        C 190 66, 188 102, 200 110
+        C 212 116, 238 94, 262 46
+        C 272 26, 268 14, 258 20
+        C 248 26, 240 70, 244 98
+        C 248 114, 266 114, 284 96
+        C 296 84, 308 72, 320 72
+        C 302 72, 290 88, 294 104
+        C 298 116, 318 116, 330 102
+        C 340 90, 336 72, 320 72
+        C 332 74, 356 72, 380 64
+      " />
     </svg>
   </div>
   <button type="button" class="hello-start-btn" id="helloBtn">
     <span class="hello-start-ico"><i class="fa-solid fa-chevron-right"></i></span>
     <span>Get Started</span>
   </button>
+
+  <!-- Stage 2: Create a Computer Account -->
+  <div class="setup-step" id="setupAccountCard" hidden>
+    <h2>Create a Computer Account</h2>
+    <p class="setup-desc">Fill out the following information to create your account. A password is optional.</p>
+    <div class="setup-table">
+      <div class="setup-row">
+        <label for="setupName">Full name</label>
+        <input id="setupName" type="text" placeholder="Required" autocomplete="name">
+      </div>
+      <div class="setup-row">
+        <label for="setupPass">Password</label>
+        <input id="setupPass" type="password" placeholder="Optional" autocomplete="new-password">
+      </div>
+      <div class="setup-row" id="rowVerify" hidden>
+        <label for="setupVerify">Verify</label>
+        <input id="setupVerify" type="password" placeholder="Required" autocomplete="new-password">
+      </div>
+      <div class="setup-row" id="rowHint" hidden>
+        <label for="setupHint">Hint</label>
+        <input id="setupHint" type="text" placeholder="Recommended">
+      </div>
+    </div>
+    <div class="setup-footnote">This password only locks the desktop in this browser.</div>
+    <div class="setup-continue-row">
+      <button type="button" class="setup-pill-btn" id="setupAccountNext">Continue</button>
+    </div>
+  </div>
+
+  <!-- Stage 3: Choose Your Look -->
+  <div class="setup-step" id="setupLookCard" hidden>
+    <h2>Choose Your Look</h2>
+    <p class="setup-desc">Select an appearance and accent colour. You can change these later in Settings.</p>
+    <div class="look-options">
+      <button type="button" class="look-choice selected" data-theme="crystal">
+        <div class="look-thumb light">
+          <div class="lt-win"><div class="lt-dots"><i></i><i></i><i></i></div></div>
+          <div class="lt-dock"></div>
+        </div>
+        <span>Light</span>
+      </button>
+      <button type="button" class="look-choice" data-theme="obsidian">
+        <div class="look-thumb dark">
+          <div class="lt-win"><div class="lt-dots"><i></i><i></i><i></i></div></div>
+          <div class="lt-dock"></div>
+        </div>
+        <span>Dark</span>
+      </button>
+      <button type="button" class="look-choice" data-theme="glass">
+        <div class="look-thumb auto">
+          <div class="lt-win"><div class="lt-dots"><i></i><i></i><i></i></div></div>
+          <div class="lt-dock"></div>
+        </div>
+        <span>Auto</span>
+      </button>
+    </div>
+    <div class="accent-dots" id="setupSwatches">
+      <button type="button" class="accent-dot selected" data-acc="#2b7fff" style="background:#2b7fff" aria-label="Blue"><i class="fa-solid fa-check"></i></button>
+      <button type="button" class="accent-dot" data-acc="#9333ea" style="background:#9333ea" aria-label="Purple"><i class="fa-solid fa-check"></i></button>
+      <button type="button" class="accent-dot" data-acc="#e11d48" style="background:#e11d48" aria-label="Rose"><i class="fa-solid fa-check"></i></button>
+      <button type="button" class="accent-dot" data-acc="#ea580c" style="background:#ea580c" aria-label="Orange"><i class="fa-solid fa-check"></i></button>
+      <button type="button" class="accent-dot" data-acc="#16a34a" style="background:#16a34a" aria-label="Green"><i class="fa-solid fa-check"></i></button>
+      <button type="button" class="accent-dot" data-acc="#64748b" style="background:#64748b" aria-label="Graphite"><i class="fa-solid fa-check"></i></button>
+    </div>
+    <div class="setup-continue-row">
+      <button type="button" class="setup-pill-btn" id="setupLookNext">Continue</button>
+    </div>
+  </div>
+
+  <!-- Stage 4: Welcome / Password Lock Screen -->
+  <div class="setup-step" id="setupWelcomeCard" hidden>
+    <div class="welcome-circle" id="setupAvatarInitial">F</div>
+    <div class="welcome-title" id="setupWelcomeTitle">Welcome, user</div>
+    <p class="welcome-sub" id="setupWelcomeSub">Your desktop will ask for your password each time it starts.</p>
+    <div class="lock-login-box" id="lockLoginBox" hidden>
+      <div class="lock-pass-pill" id="lockPassPill">
+        <input id="lockPassInput" type="password" placeholder="Enter Password" autocomplete="current-password">
+        <button type="button" class="lock-go-btn" id="lockUnlockBtn" aria-label="Unlock"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="lock-hint-txt" id="lockHintTxt"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FIRST-TIME LAUNCH GUIDE MODAL -->
+<div id="firstRunGuide" aria-label="Welcome Guide">
+  <div id="firstRunCard">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <span id="guideStepBadge" style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:999px;background:var(--glass-card);color:var(--txt);border:1px solid var(--line)">Step 1 of 4</span>
+      <button type="button" id="guideSkipBtn" style="background:none;border:0;color:var(--mut);font-size:12px;font-weight:500;cursor:pointer;padding:4px 8px;border-radius:6px;transition:color .2s">Skip</button>
+    </div>
+    <div id="guideStepBody" style="margin-bottom:22px;">
+      <div id="guideIconWrap" style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#38bdf8,#0284c7);display:grid;place-items:center;font-size:22px;color:#fff;margin-bottom:14px;box-shadow:0 8px 22px rgba(2,132,199,.4)">
+        <i class="fa-solid fa-compass"></i>
+      </div>
+      <h2 id="guideTitle" style="font-size:19px;font-weight:700;margin-bottom:6px;color:var(--txt)">Welcome to SIFT macOS</h2>
+      <p id="guideDesc" style="font-size:13px;line-height:1.55;color:var(--mut);margin-bottom:14px">Your clean glassmorphic desktop is ready. Drag windows, open apps from the Dock, or use Spotlight.</p>
+      <div style="padding:10px 12px;border-radius:12px;background:var(--glass-card);border:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:12px;color:var(--txt)">
+        <i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>
+        <span id="guideTipText">Tip: You can re-run this guide anytime from the top Help menu or Settings.</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--line)">
+      <div id="guideDots" style="display:flex;gap:6px;align-items:center">
+        <button type="button" data-step="0" style="width:18px;height:6px;border-radius:3px;background:var(--acc);border:0;cursor:pointer"></button>
+        <button type="button" data-step="1" style="width:6px;height:6px;border-radius:50%;background:var(--mut);border:0;cursor:pointer"></button>
+        <button type="button" data-step="2" style="width:6px;height:6px;border-radius:50%;background:var(--mut);border:0;cursor:pointer"></button>
+        <button type="button" data-step="3" style="width:6px;height:6px;border-radius:50%;background:var(--mut);border:0;cursor:pointer"></button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button type="button" id="guideBackBtn" class="ib" style="height:32px;padding:0 14px;font-size:12px" hidden>Back</button>
+        <button type="button" id="guideNextBtn" class="ib primary" style="height:32px;padding:0 16px;font-size:12px">Next <i class="fa-solid fa-arrow-right" style="font-size:10px;margin-left:4px"></i></button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- WALLPAPER -->
@@ -762,13 +1101,15 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
     <button type="button" class="top-menu-item" id="topHelpBtn">Help</button>
   </div>
   <div class="top-right">
+    <button type="button" class="top-user" id="topUser" aria-label="Account menu" aria-haspopup="menu" title="Your account"><span class="top-av" id="topAv">U</span><span id="topUserName">User</span></button>
+    <span class="top-status" id="topDnd" hidden title="Do Not Disturb"><i class="fa-solid fa-moon"></i></span>
     <button type="button" class="top-icon-btn" id="topWifiBtn" aria-label="Wi-Fi Status" title="Connected">
       <i class="fa-solid fa-wifi"></i>
     </button>
     <button type="button" class="top-icon-btn" id="topSearchBtn" aria-label="Spotlight / Launchpad Search" title="Search Apps">
       <i class="fa-solid fa-magnifying-glass"></i>
     </button>
-    <button type="button" class="top-icon-btn" id="topExposeBtn" aria-label="Mission Control / Open Windows" title="Show All Open Windows">
+    <button type="button" class="top-icon-btn" id="topCcBtn" aria-label="Control Center" aria-haspopup="dialog" title="Control Center">
       <svg class="cc-toggle-icon" viewBox="0 0 18 16" fill="none" stroke="currentColor" stroke-width="1.5">
         <rect x="1.5" y="1.5" width="15" height="5" rx="2.5"/>
         <circle cx="13.5" cy="4" r="1.4" fill="currentColor" stroke="none"/>
@@ -779,6 +1120,13 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
     <span id="clock"></span>
   </div>
 </header>
+
+<!-- HELP MENU DROPDOWN -->
+<div id="helpMenu" role="menu" hidden>
+  <button type="button" id="helpReplayGuideBtn" role="menuitem"><i class="ic fa-solid fa-compass"></i>Desktop Quick Guide</button>
+  <hr>
+  <button type="button" data-doc="tos" role="menuitem"><i class="ic fa-regular fa-file-lines"></i>Terms of Service</button>
+</div>
 
 <!-- CENTER DATE / CLOCK HERO -->
 <div id="day" aria-hidden="true"><b id="dayName"></b><span id="dateTxt"></span></div>
@@ -823,6 +1171,51 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   <button role="menuitem" data-a="discord"><i class="ic fa-brands fa-discord"></i>Join our Discord</button>
 </div>
 
+<!-- SCREEN DIMMER & NIGHT SHIFT -->
+<div id="warm" aria-hidden="true"></div>
+<div id="dim" aria-hidden="true"></div>
+
+<!-- CONTROL CENTER -->
+<div id="cc" role="dialog" aria-label="Control Center">
+  <div class="cc-tile cc-net">
+    <button type="button" class="cc-row" id="ccWifi"><span class="cc-dot"><i class="fa-solid fa-wifi"></i></span><span><b>Wi-Fi</b><small id="ccWifiSub">SIFT Network</small></span></button>
+    <button type="button" class="cc-row" id="ccBt"><span class="cc-dot"><i class="fa-brands fa-bluetooth-b"></i></span><span><b>Bluetooth</b><small id="ccBtSub">On</small></span></button>
+    <button type="button" class="cc-row" id="ccAir"><span class="cc-dot"><i class="fa-solid fa-tower-broadcast"></i></span><span><b>AirDrop</b><small id="ccAirSub">Contacts Only</small></span></button>
+  </div>
+  <button type="button" class="cc-tile cc-row" id="ccDnd"><span class="cc-dot"><i class="fa-solid fa-moon"></i></span><span><b>Do Not Disturb</b></span></button>
+  <div class="cc-pair">
+    <button type="button" class="cc-tile cc-sq" id="ccNight"><span class="cc-dot"><i class="fa-solid fa-sun"></i></span><span>Night Shift</span></button>
+    <button type="button" class="cc-tile cc-sq" id="ccFull"><span class="cc-dot"><i class="fa-solid fa-expand"></i></span><span>Full Screen</span></button>
+  </div>
+  <div class="cc-tile cc-sl">
+    <button type="button" class="cc-h" data-open="display">Display</button>
+    <div class="cc-rw"><i class="fa-solid fa-sun"></i><input type="range" class="cc-range" id="ccBright" min="25" max="100" aria-label="Display brightness"></div>
+  </div>
+  <div class="cc-tile cc-sl">
+    <button type="button" class="cc-h" data-open="sound">Sound</button>
+    <div class="cc-snd">
+      <div class="cc-rw"><i id="ccVolIco" class="fa-solid fa-volume-high"></i><input type="range" class="cc-range" id="ccVol" min="0" max="100" aria-label="Volume"></div>
+      <button type="button" class="cc-dot cc-mute" id="ccMute" aria-label="Mute"><i class="fa-solid fa-volume-xmark"></i></button>
+    </div>
+  </div>
+  <div class="cc-tile cc-np">
+    <span class="cc-art"><i class="fa-solid fa-music"></i></span>
+    <span class="cc-meta"><b id="ccTitle"></b><small id="ccArtist"></small></span>
+    <button type="button" id="ccPlay" aria-label="Play or pause"></button>
+    <button type="button" id="ccNext" aria-label="Next track"><i class="fa-solid fa-forward"></i></button>
+  </div>
+</div>
+
+<!-- ACCOUNT MENU -->
+<div id="userMenu" role="menu" hidden>
+  <div class="um-head"><span class="top-av um-av" id="umAv">U</span><div><b id="umName">User</b><small>Local account</small></div></div>
+  <hr>
+  <button role="menuitem" data-u="acct"><i class="ic fa-solid fa-user-circle"></i>Account Settings</button>
+  <button role="menuitem" data-u="sys"><i class="ic fa-solid fa-gear"></i>System Settings</button>
+  <hr>
+  <button role="menuitem" data-u="lock"><i class="ic fa-solid fa-lock"></i>Lock Screen</button>
+</div>
+
 <!-- TOAST -->
 <div id="toast" role="status"><i class="fa-solid fa-circle-check" style="color:var(--acc)"></i><span id="toastTxt"></span></div>
 
@@ -843,39 +1236,8 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
   <div class="row"><button type="button" class="ib" id="wp-reset">Reset</button><button type="button" class="ib" id="wp-x">Close</button></div>
 </dialog>
 
-<!-- ADMIN PASSWORD DIALOG -->
-<dialog id="pw">
-  <form id="pw-f" autocomplete="off">
-    <h2>Admin</h2>
-    <label>Password<input id="pw-in" type="password" autocomplete="off" required></label>
-    <p id="pw-msg" role="alert"></p>
-    <div class="row"><button type="button" class="ib" id="pw-x">Cancel</button><button class="ib primary">Unlock</button></div>
-  </form>
-</dialog>
-
-<!-- ADMIN PANEL DIALOG -->
-<dialog id="adm">
-  <h2>Admin Panel</h2>
-  <div id="adm-info"></div>
-  <div class="acts">
-    <button type="button" class="ib" id="a-cache"><i class="fa-solid fa-rotate-right"></i> Clear page cache &amp; reload</button>
-    <button type="button" class="ib" id="a-site"><i class="fa-solid fa-download"></i> Download site HTML</button>
-    <button type="button" class="ib" id="a-wall"><i class="fa-regular fa-image"></i> Change wallpaper</button>
-    <button type="button" class="ib" id="a-reset"><i class="fa-solid fa-triangle-exclamation"></i> Reset all saved data</button>
-  </div>
-  <div class="row"><button type="button" class="ib" id="adm-x">Close</button></div>
-</dialog>
-
 <!-- DOCS DIALOG -->
 <dialog id="doc"><h2 id="doc-t"></h2><div id="doc-b"></div><div class="row"><button type="button" class="ib" id="doc-x">Close</button></div></dialog>
-
-<!-- FIRST VISIT GATE DIALOG -->
-<dialog id="gate">
-  <h2>Before you continue</h2>
-  <p class="gp">SIFT is for personal time. It isn't affiliated with any school, and it may not be allowed on your school's devices or network. You are responsible for following your school's rules.</p>
-  <p class="gp">By continuing you agree to the <button type="button" class="lk" id="g-tos">Terms of Service</button> and <button type="button" class="lk" id="g-priv">Privacy Policy</button>.</p>
-  <div class="row"><button class="ib primary" id="g-ok">I agree</button></div>
-</dialog>
 
 <script>
 "use strict";
@@ -893,7 +1255,7 @@ const TAB_PRESETS = [
   { name: "Google Drive", title: "My Drive - Google Drive", icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" }
 ];
 const UPDATES = [
-  { date: "2026-11-12", tag: "macOS Glass", title: "Authentic Menu Bar & Expose", text: "Added macOS 'hello' boot animation, top bar menus, and Mission Control window overview.", bullets: ["Live window thumbnails & close buttons", "Authentic macOS menu items", "Instant Launchpad search"] }
+  { date: "2026-11-13", tag: "macOS Sonoma", title: "Setup Assistant & Auto Fullscreen Hide", text: "Added macOS account setup wizard, Weather, Music, Terminal apps, and automatic top bar/dock hiding in fullscreen.", bullets: ["macOS Hello & Account Setup Wizard", "Weather, Music & Terminal apps", "Auto-hide top bar & dock in fullscreen"] }
 ];
 const FWD = '<script>addEventListener("keydown",function(e){if(e.shiftKey&&e.altKey&&e.code==="KeyA"){e.preventDefault();parent.postMessage({sh:"key",key:"admin"},"*")}})<\/script>';
 const ICONS = {
@@ -901,7 +1263,8 @@ const ICONS = {
   robot:'fa-solid fa-robot', ai:'fa-solid fa-robot', discord:'fa-brands fa-discord',
   settings:'fa-solid fa-gear', reload:'fa-solid fa-rotate-right', download:'fa-solid fa-download',
   upload:'fa-solid fa-upload', image:'fa-regular fa-image',
-  paint:'fa-solid fa-paintbrush', calculator:'fa-solid fa-calculator', notes:'fa-solid fa-note-sticky'
+  paint:'fa-solid fa-paintbrush', calculator:'fa-solid fa-calculator', notes:'fa-solid fa-note-sticky',
+  weather:'fa-solid fa-cloud-sun', music:'fa-solid fa-music', terminal:'fa-solid fa-terminal', clock:'fa-solid fa-clock'
 };
 const ico = n => '<i class="ic ' + (/^fa-[\w -]+$/.test(n) ? n : ICONS[n] || 'fa-solid fa-window-maximize') + '" aria-hidden="true"></i>';
 const $ = id => document.getElementById(id);
@@ -918,6 +1281,7 @@ const desk = $("desk"), menu = $("menu"), startMenu = $("startMenu"), expose = $
 const slugOf = p => p.file.replace(/\.html$/, "");
 
 function notify(msg) {
+  if (SYS.dnd) return;
   $("toastTxt").textContent = msg;
   $("toast").classList.add("show");
   clearTimeout(toastTimer);
@@ -957,8 +1321,8 @@ function setWall() {
   const custom = ls.get("sh0zy.bg");
   const activeWall = custom || FORCED_WALLPAPER;
   $("wall").style.backgroundImage = 'url("' + activeWall + '")';
-  if ($("boot-bg")) {
-    $("boot-bg").style.backgroundImage = 'url("' + activeWall + '")';
+  if ($("boot-wall-blur")) {
+    $("boot-wall-blur").style.backgroundImage = 'url("' + activeWall + '")';
   }
 }
 
@@ -968,7 +1332,7 @@ function applySettings() {
   const defaultBrandSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#07080c"/><rect x="22" y="22" width="56" height="56" rx="14" transform="rotate(45 50 50)" fill="none" stroke="white" stroke-width="11"/><rect x="39" y="39" width="22" height="22" rx="6" transform="rotate(45 50 50)" fill="white"/></svg>';
   $("fav").href = !f ? ("data:image/svg+xml," + encodeURIComponent(defaultBrandSvg)) : /^https?:\/\//.test(f) ? f : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
 
-  const acc = ls.get("sh0zy.acc") || "#6a95ff";
+  const acc = ls.get("sh0zy.acc") || "#2b7fff";
   document.documentElement.style.setProperty("--acc", acc);
   const theme = ls.get("sh0zy.theme") || "glass";
   document.body.dataset.theme = theme;
@@ -976,12 +1340,123 @@ function applySettings() {
   setWall();
 }
 
+/* ===== FIRST-TIME GUIDE LOGIC ===== */
+const GUIDE_STEPS = [
+  {
+    icon: 'fa-solid fa-compass',
+    gradient: 'linear-gradient(135deg, #38bdf8, #0284c7)',
+    title: 'Welcome to SIFT macOS',
+    desc: 'Your clean, glassmorphic desktop workspace is ready. Drag windows by their titlebar, resize from the corner, or double-click desktop folders.',
+    tip: 'You can customize wallpapers, accent colors, and appearance anytime in Settings.'
+  },
+  {
+    icon: 'fa-solid fa-table-cells-large',
+    gradient: 'linear-gradient(135deg, #a855f7, #6366f1)',
+    title: 'Dock & Launchpad',
+    desc: 'Click any icon in the bottom Dock to launch Finder, Safari, Notes, Terminal, Music, and more—or open Launchpad to browse every app.',
+    tip: 'Active apps show a subtle indicator dot underneath their Dock icon.'
+  },
+  {
+    icon: 'fa-solid fa-magnifying-glass',
+    gradient: 'linear-gradient(135deg, #0ea5e9, #2563eb)',
+    title: 'Instant Spotlight Search',
+    desc: 'Press ⌘K (or Ctrl+K) anywhere, or click the search icon in the top-right menu bar to jump straight to apps or search the web.',
+    tip: 'Try typing "Terminal" or "Calculator" in Spotlight and press Enter.'
+  },
+  {
+    icon: 'fa-solid fa-sliders',
+    gradient: 'linear-gradient(135deg, #10b981, #059669)',
+    title: 'Control Center & Mission Control',
+    desc: 'Toggle Wi-Fi, Night Shift, screen brightness, and volume from the top-right Control Center, or open Mission Control to view all windows.',
+    tip: 'Click "Help" in the top menu bar anytime if you want to replay this guide.'
+  }
+];
+let currentGuideStep = 0;
+
+function renderGuideStep(idx) {
+  currentGuideStep = Math.max(0, Math.min(GUIDE_STEPS.length - 1, idx));
+  const step = GUIDE_STEPS[currentGuideStep];
+  $("guideStepBadge").textContent = `Step ${currentGuideStep + 1} of ${GUIDE_STEPS.length}`;
+  $("guideIconWrap").style.background = step.gradient;
+  $("guideIconWrap").innerHTML = `<i class="${step.icon}"></i>`;
+  $("guideTitle").textContent = step.title;
+  $("guideDesc").textContent = step.desc;
+  $("guideTipText").textContent = step.tip;
+
+  Array.from($("guideDots").children).forEach((dot, i) => {
+    if (i === currentGuideStep) {
+      dot.style.width = "18px";
+      dot.style.borderRadius = "3px";
+      dot.style.background = "var(--acc)";
+    } else {
+      dot.style.width = "6px";
+      dot.style.borderRadius = "50%";
+      dot.style.background = "rgba(255,255,255,.3)";
+    }
+  });
+
+  const backBtn = $("guideBackBtn"), nextBtn = $("guideNextBtn");
+  backBtn.hidden = currentGuideStep === 0;
+  if (currentGuideStep === GUIDE_STEPS.length - 1) {
+    nextBtn.innerHTML = 'Get Started <i class="fa-solid fa-check" style="font-size:10px;margin-left:4px"></i>';
+  } else {
+    nextBtn.innerHTML = 'Next <i class="fa-solid fa-arrow-right" style="font-size:10px;margin-left:4px"></i>';
+  }
+}
+
+function openFirstRunGuide(startStep = 0) {
+  renderGuideStep(startStep);
+  $("firstRunGuide").classList.add("open");
+}
+
+function closeFirstRunGuide() {
+  ls.set("sift.guideDone", "1");
+  $("firstRunGuide").classList.remove("open");
+}
+
+$("guideSkipBtn").onclick = closeFirstRunGuide;
+$("guideBackBtn").onclick = () => renderGuideStep(currentGuideStep - 1);
+$("guideNextBtn").onclick = () => {
+  if (currentGuideStep < GUIDE_STEPS.length - 1) renderGuideStep(currentGuideStep + 1);
+  else closeFirstRunGuide();
+};
+Array.from($("guideDots").children).forEach(dot => {
+  dot.onclick = () => renderGuideStep(parseInt(dot.dataset.step, 10));
+});
+$("helpReplayGuideBtn").onclick = () => {
+  $("helpMenu").hidden = true;
+  openFirstRunGuide(0);
+};
+
+/* ===== FULLSCREEN DOCK & TOP BAR AUTO-HIDE ===== */
+let fullscreenButtonMode = false;
+function syncFullscreenState() {
+  // Hide the desktop bars for an app window maximized with its green button
+  // or the in-app fullscreen control. Browser F11 alone should not trigger it.
+  const apiFullscreen = !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+  const maximizedWindow = !!document.querySelector(".win.max:not(.min)");
+  const active = apiFullscreen || fullscreenButtonMode || maximizedWindow;
+  document.body.classList.toggle("in-fullscreen", active);
+}
+["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"].forEach(ev => {
+  document.addEventListener(ev, syncFullscreenState);
+});
+window.addEventListener("resize", syncFullscreenState);
+window.addEventListener("orientationchange", syncFullscreenState);
+syncFullscreenState();
+
 /* ===== MISSION CONTROL WINDOW OVERVIEW (EXPOSE) ===== */
 function toggleExpose(force) {
   const isOpen = expose.classList.contains("open");
   const show = typeof force === "boolean" ? force : !isOpen;
   if (show) {
     menu.hidden = true;
+    $("helpMenu").hidden = true;
     toggleStartMenu(false);
     toggleSpotlight(false);
     renderExpose();
@@ -1036,7 +1511,6 @@ function renderExpose() {
     clone.style.width = srcW + "px";
     clone.style.height = srcH + "px";
 
-    // Mirror live canvas pixels if present (e.g., Paint app)
     const origCanvases = w.el.querySelectorAll("canvas");
     const cloneCanvases = clone.querySelectorAll("canvas");
     origCanvases.forEach((origC, ci) => {
@@ -1049,7 +1523,6 @@ function renderExpose() {
       }
     });
 
-    // Replace remote cross-origin iframes with an app preview card inside the miniature window
     clone.querySelectorAll("iframe").forEach(ifr => {
       const fallback = h("div", {
         style: `width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:${tileGradient(w.app.key, idx)};color:#fff;`
@@ -1071,13 +1544,12 @@ function renderExpose() {
     return item;
   }));
 
-  // Fit each cloned live window cleanly inside its Mission Control thumbnail box
   requestAnimationFrame(() => {
     $("exGrid").querySelectorAll(".ex-win-body").forEach(body => {
       const stage = body.querySelector(".ex-preview-stage");
       if (!stage) return;
-      const bw = body.clientWidth || 240;
-      const bh = body.clientHeight || 145;
+      const bw = body.clientWidth || 280;
+      const bh = body.clientHeight || 170;
       const sw = parseFloat(stage.style.width) || 760;
       const sh = parseFloat(stage.style.height) || 520;
       const scale = Math.min(bw / sw, bh / sh);
@@ -1094,6 +1566,7 @@ function toggleStartMenu(force) {
   const show = typeof force === "boolean" ? force : !isOpen;
   if (show) {
     menu.hidden = true;
+    $("helpMenu").hidden = true;
     toggleExpose(false);
     toggleSpotlight(false);
     $("smSearch").value = "";
@@ -1121,7 +1594,11 @@ function tileGradient(k, idx = 0) {
     ai: "linear-gradient(160deg, #e879f9 0%, #8b5cf6 52%, #3b82f6 100%)",
     paint: "linear-gradient(160deg, #fb7185 0%, #e11d48 100%)",
     calculator: "linear-gradient(160deg, #fb923c 0%, #ea580c 100%)",
-    notes: "linear-gradient(160deg, #facc15 0%, #eab308 100%)"
+    notes: "linear-gradient(160deg, #facc15 0%, #eab308 100%)",
+    weather: "linear-gradient(160deg, #38bdf8 0%, #0369a1 100%)",
+    music: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)",
+    terminal: "linear-gradient(160deg, #334155 0%, #0f172a 100%)",
+    clock: "linear-gradient(160deg, #1e293b 0%, #090d16 100%)"
   };
   return fixed[k] || APP_TILE_GRADIENTS[idx % APP_TILE_GRADIENTS.length];
 }
@@ -1161,12 +1638,13 @@ expose.addEventListener("pointerdown", e => {
   }
 });
 
-/* ===== MACOS SPOTLIGHT SEARCH ===== */
+/* ===== SPOTLIGHT ===== */
 function toggleSpotlight(force) {
   const isOpen = spotlight.classList.contains("open");
   const show = typeof force === "boolean" ? force : !isOpen;
   if (show) {
     menu.hidden = true;
+    $("helpMenu").hidden = true;
     toggleStartMenu(false);
     toggleExpose(false);
     $("spInput").value = "";
@@ -1281,11 +1759,12 @@ spotlight.addEventListener("pointerdown", e => {
   if (e.target === spotlight) toggleSpotlight(false);
 });
 
-/* ===== MULTI-SIDEBAR SETTINGS WINDOW ===== */
+/* ===== SETTINGS ===== */
 function openSettings(initialTab = "preferences") {
   if (wins.has("settings-win")) {
     const existing = wins.get("settings-win");
     focusWin(existing);
+    existing.el.querySelector('.st-nav[data-tab="' + initialTab + '"]')?.click();
     return;
   }
 
@@ -1305,6 +1784,13 @@ function openSettings(initialTab = "preferences") {
       <div class="st-shell">
         <aside class="st-side">
           <button type="button" class="st-nav active" data-tab="preferences"><i class="ic fa-solid fa-sliders"></i>Preferences</button>
+          <button type="button" class="st-nav" data-tab="account"><i class="ic fa-solid fa-user-circle"></i>Account</button>
+          <button type="button" class="st-nav" data-tab="display"><i class="ic fa-solid fa-sun"></i>Display</button>
+          <button type="button" class="st-nav" data-tab="sound"><i class="ic fa-solid fa-volume-high"></i>Sound</button>
+          <button type="button" class="st-nav" data-tab="network"><i class="ic fa-solid fa-wifi"></i>Network</button>
+          <button type="button" class="st-nav" data-tab="notifications"><i class="ic fa-regular fa-bell"></i>Notifications</button>
+          <button type="button" class="st-nav" data-tab="datetime"><i class="ic fa-regular fa-clock"></i>Date &amp; Time</button>
+          <button type="button" class="st-nav" data-tab="access"><i class="ic fa-solid fa-universal-access"></i>Accessibility</button>
           <button type="button" class="st-nav" data-tab="cloaking"><i class="ic fa-solid fa-user-secret"></i>Tab Cloaker</button>
           <button type="button" class="st-nav" data-tab="themes"><i class="ic fa-solid fa-palette"></i>Themes</button>
           <button type="button" class="st-nav" data-tab="background"><i class="ic fa-regular fa-image"></i>Background</button>
@@ -1324,7 +1810,7 @@ function openSettings(initialTab = "preferences") {
     if (tab === "preferences") {
       main.innerHTML = `
         <h2 class="st-heading">Preferences</h2>
-        <p class="st-sub">Stealth launch modes and quick disguises.</p>
+        <p class="st-sub">Stealth launch modes, desktop widgets, and quick disguises.</p>
         <div class="st-grid-2">
           <div class="st-card">
             <h3><i class="fa-solid fa-ghost" style="color:var(--acc)"></i> About Blank</h3>
@@ -1338,6 +1824,16 @@ function openSettings(initialTab = "preferences") {
           </div>
         </div>
         <div class="st-card">
+          <h3><i class="fa-solid fa-compass" style="color:#38bdf8"></i> Desktop Quick Guide</h3>
+          <p>Replay the interactive 4-step walkthrough anytime.</p>
+          <div class="st-btn-row"><button type="button" class="ib primary" id="st-replay-guide"><i class="fa-solid fa-sparkles"></i> Open Guide</button></div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-calendar-day" style="color:#38bdf8"></i> Desktop Clock &amp; Date</h3>
+          <p>Toggle the large center date display on your wallpaper.</p>
+          <div class="st-btn-row"><button type="button" class="ib" id="st-toggle-date">${ls.get("sh0zy.hidedate") === "1" ? "Show Date Hero" : "Hide Date Hero"}</button></div>
+        </div>
+        <div class="st-card">
           <h3><i class="fa-solid fa-masks-theater" style="color:#f59e0b"></i> Tab Presets</h3>
           <p>Instantly disguise your browser tab title and icon.</p>
           <div class="st-presets" id="stPresets"></div>
@@ -1345,6 +1841,13 @@ function openSettings(initialTab = "preferences") {
       `;
       main.querySelector("#st-ab").onclick = launchAboutBlank;
       main.querySelector("#st-blob").onclick = launchBlob;
+      main.querySelector("#st-replay-guide").onclick = () => openFirstRunGuide(0);
+      main.querySelector("#st-toggle-date").onclick = () => {
+        const next = ls.get("sh0zy.hidedate") === "1" ? "0" : "1";
+        ls.set("sh0zy.hidedate", next);
+        applySettings();
+        renderTab("preferences");
+      };
       const pBox = main.querySelector("#stPresets");
       TAB_PRESETS.forEach(p => {
         const btn = h("button", { type: "button", className: "st-preset-chip" });
@@ -1352,6 +1855,36 @@ function openSettings(initialTab = "preferences") {
         btn.onclick = () => { ls.set("sh0zy.title", p.title); ls.set("sh0zy.icon", p.icon); applySettings(); notify(`Tab disguised as ${p.name}`); };
         pBox.append(btn);
       });
+    } else if (tab === "account") {
+      let accObj = { name: "User", hint: "" };
+      try { accObj = JSON.parse(ls.get("sift.account") || '{"name":"User","hint":""}'); } catch {}
+      main.innerHTML = `
+        <h2 class="st-heading">Computer Account</h2>
+        <p class="st-sub">Manage your local browser user profile or re-run the Setup Assistant.</p>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-id-card" style="color:var(--acc)"></i> Signed in as ${accObj.name || "User"}</h3>
+          <p>${accObj.hint ? "Password hint: " + accObj.hint : "Local browser account configured."}</p>
+          <div class="st-btn-row">
+            <button type="button" class="ib primary" id="st-rerun-setup"><i class="fa-solid fa-wand-magic-sparkles"></i> Re-run Hello Setup</button>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-signature" style="color:var(--acc2)"></i> Display name</h3>
+          <p>This is the name shown in the menu bar and on the lock screen.</p>
+          <div class="st-field" style="margin-top:0"><label for="st-name">Name</label><input id="st-name" maxlength="24"></div>
+          <div class="st-btn-row" style="margin-top:14px"><button type="button" class="ib primary" id="st-name-save">Save name</button></div>
+        </div>
+      `;
+      main.querySelector("#st-name").value = accObj.name || "User";
+      main.querySelector("#st-name-save").onclick = () => {
+        accObj.name = main.querySelector("#st-name").value.trim() || "User";
+        ls.set("sift.account", JSON.stringify(accObj));
+        refreshUser(); renderTab("account"); notify("Name updated");
+      };
+      main.querySelector("#st-rerun-setup").onclick = () => {
+        ls.del("sift.setupDone");
+        location.reload();
+      };
     } else if (tab === "cloaking") {
       main.innerHTML = `
         <h2 class="st-heading">Tab Cloaker</h2>
@@ -1370,20 +1903,47 @@ function openSettings(initialTab = "preferences") {
     } else if (tab === "themes") {
       const cur = ls.get("sh0zy.theme") || "glass";
       main.innerHTML = `
-        <h2 class="st-heading">Themes</h2>
-        <p class="st-sub">Switch visual theme.</p>
+        <h2 class="st-heading">Themes &amp; Accent</h2>
+        <p class="st-sub">Switch visual theme and system accent highlight.</p>
         <div class="theme-cards">
-          <button type="button" class="theme-card ${cur==="glass"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','glass');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#1e293b,#6a95ff)"></div><b>macOS Glass</b></button>
-          <button type="button" class="theme-card ${cur==="obsidian"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','obsidian');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#090a0f,#1e293b)"></div><b>Obsidian</b></button>
-          <button type="button" class="theme-card ${cur==="crystal"?"selected":""}" onclick="localStorage.setItem('sh0zy.theme','crystal');location.reload()"><div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc,#cbd5e1)"></div><b>Crystal Light</b></button>
+          <button type="button" class="theme-card ${cur==="glass"?"selected":""}" data-th="glass"><div class="theme-swatch" style="background:linear-gradient(135deg,#1e293b,#6a95ff)"></div><b>macOS Glass</b></button>
+          <button type="button" class="theme-card ${cur==="obsidian"?"selected":""}" data-th="obsidian"><div class="theme-swatch" style="background:linear-gradient(135deg,#090a0f,#1e293b)"></div><b>Obsidian</b></button>
+          <button type="button" class="theme-card ${cur==="crystal"?"selected":""}" data-th="crystal"><div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc,#cbd5e1)"></div><b>Crystal Light</b></button>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-droplet" style="color:var(--acc)"></i> Accent Color</h3>
+          <p>Pick an accent tint for buttons, indicators, and highlights.</p>
+          <div class="st-btn-row" id="stAccRow"></div>
         </div>
       `;
+      main.querySelectorAll(".theme-card").forEach(btn => {
+        btn.onclick = () => {
+          ls.set("sh0zy.theme", btn.dataset.th);
+          applySettings();
+          renderTab("themes");
+        };
+      });
+      const accColors = ["#2b7fff", "#9333ea", "#e11d48", "#ea580c", "#16a34a", "#64748b"];
+      accColors.forEach(c => {
+        const dot = h("button", {
+          type: "button",
+          className: "accent-dot" + ((ls.get("sh0zy.acc") || "#2b7fff") === c ? " selected" : ""),
+          onclick: () => { ls.set("sh0zy.acc", c); applySettings(); renderTab("themes"); }
+        });
+        dot.style.background = c;
+        dot.innerHTML = '<i class="fa-solid fa-check"></i>';
+        main.querySelector("#stAccRow").append(dot);
+      });
     } else if (tab === "background") {
       main.innerHTML = `
         <h2 class="st-heading">Wallpaper</h2>
-        <p class="st-sub">Choose a wallpaper.</p>
+        <p class="st-sub">Choose a preset wallpaper or open the custom uploader.</p>
         <div class="wp-grid" id="stWpGrid"></div>
+        <div class="st-btn-row" style="margin-top:14px">
+          <button type="button" class="ib primary" id="stOpenWp"><i class="fa-solid fa-upload"></i> Custom Image / Link</button>
+        </div>
       `;
+      main.querySelector("#stOpenWp").onclick = () => $("wp").showModal();
       const wg = main.querySelector("#stWpGrid");
       PRESET_WALLPAPERS.forEach(w => {
         const item = h("button", { type: "button", className: "wp-item" });
@@ -1392,27 +1952,33 @@ function openSettings(initialTab = "preferences") {
         item.onclick = () => { ls.set("sh0zy.bg", w.url); applySettings(); notify(`Wallpaper set to ${w.name}`); };
         wg.append(item);
       });
+    } else if (SYS_TABS[tab]) {
+      SYS_TABS[tab](main);
     } else if (tab === "data") {
       main.innerHTML = `
         <h2 class="st-heading">Data</h2>
-        <p class="st-sub">Clear cache and settings.</p>
-        <div class="st-card"><button type="button" class="ib" onclick="localStorage.clear();location.reload()"><i class="fa-solid fa-rotate-left"></i> Reset All Settings</button></div>
+        <p class="st-sub">Clear cached pages, notes, and local settings.</p>
+        <div class="st-card">
+          <div class="st-btn-row">
+            <button type="button" class="ib" id="stClearCache"><i class="fa-solid fa-broom"></i> Clear App Cache</button>
+            <button type="button" class="ib" id="stResetAll"><i class="fa-solid fa-rotate-left"></i> Factory Reset OS</button>
+          </div>
+        </div>
       `;
+      main.querySelector("#stClearCache").onclick = () => { cache.clear(); notify("Page cache cleared!"); };
+      main.querySelector("#stResetAll").onclick = () => { localStorage.clear(); location.reload(); };
     }
   }
 
   el.querySelectorAll(".st-nav").forEach(btn => btn.onclick = () => renderTab(btn.dataset.tab));
   renderTab(initialTab);
 
-  const tb = el.querySelector(".tb"), rs = el.querySelector(".rs"), wObj = { app: { key: "settings-win", name: "Settings" }, el, min: false };
-  el.addEventListener("pointerdown", () => focusWin(wObj), true);
-  el.querySelector(".b-m").onclick = () => minimize(wObj);
-  el.querySelector(".b-x").onclick = () => toggleMax(wObj);
-  el.querySelector(".b-c").onclick = () => closeWin(wObj);
+  const wObj = { app: { key: "settings-win", name: "Settings" }, el, min: false };
+  attachWindowControls(el, wObj);
   desk.append(el); wins.set("settings-win", wObj); focusWin(wObj);
 }
 
-/* ===== BUILT-IN NATIVE APPS (CALCULATOR, NOTES, PAINT) ===== */
+/* ===== NATIVE APPS ===== */
 function attachWindowControls(el, wObj) {
   const tb = el.querySelector(".tb"), rs = el.querySelector(".rs");
   el.addEventListener("pointerdown", () => focusWin(wObj), true);
@@ -1743,6 +2309,184 @@ function openPaint(app) {
   requestAnimationFrame(resizeCanvas);
 }
 
+function openWeather(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Weather</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="weather-app">
+        <div class="weather-main">
+          <i class="fa-solid fa-cloud-sun"></i>
+          <div class="weather-temp">72°</div>
+          <div class="weather-cond">Partly Cloudy</div>
+          <div class="weather-loc">Cupertino, California</div>
+        </div>
+        <div class="weather-grid">
+          <div class="weather-card"><small>HUMIDITY</small><b>48%</b></div>
+          <div class="weather-card"><small>WIND</small><b>9 mph</b></div>
+          <div class="weather-card"><small>UV INDEX</small><b>5 Mod</b></div>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const W = 460, H = 420;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openMusic(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  const tracks = MEDIA.tracks;
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Music</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="music-app">
+        <div class="music-art"><i class="fa-solid fa-music"></i></div>
+        <div class="music-meta">
+          <h3 id="mTitle">${tracks[MEDIA.idx].title}</h3>
+          <p id="mArtist">${tracks[MEDIA.idx].artist}</p>
+        </div>
+        <div class="music-controls">
+          <button type="button" class="music-btn" id="mPrev" aria-label="Previous"><i class="fa-solid fa-backward-step"></i></button>
+          <button type="button" class="music-btn play" id="mPlay" aria-label="Play"><i class="fa-solid fa-play"></i></button>
+          <button type="button" class="music-btn" id="mNext" aria-label="Next"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const paint = () => {
+    el.querySelector("#mTitle").textContent = tracks[MEDIA.idx].title;
+    el.querySelector("#mArtist").textContent = tracks[MEDIA.idx].artist;
+    el.querySelector("#mPlay").innerHTML = MEDIA.playing ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+  };
+  const syncTrack = () => { if (!el.isConnected) { MEDIA.subs.delete(syncTrack); return; } paint(); };
+  MEDIA.subs.add(syncTrack); paint();
+  el.querySelector("#mPlay").onclick = () => MEDIA.toggle();
+  el.querySelector("#mPrev").onclick = () => MEDIA.prev();
+  el.querySelector("#mNext").onclick = () => MEDIA.next();
+
+  const W = 400, H = 440;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openTerminal(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Terminal</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="term-app">
+        <div class="term-output" id="tOut">
+          <div>SIFT Darwin Kernel v15.1 — Type <b>help</b> for commands.</div>
+        </div>
+        <div class="term-input-row">
+          <span>sift@macbook ~ %</span>
+          <input id="tIn" type="text" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const out = el.querySelector("#tOut"), inp = el.querySelector("#tIn");
+  const print = txt => { out.append(h("div", { textContent: txt })); out.scrollTop = out.scrollHeight; };
+  inp.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const cmd = inp.value.trim();
+    inp.value = "";
+    if (!cmd) return;
+    print(`sift@macbook ~ % ${cmd}`);
+    if (cmd === "help") print("Available commands: help, whoami, date, clear, apps, setup");
+    else if (cmd === "whoami") {
+      let nm = "user";
+      try { nm = JSON.parse(ls.get("sift.account") || "{}").name || "user"; } catch {}
+      print(nm);
+    } else if (cmd === "date") print(new Date().toString());
+    else if (cmd === "apps") print([...apps.keys()].join(", "));
+    else if (cmd === "setup") { ls.del("sift.setupDone"); location.reload(); }
+    else if (cmd === "clear") out.replaceChildren();
+    else print(`zsh: command not found: ${cmd}`);
+  });
+
+  const W = 580, H = 380;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+  setTimeout(() => inp.focus(), 40);
+}
+
+function openClockApp(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Clock</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="clock-app">
+        <div class="clock-big" id="clkBig"></div>
+        <div class="clock-sub" id="clkSub"></div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const updateClk = () => {
+    const now = new Date();
+    el.querySelector("#clkBig").textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    el.querySelector("#clkSub").textContent = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  };
+  updateClk();
+  const timer = setInterval(() => {
+    if (!document.body.contains(el)) { clearInterval(timer); return; }
+    updateClk();
+  }, 1000);
+
+  const W = 440, H = 300;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
 /* ===== WINDOW MANAGER ===== */
 const topWin = () => [...wins.values()].filter(x => !x.min).sort((a, b) => a.el.style.zIndex - b.el.style.zIndex).pop() || null;
 function paintDock() {
@@ -1757,10 +2501,29 @@ function paintDock() {
 function focusWin(w) {
   if (w.min) { w.min = false; w.el.classList.remove("min"); }
   w.el.style.zIndex = ++zTop; focused = w; wins.forEach(x => x.el.classList.toggle("focus", x === w)); paintDock();
+  syncFullscreenState();
 }
-function minimize(w) { w.min = true; w.el.classList.add("min"); w.el.classList.remove("focus"); if (focused === w) focused = topWin(); if (focused) focused.el.classList.add("focus"); paintDock(); }
-function closeWin(w) { w.el.remove(); wins.delete(w.app.key); if (focused === w) focused = topWin(); if (focused) focused.el.classList.add("focus"); paintDock(); }
-const toggleMax = w => w.el.classList.toggle("max");
+function minimize(w) {
+  w.min = true;
+  w.el.classList.add("min");
+  w.el.classList.remove("focus");
+  if (focused === w) focused = topWin();
+  if (focused) focused.el.classList.add("focus");
+  paintDock();
+  syncFullscreenState();
+}
+function closeWin(w) {
+  w.el.remove();
+  wins.delete(w.app.key);
+  if (focused === w) focused = topWin();
+  if (focused) focused.el.classList.add("focus");
+  paintDock();
+  syncFullscreenState();
+}
+const toggleMax = w => {
+  w.el.classList.toggle("max");
+  syncFullscreenState();
+};
 
 function createWin(app) {
   const el = h("section", { className: "win" }), n = wins.size;
@@ -1794,28 +2557,7 @@ function createWin(app) {
   frame.addEventListener("load", () => { if (frame.srcdoc) ph.hidden = true; });
   el.querySelector(".wbody").append(frame);
 
-  const tb = el.querySelector(".tb"), rs = el.querySelector(".rs");
-  el.addEventListener("pointerdown", () => focusWin(w), true);
-  tb.addEventListener("dblclick", e => { if (!e.target.closest("button")) toggleMax(w); });
-  el.querySelector(".b-m").onclick = () => minimize(w);
-  el.querySelector(".b-x").onclick = () => toggleMax(w);
-  el.querySelector(".b-c").onclick = () => closeWin(w);
-
-  const drag = (handle, start, move) => handle.addEventListener("pointerdown", e => {
-    if (e.button || e.target.closest("button") || el.classList.contains("max")) return;
-    const s = start(e); handle.setPointerCapture(e.pointerId); desk.classList.add("drag");
-    const mv = ev => move(ev, s), up = () => { handle.removeEventListener("pointermove", mv); handle.removeEventListener("pointerup", up); desk.classList.remove("drag"); };
-    handle.addEventListener("pointermove", mv); handle.addEventListener("pointerup", up);
-  });
-  drag(tb, e => ({ x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop }), (e, s) => {
-    el.style.left = Math.min(innerWidth - 80, Math.max(80 - el.offsetWidth, s.l + e.clientX - s.x)) + "px";
-    el.style.top = Math.min(innerHeight - 60, Math.max(32, s.t + e.clientY - s.y)) + "px";
-  });
-  drag(rs, e => ({ x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }), (e, s) => {
-    el.style.width = Math.max(360, s.w + e.clientX - s.x) + "px";
-    el.style.height = Math.max(260, s.h + e.clientY - s.y) + "px";
-  });
-
+  attachWindowControls(el, w);
   desk.append(el); wins.set(app.key, w);
   focusWin(w); w.load(); return w;
 }
@@ -1827,6 +2569,10 @@ function openApp(key, toggle) {
     if (app.native === "calculator") openCalculator(app);
     else if (app.native === "notes") openNotes(app);
     else if (app.native === "paint") openPaint(app);
+    else if (app.native === "weather") openWeather(app);
+    else if (app.native === "music") openMusic(app);
+    else if (app.native === "terminal") openTerminal(app);
+    else if (app.native === "clock") openClockApp(app);
     else createWin(app);
   } else if (w.min || focused !== w || !toggle) focusWin(w);
   else minimize(w);
@@ -1851,8 +2597,8 @@ function buildDock() {
     h("i", { className: "sep" }),
     ...userApps.map((a, i) => dockBtn(a.name, a.icon, tileGradient(a.key, i), () => openApp(a.key, true), a.key, "app-" + a.key)),
     h("i", { className: "sep" }),
-    dockBtn("Discord", "discord", null, () => window.open(LINKS.discord, "_blank", "noopener"), null, "app-discord"),
-    dockBtn("Settings", "settings", null, () => openSettings("preferences"), "settings-win", "app-settings")
+    dockBtn("Discord", "discord", "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", () => window.open(LINKS.discord, "_blank", "noopener"), null, "app-discord"),
+    dockBtn("Settings", "settings", "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", () => openSettings("preferences"), "settings-win", "app-settings")
   );
 }
 
@@ -1865,17 +2611,234 @@ $("updList").replaceChildren(...UPDATES.map(u => {
 }));
 $("updBtn").onclick = () => $("upd").classList.toggle("shut");
 
+/* ===== CONTROL CENTER, SYSTEM STATE & ACCOUNT CHIP ===== */
+const SYS_DEF = { wifi: true, bt: true, air: 0, dnd: false, night: false, bright: 100, vol: 60, mute: false, sfx: true, widgets: true, clock24: false, secs: false, rmotion: false, rtrans: false };
+const SYS = {};
+for (const k in SYS_DEF) {
+  const d = SYS_DEF[k], raw = ls.get("sift.sys." + k);
+  SYS[k] = raw === "" ? d : typeof d === "boolean" ? raw === "1" : (Number(raw) || 0);
+}
+const AIR_MODES = ["Contacts Only", "Everyone", "Receiving Off"];
+const MEDIA = {
+  tracks: [
+    { title: "Midnight Horizon", artist: "SIFT Synthwave" },
+    { title: "Sequoia Breeze", artist: "Ambient Chill" },
+    { title: "Glass Reflections", artist: "Lo-Fi Study Beats" }
+  ],
+  idx: 0, playing: false, subs: new Set(),
+  emit() { this.subs.forEach(f => f()); },
+  toggle() { this.playing = !this.playing; this.emit(); },
+  next() { this.idx = (this.idx + 1) % this.tracks.length; this.emit(); },
+  prev() { this.idx = (this.idx - 1 + this.tracks.length) % this.tracks.length; this.emit(); }
+};
+const setOn = (id, on) => { const e = $(id); e.classList.toggle("on", on); e.setAttribute("aria-pressed", on); };
+const setF = r => r.style.setProperty("--f", (r.value - r.min) / (r.max - r.min));
+const volIco = () => SYS.mute || !SYS.vol ? "fa-volume-xmark" : SYS.vol < 40 ? "fa-volume-low" : "fa-volume-high";
+
+function sysSet(k, v) {
+  SYS[k] = v;
+  ls.set("sift.sys." + k, typeof v === "boolean" ? (v ? "1" : "0") : String(v));
+  applySystem();
+}
+function applySystem() {
+  document.body.classList.toggle("reduce-motion", SYS.rmotion);
+  document.body.classList.toggle("reduce-trans", SYS.rtrans);
+  $("dim").style.opacity = ((100 - SYS.bright) / 100 * 0.8).toFixed(3);
+  $("warm").style.opacity = SYS.night ? "1" : "0";
+  $("widgets").hidden = !SYS.widgets;
+  $("topWifiBtn").style.opacity = SYS.wifi ? "" : ".38";
+  $("topWifiBtn").title = SYS.wifi ? "Connected to SIFT Network" : "Wi-Fi Off";
+  $("topDnd").hidden = !SYS.dnd;
+  setOn("ccWifi", SYS.wifi); $("ccWifiSub").textContent = SYS.wifi ? "SIFT Network" : "Off";
+  setOn("ccBt", SYS.bt); $("ccBtSub").textContent = SYS.bt ? "On" : "Off";
+  setOn("ccAir", SYS.air !== 2); $("ccAirSub").textContent = AIR_MODES[SYS.air] || AIR_MODES[0];
+  setOn("ccDnd", SYS.dnd); setOn("ccNight", SYS.night); setOn("ccMute", SYS.mute);
+  $("ccBright").value = SYS.bright; $("ccVol").value = SYS.vol;
+  setF($("ccBright")); setF($("ccVol"));
+  $("ccVolIco").className = "fa-solid " + volIco();
+  tick();
+}
+
+let actx = null;
+function blip() {
+  if (SYS.mute || !SYS.sfx || !SYS.vol) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = 660; g.gain.value = SYS.vol / 100 * 0.25;
+    o.connect(g); g.connect(actx.destination);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.14);
+    o.start(); o.stop(actx.currentTime + 0.15);
+  } catch {}
+}
+
+/* Control Center panel */
+const cc = $("cc"), umenu = $("userMenu");
+function toggleCC(force) {
+  const open = force ?? !cc.classList.contains("open");
+  if (open) { menu.hidden = true; umenu.hidden = true; $("helpMenu").hidden = true; toggleStartMenu(false); toggleExpose(false); toggleSpotlight(false); }
+  cc.classList.toggle("open", open);
+}
+$("topCcBtn").onclick = e => { e.stopPropagation(); toggleCC(); };
+$("ccWifi").onclick = () => sysSet("wifi", !SYS.wifi);
+$("ccBt").onclick = () => sysSet("bt", !SYS.bt);
+$("ccAir").onclick = () => sysSet("air", (SYS.air + 1) % 3);
+$("ccDnd").onclick = () => sysSet("dnd", !SYS.dnd);
+$("ccNight").onclick = () => sysSet("night", !SYS.night);
+$("ccFull").onclick = () => {
+  toggleCC(false);
+  const isActive = document.body.classList.contains("in-fullscreen") || !!document.fullscreenElement;
+  if (isActive) {
+    fullscreenButtonMode = false;
+    document.body.classList.remove("in-fullscreen");
+    if (document.fullscreenElement) document.exitFullscreen?.();
+  } else {
+    fullscreenButtonMode = true;
+    document.body.classList.add("in-fullscreen");
+    const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+    if (request) {
+      try {
+        const result = request.call(document.documentElement);
+        if (result && result.catch) result.catch(() => syncFullscreenState());
+      } catch { syncFullscreenState(); }
+    }
+    syncFullscreenState();
+  }
+};
+$("ccBright").oninput = e => sysSet("bright", +e.target.value);
+$("ccVol").oninput = e => { sysSet("vol", +e.target.value); if (SYS.mute && SYS.vol) sysSet("mute", false); };
+$("ccVol").onchange = blip;
+$("ccMute").onclick = () => sysSet("mute", !SYS.mute);
+cc.querySelectorAll("[data-open]").forEach(b => b.onclick = () => { toggleCC(false); openSettings(b.dataset.open); });
+$("ccPlay").onclick = () => MEDIA.toggle();
+$("ccNext").onclick = () => MEDIA.next();
+MEDIA.subs.add(() => {
+  const t = MEDIA.tracks[MEDIA.idx];
+  $("ccTitle").textContent = t.title; $("ccArtist").textContent = t.artist;
+  $("ccPlay").innerHTML = '<i class="fa-solid fa-' + (MEDIA.playing ? "pause" : "play") + '"></i>';
+});
+
+/* Account chip in the menu bar */
+function accName() { try { return JSON.parse(ls.get("sift.account") || "null")?.name || "User"; } catch { return "User"; } }
+function refreshUser() {
+  const n = accName(), c = n.charAt(0).toUpperCase();
+  $("topUserName").textContent = n; $("topAv").textContent = c;
+  $("umName").textContent = n; $("umAv").textContent = c;
+}
+$("topUser").onclick = e => {
+  e.stopPropagation();
+  if (!umenu.hidden) { umenu.hidden = true; return; }
+  toggleCC(false); menu.hidden = true; $("helpMenu").hidden = true; refreshUser();
+  umenu.hidden = false;
+  const r = $("topUser").getBoundingClientRect();
+  umenu.style.top = r.bottom + 6 + "px";
+  umenu.style.left = Math.max(8, Math.min(innerWidth - umenu.offsetWidth - 8, r.left)) + "px";
+};
+umenu.querySelector('[data-u="acct"]').onclick = () => { umenu.hidden = true; openSettings("account"); };
+umenu.querySelector('[data-u="sys"]').onclick = () => { umenu.hidden = true; openSettings("preferences"); };
+umenu.querySelector('[data-u="lock"]').onclick = () => location.reload();
+addEventListener("pointerdown", e => {
+  if (cc.classList.contains("open") && !cc.contains(e.target) && !$("topCcBtn").contains(e.target)) toggleCC(false);
+  if (!umenu.hidden && !umenu.contains(e.target) && !$("topUser").contains(e.target)) umenu.hidden = true;
+  if (!($("helpMenu").hidden) && !$("helpMenu").contains(e.target) && !$("topHelpBtn").contains(e.target)) $("helpMenu").hidden = true;
+});
+addEventListener("keydown", e => { if (e.key === "Escape") { toggleCC(false); umenu.hidden = true; $("helpMenu").hidden = true; } });
+
+/* New Settings tabs */
+const swRow = (k, t, d) => `<div class="st-row"><div><b>${t}</b><p>${d}</p></div><button type="button" class="sw${SYS[k] ? " on" : ""}" data-k="${k}" role="switch" aria-checked="${SYS[k]}" aria-label="${t}"></button></div>`;
+const rgRow = (k, t, min, max) => `<div class="st-row st-rg"><b>${t}</b><input type="range" class="cc-range" data-k="${k}" min="${min}" max="${max}" value="${SYS[k]}" aria-label="${t}"></div>`;
+const stHead = (t, s) => `<h2 class="st-heading">${t}</h2><p class="st-sub">${s}</p>`;
+function bindSys(m) {
+  m.querySelectorAll(".sw").forEach(b => b.onclick = () => {
+    const k = b.dataset.k; sysSet(k, !SYS[k]);
+    b.classList.toggle("on", SYS[k]); b.setAttribute("aria-checked", SYS[k]);
+  });
+  m.querySelectorAll("input.cc-range").forEach(r => {
+    setF(r);
+    r.oninput = () => { sysSet(r.dataset.k, +r.value); setF(r); };
+    if (r.dataset.k === "vol") r.onchange = blip;
+  });
+  m.querySelectorAll("select[data-k]").forEach(s => s.onchange = () => sysSet(s.dataset.k, +s.value));
+}
+const SYS_TABS = {
+  display: m => {
+    m.innerHTML = stHead("Display", "Brightness and screen colour. Also in Control Center.")
+      + `<div class="st-card">${rgRow("bright", "Brightness", 25, 100)}${swRow("night", "Night Shift", "Warms the screen colours.")}</div>`;
+    bindSys(m);
+  },
+  sound: m => {
+    m.innerHTML = stHead("Sound", "Volume for system sounds. Games and apps keep their own volume.")
+      + `<div class="st-card">${rgRow("vol", "Volume", 0, 100)}${swRow("mute", "Mute", "Silence all system sounds.")}${swRow("sfx", "Sound on volume change", "Play a short tone when you let go of the slider.")}</div>`;
+    bindSys(m);
+  },
+  network: m => {
+    m.innerHTML = stHead("Network", "These are simulated. A web page can't control real Wi-Fi, Bluetooth or AirDrop.")
+      + `<div class="st-card">${swRow("wifi", "Wi-Fi", "Connect to the SIFT Network.")}${swRow("bt", "Bluetooth", "Make this desktop discoverable.")}</div>`
+      + `<div class="st-card"><div class="st-field" style="margin-top:0"><label for="st-air">AirDrop</label><select id="st-air" data-k="air">${AIR_MODES.map((n, i) => `<option value="${i}"${SYS.air === i ? " selected" : ""}>${n}</option>`).join("")}</select></div></div>`;
+    bindSys(m);
+  },
+  notifications: m => {
+    m.innerHTML = stHead("Notifications", "Control pop-ups and the desktop updates card.")
+      + `<div class="st-card">${swRow("dnd", "Do Not Disturb", "Hide pop-up notifications.")}${swRow("widgets", "Release Notes widget", "Show the updates card on the desktop.")}</div>`;
+    bindSys(m);
+  },
+  datetime: m => {
+    m.innerHTML = stHead("Date & Time", "How the clock looks in the menu bar.")
+      + `<div class="st-card">${swRow("clock24", "24-hour time", "Show 17:30 instead of 5:30 PM.")}${swRow("secs", "Show seconds", "Add seconds to the menu bar clock.")}</div>`;
+    bindSys(m);
+  },
+  access: m => {
+    m.innerHTML = stHead("Accessibility", "Make the desktop easier on the eyes.")
+      + `<div class="st-card">${swRow("rmotion", "Reduce motion", "Turn off most animations and transitions.")}${swRow("rtrans", "Reduce transparency", "Replace blurred glass with solid panels.")}</div>`;
+    bindSys(m);
+  }
+};
+
+applySystem();
+refreshUser();
+MEDIA.emit();
+
 function tick() {
   const d = new Date();
   const wk = d.toLocaleDateString([], { weekday: "short" });
   const mo = d.toLocaleDateString([], { month: "short" });
   const dy = d.getDate();
-  const tm = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const tm = d.toLocaleTimeString([], { hour: SYS.clock24 ? "2-digit" : "numeric", minute: "2-digit", ...(SYS.secs ? { second: "2-digit" } : {}), hour12: !SYS.clock24 });
   $("clock").textContent = `${wk} ${mo} ${dy}  ${tm}`;
   $("dayName").textContent = d.toLocaleDateString([], { weekday: "long" }).toUpperCase();
   $("dateTxt").textContent = d.toLocaleDateString([], { month: "long", day: "numeric" });
 }
-tick(); setInterval(tick, 10000);
+tick(); setInterval(tick, 1000);
+
+/* ===== WALLPAPER & DOCS DIALOGS ===== */
+$("wp-apply").onclick = () => {
+  const u = $("wp-url").value.trim();
+  if (!u) { $("wp-msg").textContent = "Please enter a valid image URL."; return; }
+  ls.set("sh0zy.bg", u); applySettings(); $("wp").close(); notify("Wallpaper updated!");
+};
+$("wp-up").onclick = () => $("wp-file").click();
+$("wp-file").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => { ls.set("sh0zy.bg", r.result); applySettings(); $("wp").close(); notify("Wallpaper uploaded!"); };
+  r.readAsDataURL(file);
+};
+$("wp-p1").onclick = () => { ls.set("sh0zy.bg", PRESET_WALLPAPERS[0].url); applySettings(); $("wp").close(); };
+$("wp-p2").onclick = () => { ls.set("sh0zy.bg", PRESET_WALLPAPERS[1].url); applySettings(); $("wp").close(); };
+$("wp-reset").onclick = () => { ls.del("sh0zy.bg"); applySettings(); $("wp").close(); };
+$("wp-x").onclick = () => $("wp").close();
+
+function openDoc(type) {
+  $("doc-t").textContent = type === "privacy" ? "Privacy Policy" : "Terms of Service";
+  $("doc-b").innerHTML = type === "privacy"
+    ? "<p>All settings, account preferences, and notes are stored locally in your browser via localStorage. No personal account credentials are sent to external servers.</p>"
+    : "<p>Welcome to SIFT Web OS. Use responsibly and customize your workspace freely.</p>";
+  $("doc").showModal();
+}
+$("doc-x").onclick = () => $("doc").close();
+menu.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => { menu.hidden = true; openDoc(b.dataset.doc); });
+document.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => { $("helpMenu").hidden = true; menu.hidden = true; openDoc(b.dataset.doc); });
 
 /* ===== TOP MENU BAR INTERACTIONS ===== */
 function showMenu(x, y) {
@@ -1895,6 +2858,7 @@ $("menuBtn").onclick = e => {
   e.stopPropagation();
   toggleStartMenu(false);
   toggleExpose(false);
+  $("helpMenu").hidden = true;
   const r = $("menuBtn").getBoundingClientRect();
   showMenu(r.left, r.bottom + 6);
 };
@@ -1903,10 +2867,17 @@ $("topFileBtn").onclick = e => { e.stopPropagation(); toggleStartMenu(true); };
 $("topEditBtn").onclick = () => openSettings("cloaking");
 $("topViewBtn").onclick = () => openSettings("themes");
 $("topWindowBtn").onclick = e => { e.stopPropagation(); toggleExpose(true); };
-$("topHelpBtn").onclick = () => openDoc("tos");
-$("topWifiBtn").onclick = () => notify("Connected to SIFT Network");
+$("topHelpBtn").onclick = e => {
+  e.stopPropagation();
+  menu.hidden = true;
+  const hm = $("helpMenu");
+  hm.hidden = !hm.hidden;
+  const r = $("topHelpBtn").getBoundingClientRect();
+  hm.style.top = r.bottom + 6 + "px";
+  hm.style.left = Math.max(8, r.left) + "px";
+};
+$("topWifiBtn").onclick = () => notify(SYS.wifi ? "Connected to SIFT Network" : "Wi-Fi is turned off");
 $("topSearchBtn").onclick = e => { e.stopPropagation(); toggleSpotlight(); };
-$("topExposeBtn").onclick = e => { e.stopPropagation(); toggleExpose(); };
 
 window.onpointerdown = e => {
   if (!menu.contains(e.target) && !$("menuBtn").contains(e.target)) menu.hidden = true;
@@ -1920,10 +2891,144 @@ window.addEventListener("keydown", e => {
     if (spotlight.classList.contains("open")) toggleSpotlight(false);
     if (startMenu.classList.contains("open")) toggleStartMenu(false);
     if (expose.classList.contains("open")) toggleExpose(false);
+    if ($("firstRunGuide").classList.contains("open")) closeFirstRunGuide();
   }
 });
 
-/* ===== INIT & BOOT ANIMATION ===== */
+/* ===== SETUP WIZARD & BOOT FLOW ===== */
+let setupData = { name: "User", pass: "", hint: "", theme: "glass", acc: "#2b7fff" };
+
+function enterDesktop() {
+  refreshUser();
+  $("boot").classList.add("done");
+  document.body.classList.add("booted");
+  if (ls.get("sift.guideDone") !== "1") {
+    setTimeout(() => openFirstRunGuide(0), 900);
+  }
+}
+
+function initSetupWizard() {
+  const accountDone = ls.get("sift.setupDone") === "1";
+  let savedAccount = null;
+  try { savedAccount = JSON.parse(ls.get("sift.account") || "null"); } catch {}
+
+  $("helloBtn").onclick = () => {
+    $("bootHelloStage").style.display = "none";
+    $("helloBtn").style.display = "none";
+
+    if (accountDone && savedAccount) {
+      const userName = savedAccount.name || "User";
+      $("boot").classList.add("step-welcome");
+      $("setupWelcomeCard").hidden = false;
+      $("setupAvatarInitial").textContent = userName.charAt(0).toUpperCase();
+      $("setupWelcomeTitle").textContent = `Welcome, ${userName}`;
+
+      if (savedAccount.pass) {
+        $("setupWelcomeSub").textContent = "Enter your password to unlock your desktop.";
+        $("lockLoginBox").hidden = false;
+        $("lockHintTxt").textContent = "";
+        setTimeout(() => $("lockPassInput").focus(), 60);
+
+        const tryUnlock = () => {
+          if ($("lockPassInput").value === savedAccount.pass) {
+            enterDesktop();
+          } else {
+            $("lockPassPill").classList.remove("shake");
+            void $("lockPassPill").offsetWidth;
+            $("lockPassPill").classList.add("shake");
+            $("lockPassInput").value = "";
+            $("lockHintTxt").textContent = savedAccount.hint
+              ? `Incorrect password · Hint: ${savedAccount.hint}`
+              : "Incorrect password. Try again.";
+          }
+        };
+        $("lockUnlockBtn").onclick = tryUnlock;
+        $("lockPassInput").onkeydown = e => {
+          if (e.key === "Enter") { e.preventDefault(); tryUnlock(); }
+        };
+      } else {
+        $("setupWelcomeSub").textContent = "Signing in to your desktop…";
+        $("lockLoginBox").hidden = true;
+        setTimeout(enterDesktop, 1200);
+      }
+      return;
+    }
+
+    $("boot").classList.add("step-setup");
+    $("setupAccountCard").hidden = false;
+    setTimeout(() => $("setupName").focus(), 60);
+  };
+
+  $("setupPass").addEventListener("input", () => {
+    const hasPass = $("setupPass").value.length > 0;
+    $("rowVerify").hidden = !hasPass;
+    $("rowHint").hidden = !hasPass;
+  });
+
+  [$("setupName"), $("setupPass"), $("setupVerify"), $("setupHint")].forEach(inp => {
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        $("setupAccountNext").click();
+      }
+    });
+  });
+
+  $("setupAccountNext").onclick = () => {
+    const nameVal = $("setupName").value.trim();
+    const passVal = $("setupPass").value;
+    const verifyVal = $("setupVerify").value;
+    const hintVal = $("setupHint").value.trim();
+    if (!nameVal) { notify("Please enter your full name."); $("setupName").focus(); return; }
+    if (passVal && passVal !== verifyVal) { notify("Passwords do not match."); $("setupVerify").focus(); return; }
+    setupData.name = nameVal;
+    setupData.pass = passVal;
+    setupData.hint = hintVal;
+
+    $("setupAccountCard").hidden = true;
+    $("setupLookCard").hidden = false;
+  };
+
+  $("setupLookCard").querySelectorAll(".look-choice").forEach(card => {
+    card.onclick = () => {
+      $("setupLookCard").querySelectorAll(".look-choice").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      setupData.theme = card.dataset.theme;
+    };
+  });
+
+  $("setupSwatches").querySelectorAll(".accent-dot").forEach(sw => {
+    sw.onclick = () => {
+      $("setupSwatches").querySelectorAll(".accent-dot").forEach(s => s.classList.remove("selected"));
+      sw.classList.add("selected");
+      setupData.acc = sw.dataset.acc;
+    };
+  });
+
+  $("setupLookNext").onclick = () => {
+    ls.set("sh0zy.theme", setupData.theme);
+    ls.set("sh0zy.acc", setupData.acc);
+    applySettings();
+
+    $("setupLookCard").hidden = true;
+    $("boot").classList.remove("step-setup");
+    $("boot").classList.add("step-welcome");
+    $("setupWelcomeCard").hidden = false;
+    $("lockLoginBox").hidden = true;
+    $("setupAvatarInitial").textContent = setupData.name.charAt(0).toUpperCase();
+    $("setupWelcomeTitle").textContent = `Welcome, ${setupData.name}`;
+    $("setupWelcomeSub").textContent = setupData.pass
+      ? "Your desktop will ask for your password each time it starts."
+      : "Your account is ready.";
+
+    ls.set("sift.account", JSON.stringify(setupData));
+    ls.set("sift.setupDone", "1");
+
+    setTimeout(enterDesktop, 1900);
+  };
+}
+
+/* ===== INIT ===== */
 async function init() {
   applySettings();
   try {
@@ -1944,29 +3049,21 @@ async function init() {
     apps.set("games", { key: "games", name: "Games", icon: "gamepad", file: "ofcgames.html" });
     apps.set("chat", { key: "chat", name: "Chat", icon: "chat", file: "chat.html" });
     apps.set("ai", { key: "ai", name: "AI", icon: "robot", file: "ai.html" });
-    pages = [
-      { name: "Games", icon: "gamepad", file: "ofcgames.html" },
-      { name: "Chat", icon: "chat", file: "chat.html" },
-      { name: "AI", icon: "robot", file: "ai.html" }
-    ];
   } else {
-    if (apps.has("games")) {
-      apps.get("games").file = "ofcgames.html";
-    }
+    if (apps.has("games")) apps.get("games").file = "ofcgames.html";
   }
+
   apps.set("paint", { key: "paint", name: "Paint", icon: "paint", native: "paint" });
   apps.set("calculator", { key: "calculator", name: "Calculator", icon: "calculator", native: "calculator" });
   apps.set("notes", { key: "notes", name: "Notes", icon: "notes", native: "notes" });
+  apps.set("weather", { key: "weather", name: "Weather", icon: "weather", native: "weather" });
+  apps.set("music", { key: "music", name: "Music", icon: "music", native: "music" });
+  apps.set("terminal", { key: "terminal", name: "Terminal", icon: "terminal", native: "terminal" });
+  apps.set("clock", { key: "clock", name: "Clock", icon: "clock", native: "clock" });
 
   buildDock();
   renderStartMenu();
-
-  const finishBoot = () => {
-    $("boot").classList.add("done");
-    document.body.classList.add("booted");
-  };
-  $("helloBtn").onclick = finishBoot;
-  setTimeout(finishBoot, 3400);
+  initSetupWizard();
 
   if (window.self === window.top && location.protocol !== "blob:") {
     if (ls.get("sh0zy.autoab") === "1") launchAboutBlank();
@@ -1978,3 +3075,4 @@ init();
 </script>
 </body>
 </html>
+Displaying sift-green-button-fixed-v2.html.
