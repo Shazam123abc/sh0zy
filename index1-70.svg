@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 700">
-  <foreignObject x="0" y="0" width="100%" height="100%">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
-      <div id="sift-scale-root" style="position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden">
-        
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SIFT macOS</title>
-<link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2307080c'/%3E%3Crect x='22' y='22' width='56' height='56' rx='14' transform='rotate(45 50 50)' fill='none' stroke='white' stroke-width='11'/%3E%3Crect x='39' y='39' width='22' height='22' rx='6' transform='rotate(45 50 50)' fill='white'/%3E%3C/svg%3E"/>
+<foreignObject x="0" y="0" width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;overflow:hidden"><div id="sift-scale-root" style="position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden"><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>SIFT macOS</title><link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2307080c'/%3E%3Crect x='22' y='22' width='56' height='56' rx='14' transform='rotate(45 50 50)' fill='none' stroke='white' stroke-width='11'/%3E%3Crect x='39' y='39' width='22' height='22' rx='6' transform='rotate(45 50 50)' fill='white'/%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Pacifico&amp;display=swap" rel="stylesheet"/>
@@ -911,7 +904,6 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 }
 </style>
 <style id="sift-70-scale">html,body{margin:0!important;width:100%;height:100%;overflow:hidden}#sift-scale-root{position:fixed;left:0;top:0;width:142.857142857vw;height:142.857142857vh;transform:scale(.7);transform-origin:top left;overflow:hidden}#sift-scale-root>*{box-sizing:border-box}</style>
-        
 
 <!-- AUTHENTIC MACOS "HELLO" STARTUP & SETUP WIZARD SCREEN -->
 <div id="boot" aria-hidden="true">
@@ -1241,7 +1233,7 @@ dialog input{width:100%;height:36px;margin-top:5px;padding:0 12px;border-radius:
 <!-- DOCS DIALOG -->
 <dialog id="doc"><h2 id="doc-t"></h2><div id="doc-b"></div><div class="row"><button type="button" class="ib" id="doc-x">Close</button></div></dialog>
 
-<script>
+<script><![CDATA[
 "use strict";
 const BASE = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
 const LINKS = { discord: "https://discord.com/invite/2zZTRMZPa4" };
@@ -1295,8 +1287,1785 @@ function launchAboutBlank() {
   if (!win) { notify("Popup blocked! Allow popups for about:blank."); return; }
   const doc = win.document;
   doc.open();
-  doc.write(`<!DOCTYPE html><html><head><title>${document.title || "My Drive - Google Drive"}</title><link rel="icon" href="${$("fav").href}"/><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden;background:#07080c}</style></head><body><iframe src="${location.href}" allowfullscreen="allowfullscreen"></iframe>
+  doc.write(`<!DOCTYPE html><html><head><title>${document.title || "My Drive - Google Drive"}</title><link rel="icon" href="${$("fav").href}"/><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden;background:#07080c}</style></head><body><iframe src="${location.href}" allowfullscreen="allowfullscreen"></iframe></body></html>`);
+  doc.close();
+  notify("Opened in about:blank tab!");
+}
+
+function launchBlob() {
+  try {
+    const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, "_blank");
+    if (!win) { notify("Popup blocked! Allow popups for Blob."); return; }
+    notify("Opened in Blob URL!");
+  } catch { notify("Could not create Blob session."); }
+}
+
+async function getPage(file, fresh) {
+  if (!/^[\w-]+\.html$/.test(file)) throw new Error("bad file");
+  if (!fresh && cache.has(file)) return cache.get(file);
+  const r = await fetch(BASE + file, { cache: fresh ? "reload" : "default" });
+  if (!r.ok) throw new Error(r.status);
+  const t = await r.text(); cache.set(file, t); return t;
+}
+
+function setWall() {
+  const custom = ls.get("sh0zy.bg");
+  const activeWall = custom || FORCED_WALLPAPER;
+  $("wall").style.backgroundImage = 'url("' + activeWall + '")';
+  if ($("boot-wall-blur")) {
+    $("boot-wall-blur").style.backgroundImage = 'url("' + activeWall + '")';
+  }
+}
+
+function applySettings() {
+  document.title = ls.get("sh0zy.title") || "SIFT";
+  const f = ls.get("sh0zy.icon");
+  const defaultBrandSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#07080c"/><rect x="22" y="22" width="56" height="56" rx="14" transform="rotate(45 50 50)" fill="none" stroke="white" stroke-width="11"/><rect x="39" y="39" width="22" height="22" rx="6" transform="rotate(45 50 50)" fill="white"/></svg>';
+  $("fav").href = !f ? ("data:image/svg+xml," + encodeURIComponent(defaultBrandSvg)) : /^https?:\/\//.test(f) ? f : "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + f.replace(/[<>&]/g, "") + "</text></svg>");
+
+  const acc = ls.get("sh0zy.acc") || "#2b7fff";
+  document.documentElement.style.setProperty("--acc", acc);
+  const theme = ls.get("sh0zy.theme") || "glass";
+  document.body.dataset.theme = theme;
+  $("day").style.display = ls.get("sh0zy.hidedate") === "1" ? "none" : "block";
+  setWall();
+}
+
+/* ===== FIRST-TIME GUIDE LOGIC ===== */
+const GUIDE_STEPS = [
+  {
+    icon: 'fa-solid fa-compass',
+    gradient: 'linear-gradient(135deg, #38bdf8, #0284c7)',
+    title: 'Welcome to SIFT macOS',
+    desc: 'Your clean, glassmorphic desktop workspace is ready. Drag windows by their titlebar, resize from the corner, or double-click desktop folders.',
+    tip: 'You can customize wallpapers, accent colors, and appearance anytime in Settings.'
+  },
+  {
+    icon: 'fa-solid fa-table-cells-large',
+    gradient: 'linear-gradient(135deg, #a855f7, #6366f1)',
+    title: 'Dock & Launchpad',
+    desc: 'Click any icon in the bottom Dock to launch Finder, Safari, Notes, Terminal, Music, and more—or open Launchpad to browse every app.',
+    tip: 'Active apps show a subtle indicator dot underneath their Dock icon.'
+  },
+  {
+    icon: 'fa-solid fa-magnifying-glass',
+    gradient: 'linear-gradient(135deg, #0ea5e9, #2563eb)',
+    title: 'Instant Spotlight Search',
+    desc: 'Press ⌘K (or Ctrl+K) anywhere, or click the search icon in the top-right menu bar to jump straight to apps or search the web.',
+    tip: 'Try typing "Terminal" or "Calculator" in Spotlight and press Enter.'
+  },
+  {
+    icon: 'fa-solid fa-sliders',
+    gradient: 'linear-gradient(135deg, #10b981, #059669)',
+    title: 'Control Center & Mission Control',
+    desc: 'Toggle Wi-Fi, Night Shift, screen brightness, and volume from the top-right Control Center, or open Mission Control to view all windows.',
+    tip: 'Click "Help" in the top menu bar anytime if you want to replay this guide.'
+  }
+];
+let currentGuideStep = 0;
+
+function renderGuideStep(idx) {
+  currentGuideStep = Math.max(0, Math.min(GUIDE_STEPS.length - 1, idx));
+  const step = GUIDE_STEPS[currentGuideStep];
+  $("guideStepBadge").textContent = `Step ${currentGuideStep + 1} of ${GUIDE_STEPS.length}`;
+  $("guideIconWrap").style.background = step.gradient;
+  $("guideIconWrap").innerHTML = `<i class="${step.icon}"></i>`;
+  $("guideTitle").textContent = step.title;
+  $("guideDesc").textContent = step.desc;
+  $("guideTipText").textContent = step.tip;
+
+  Array.from($("guideDots").children).forEach((dot, i) => {
+    if (i === currentGuideStep) {
+      dot.style.width = "18px";
+      dot.style.borderRadius = "3px";
+      dot.style.background = "var(--acc)";
+    } else {
+      dot.style.width = "6px";
+      dot.style.borderRadius = "50%";
+      dot.style.background = "rgba(255,255,255,.3)";
+    }
+  });
+
+  const backBtn = $("guideBackBtn"), nextBtn = $("guideNextBtn");
+  backBtn.hidden = currentGuideStep === 0;
+  if (currentGuideStep === GUIDE_STEPS.length - 1) {
+    nextBtn.innerHTML = 'Get Started <i class="fa-solid fa-check" style="font-size:10px;margin-left:4px"></i>';
+  } else {
+    nextBtn.innerHTML = 'Next <i class="fa-solid fa-arrow-right" style="font-size:10px;margin-left:4px"></i>';
+  }
+}
+
+function openFirstRunGuide(startStep = 0) {
+  renderGuideStep(startStep);
+  $("firstRunGuide").classList.add("open");
+}
+
+function closeFirstRunGuide() {
+  ls.set("sift.guideDone", "1");
+  $("firstRunGuide").classList.remove("open");
+}
+
+$("guideSkipBtn").onclick = closeFirstRunGuide;
+$("guideBackBtn").onclick = () => renderGuideStep(currentGuideStep - 1);
+$("guideNextBtn").onclick = () => {
+  if (currentGuideStep < GUIDE_STEPS.length - 1) renderGuideStep(currentGuideStep + 1);
+  else closeFirstRunGuide();
+};
+Array.from($("guideDots").children).forEach(dot => {
+  dot.onclick = () => renderGuideStep(parseInt(dot.dataset.step, 10));
+});
+$("helpReplayGuideBtn").onclick = () => {
+  $("helpMenu").hidden = true;
+  openFirstRunGuide(0);
+};
+
+/* ===== FULLSCREEN DOCK & TOP BAR AUTO-HIDE ===== */
+let fullscreenButtonMode = false;
+function syncFullscreenState() {
+  // Hide the desktop bars for an app window maximized with its green button
+  // or the in-app fullscreen control. Browser F11 alone should not trigger it.
+  const apiFullscreen = !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+  const maximizedWindow = !!document.querySelector(".win.max:not(.min)");
+  const active = apiFullscreen || fullscreenButtonMode || maximizedWindow;
+  document.body.classList.toggle("in-fullscreen", active);
+}
+["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"].forEach(ev => {
+  document.addEventListener(ev, syncFullscreenState);
+});
+window.addEventListener("resize", syncFullscreenState);
+window.addEventListener("orientationchange", syncFullscreenState);
+syncFullscreenState();
+
+/* ===== MISSION CONTROL WINDOW OVERVIEW (EXPOSE) ===== */
+function toggleExpose(force) {
+  const isOpen = expose.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
+  if (show) {
+    menu.hidden = true;
+    $("helpMenu").hidden = true;
+    toggleStartMenu(false);
+    toggleSpotlight(false);
+    renderExpose();
+    expose.classList.add("open");
+  } else {
+    expose.classList.remove("open");
+  }
+}
+
+function renderExpose() {
+  const list = [...wins.values()];
+  if (list.length === 0) {
+    $("exGrid").replaceChildren(
+      h("div", { style: "grid-column:1/-1;text-align:center;padding:48px 20px;color:rgba(255,255,255,.78);" },
+        h("i", { className: "fa-regular fa-window-restore", style: "font-size:38px;margin-bottom:12px;opacity:.55;display:block" }),
+        h("div", { style: "font-size:17px;font-weight:600;color:#fff", textContent: "No Open Windows" }),
+        h("div", { style: "font-size:12.5px;margin-top:4px;opacity:.7", textContent: "Open an app from the Dock or Launchpad to see it here." })
+      )
+    );
+    return;
+  }
+
+  $("exGrid").replaceChildren(...list.map((w, idx) => {
+    const item = h("div", { className: "ex-item" });
+    const closeBtn = h("button", {
+      type: "button",
+      className: "ex-close-btn",
+      title: "Close " + w.app.name,
+      "aria-label": "Close " + w.app.name,
+      onclick: e => {
+        e.stopPropagation();
+        closeWin(w);
+        renderExpose();
+      }
+    }, h("i", { className: "fa-solid fa-xmark" }));
+
+    const box = h("div", { className: "ex-win-box" });
+    const chrome = h("div", { className: "ex-win-chrome" },
+      h("span", { className: "ex-dot r" }),
+      h("span", { className: "ex-dot y" }),
+      h("span", { className: "ex-dot g" })
+    );
+    const body = h("div", { className: "ex-win-body" });
+    const srcW = Math.max(360, w.el.offsetWidth || 760);
+    const srcH = Math.max(260, w.el.offsetHeight || 520);
+    const stage = h("div", { className: "ex-preview-stage" });
+    stage.style.width = srcW + "px";
+    stage.style.height = srcH + "px";
+
+    const clone = w.el.cloneNode(true);
+    clone.classList.remove("min", "max");
+    clone.style.width = srcW + "px";
+    clone.style.height = srcH + "px";
+
+    const origCanvases = w.el.querySelectorAll("canvas");
+    const cloneCanvases = clone.querySelectorAll("canvas");
+    origCanvases.forEach((origC, ci) => {
+      const destC = cloneCanvases[ci];
+      if (destC && origC.width && origC.height) {
+        destC.width = origC.width;
+        destC.height = origC.height;
+        const ctx = destC.getContext("2d");
+        if (ctx) ctx.drawImage(origC, 0, 0);
+      }
+    });
+
+    clone.querySelectorAll("iframe").forEach(ifr => {
+      const fallback = h("div", {
+        style: `width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:${tileGradient(w.app.key, idx)};color:#fff;`
+      });
+      fallback.innerHTML = `<div style="font-size:68px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35))">${ico(w.app.icon || "settings")}</div><div style="font-size:22px;font-weight:700;letter-spacing:-.01em">${w.app.name}</div>`;
+      ifr.replaceWith(fallback);
+    });
+
+    stage.append(clone);
+    body.append(stage);
+    box.append(chrome, body);
+
+    const label = h("div", { className: "ex-label", textContent: w.app.name });
+    item.append(closeBtn, box, label);
+    item.onclick = () => {
+      toggleExpose(false);
+      focusWin(w);
+    };
+    return item;
+  }));
+
+  requestAnimationFrame(() => {
+    $("exGrid").querySelectorAll(".ex-win-body").forEach(body => {
+      const stage = body.querySelector(".ex-preview-stage");
+      if (!stage) return;
+      const bw = body.clientWidth || 280;
+      const bh = body.clientHeight || 170;
+      const sw = parseFloat(stage.style.width) || 760;
+      const sh = parseFloat(stage.style.height) || 520;
+      const scale = Math.min(bw / sw, bh / sh);
+      const offsetX = Math.max(0, (bw - sw * scale) / 2);
+      const offsetY = Math.max(0, (bh - sh * scale) / 2);
+      stage.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    });
+  });
+}
+
+/* ===== MACOS LAUNCHPAD START MENU ===== */
+function toggleStartMenu(force) {
+  const isOpen = startMenu.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
+  if (show) {
+    menu.hidden = true;
+    $("helpMenu").hidden = true;
+    toggleExpose(false);
+    toggleSpotlight(false);
+    $("smSearch").value = "";
+    renderStartMenu("");
+    startMenu.classList.add("open");
+    setTimeout(() => $("smSearch").focus(), 60);
+  } else {
+    startMenu.classList.remove("open");
+  }
+}
+
+const APP_TILE_GRADIENTS = [
+  "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)",
+  "linear-gradient(160deg, #60a5fa 0%, #2563eb 100%)",
+  "linear-gradient(160deg, #e879f9 0%, #8b5cf6 52%, #3b82f6 100%)",
+  "linear-gradient(160deg, #fb923c 0%, #ea580c 100%)",
+  "linear-gradient(160deg, #fb7185 0%, #e11d48 100%)",
+  "linear-gradient(160deg, #34d399 0%, #059669 100%)"
+];
+
+function tileGradient(k, idx = 0) {
+  const fixed = {
+    games: "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)",
+    chat: "linear-gradient(160deg, #60a5fa 0%, #2563eb 100%)",
+    ai: "linear-gradient(160deg, #e879f9 0%, #8b5cf6 52%, #3b82f6 100%)",
+    paint: "linear-gradient(160deg, #fb7185 0%, #e11d48 100%)",
+    calculator: "linear-gradient(160deg, #fb923c 0%, #ea580c 100%)",
+    notes: "linear-gradient(160deg, #facc15 0%, #eab308 100%)",
+    weather: "linear-gradient(160deg, #38bdf8 0%, #0369a1 100%)",
+    music: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)",
+    terminal: "linear-gradient(160deg, #334155 0%, #0f172a 100%)",
+    clock: "linear-gradient(160deg, #1e293b 0%, #090d16 100%)"
+  };
+  return fixed[k] || APP_TILE_GRADIENTS[idx % APP_TILE_GRADIENTS.length];
+}
+
+function renderStartMenu(filter = "") {
+  const q = filter.trim().toLowerCase();
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
+  const items = [
+    ...userApps.map((a, i) => ({
+      name: a.name, icon: a.icon, color: tileGradient(a.key, i),
+      fn: () => { toggleStartMenu(false); openApp(a.key, false); }
+    })),
+    { name: "Settings", icon: "settings", color: "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", fn: () => { toggleStartMenu(false); openSettings("preferences"); } },
+    { name: "Wallpaper", icon: "image", color: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)", fn: () => { toggleStartMenu(false); $("wp").showModal(); } },
+    { name: "About Blank", icon: "fa-solid fa-ghost", color: "linear-gradient(160deg, #a78bfa 0%, #7c3aed 100%)", fn: () => { toggleStartMenu(false); launchAboutBlank(); } },
+    { name: "Blob Mode", icon: "fa-solid fa-shield-halved", color: "linear-gradient(160deg, #34d399 0%, #059669 100%)", fn: () => { toggleStartMenu(false); launchBlob(); } },
+    { name: "Discord", icon: "discord", color: "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", fn: () => { toggleStartMenu(false); window.open(LINKS.discord, "_blank", "noopener"); } }
+  ].filter(item => !q || item.name.toLowerCase().includes(q));
+
+  $("lpGrid").replaceChildren(...items.map(item => {
+    const b = h("button", { type: "button", className: "lp-item", onclick: item.fn });
+    b.style.setProperty("--c", item.color);
+    b.innerHTML = `<div class="lp-ico">${ico(item.icon)}</div><span>${item.name}</span>`;
+    return b;
+  }));
+}
+
+$("smSearch").oninput = e => renderStartMenu(e.target.value);
+startMenu.addEventListener("pointerdown", e => {
+  if (e.target === startMenu || e.target.classList.contains("lp-inner") || e.target.classList.contains("lp-grid")) {
+    toggleStartMenu(false);
+  }
+});
+expose.addEventListener("pointerdown", e => {
+  if (e.target === expose || e.target === $("exGrid")) {
+    toggleExpose(false);
+  }
+});
+
+/* ===== SPOTLIGHT ===== */
+function toggleSpotlight(force) {
+  const isOpen = spotlight.classList.contains("open");
+  const show = typeof force === "boolean" ? force : !isOpen;
+  if (show) {
+    menu.hidden = true;
+    $("helpMenu").hidden = true;
+    toggleStartMenu(false);
+    toggleExpose(false);
+    $("spInput").value = "";
+    spIndex = 0;
+    renderSpotlight("");
+    spotlight.classList.add("open");
+    setTimeout(() => $("spInput").focus(), 30);
+  } else {
+    spotlight.classList.remove("open");
+  }
+}
+
+function renderSpotlight(rawQuery = "") {
+  const q = rawQuery.trim();
+  const ql = q.toLowerCase();
+  if (!q) {
+    spItems = [];
+    $("spResults").replaceChildren();
+    return;
+  }
+
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
+  const catalog = [
+    ...userApps.map((a, i) => ({
+      name: a.name,
+      cat: "Application",
+      icon: a.icon,
+      color: tileGradient(a.key, i),
+      fn: () => { toggleSpotlight(false); openApp(a.key, false); }
+    })),
+    { name: "Settings", cat: "Application", icon: "settings", color: "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", fn: () => { toggleSpotlight(false); openSettings("preferences"); } },
+    { name: "Wallpaper", cat: "System", icon: "image", color: "linear-gradient(160deg, #f43f5e 0%, #be123c 100%)", fn: () => { toggleSpotlight(false); $("wp").showModal(); } },
+    { name: "Mission Control", cat: "System", icon: "fa-solid fa-window-restore", color: "linear-gradient(160deg, #38bdf8 0%, #0284c7 100%)", fn: () => { toggleSpotlight(false); toggleExpose(true); } },
+    { name: "About Blank", cat: "System", icon: "fa-solid fa-ghost", color: "linear-gradient(160deg, #a78bfa 0%, #7c3aed 100%)", fn: () => { toggleSpotlight(false); launchAboutBlank(); } },
+    { name: "Blob Mode", cat: "System", icon: "fa-solid fa-shield-halved", color: "linear-gradient(160deg, #34d399 0%, #059669 100%)", fn: () => { toggleSpotlight(false); launchBlob(); } },
+    { name: "Discord", cat: "Application", icon: "discord", color: "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", fn: () => { toggleSpotlight(false); window.open(LINKS.discord, "_blank", "noopener"); } }
+  ];
+
+  const matched = catalog
+    .filter(item => item.name.toLowerCase().includes(ql))
+    .sort((a, b) => {
+      const aStarts = a.name.toLowerCase().startsWith(ql) ? 0 : 1;
+      const bStarts = b.name.toLowerCase().startsWith(ql) ? 0 : 1;
+      return aStarts - bStarts;
+    });
+
+  spItems = [
+    ...matched,
+    {
+      name: `Search the web for “${q}”`,
+      cat: "Safari",
+      isSafari: true,
+      fn: () => {
+        toggleSpotlight(false);
+        window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank", "noopener");
+      }
+    }
+  ];
+
+  if (spIndex >= spItems.length) spIndex = 0;
+
+  $("spResults").replaceChildren(...spItems.map((item, idx) => {
+    const row = h("button", {
+      type: "button",
+      className: "sp-row" + (idx === spIndex ? " active" : ""),
+      onclick: item.fn,
+      onmouseenter: () => {
+        if (spIndex !== idx) {
+          spIndex = idx;
+          $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+        }
+      }
+    });
+
+    const icoEl = h("span", { className: "sp-ico" + (item.isSafari ? " safari" : "") });
+    if (item.isSafari) {
+      icoEl.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="10" fill="#2563eb"/><polygon points="15.5,8.5 13.2,13.2 8.5,15.5 10.8,10.8" fill="#ef4444"/><polygon points="15.5,8.5 13.2,13.2 10.8,10.8" fill="#ffffff"/></svg>`;
+    } else {
+      icoEl.style.setProperty("--sp-c", item.color);
+      icoEl.innerHTML = ico(item.icon);
+    }
+
+    row.append(
+      icoEl,
+      h("span", { className: "sp-name", textContent: item.name }),
+      h("span", { className: "sp-cat", textContent: item.cat })
+    );
+    return row;
+  }));
+}
+
+$("spInput").addEventListener("input", e => {
+  spIndex = 0;
+  renderSpotlight(e.target.value);
+});
+$("spInput").addEventListener("keydown", e => {
+  if (!spItems.length) return;
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    spIndex = (spIndex + 1) % spItems.length;
+    $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    spIndex = (spIndex - 1 + spItems.length) % spItems.length;
+    $("spResults").querySelectorAll(".sp-row").forEach((r, i) => r.classList.toggle("active", i === spIndex));
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    if (spItems[spIndex]) spItems[spIndex].fn();
+  }
+});
+spotlight.addEventListener("pointerdown", e => {
+  if (e.target === spotlight) toggleSpotlight(false);
+});
+
+/* ===== SETTINGS ===== */
+function openSettings(initialTab = "preferences") {
+  if (wins.has("settings-win")) {
+    const existing = wins.get("settings-win");
+    focusWin(existing);
+    existing.el.querySelector('.st-nav[data-tab="' + initialTab + '"]')?.click();
+    return;
+  }
+
+  const el = h("section", { className: "win" });
+  el.setAttribute("aria-label", "Settings");
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt"><i class="ic fa-solid fa-gear"></i><b>Settings</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="st-shell">
+        <aside class="st-side">
+          <button type="button" class="st-nav active" data-tab="preferences"><i class="ic fa-solid fa-sliders"></i>Preferences</button>
+          <button type="button" class="st-nav" data-tab="account"><i class="ic fa-solid fa-user-circle"></i>Account</button>
+          <button type="button" class="st-nav" data-tab="display"><i class="ic fa-solid fa-sun"></i>Display</button>
+          <button type="button" class="st-nav" data-tab="sound"><i class="ic fa-solid fa-volume-high"></i>Sound</button>
+          <button type="button" class="st-nav" data-tab="network"><i class="ic fa-solid fa-wifi"></i>Network</button>
+          <button type="button" class="st-nav" data-tab="notifications"><i class="ic fa-regular fa-bell"></i>Notifications</button>
+          <button type="button" class="st-nav" data-tab="datetime"><i class="ic fa-regular fa-clock"></i>Date &amp; Time</button>
+          <button type="button" class="st-nav" data-tab="access"><i class="ic fa-solid fa-universal-access"></i>Accessibility</button>
+          <button type="button" class="st-nav" data-tab="cloaking"><i class="ic fa-solid fa-user-secret"></i>Tab Cloaker</button>
+          <button type="button" class="st-nav" data-tab="themes"><i class="ic fa-solid fa-palette"></i>Themes</button>
+          <button type="button" class="st-nav" data-tab="background"><i class="ic fa-regular fa-image"></i>Background</button>
+          <button type="button" class="st-nav" data-tab="data"><i class="ic fa-solid fa-database"></i>Data</button>
+        </aside>
+        <div class="st-main" id="stMain"></div>
       </div>
     </div>
-  </foreignObject>
+    <i class="rs"></i>
+  `;
+  const W = Math.min(760, Math.round(innerWidth * 0.86)), H = Math.min(540, Math.round(innerHeight * 0.8));
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2)) + "px", top: Math.max(44, Math.round((innerHeight - H) / 2)) + "px" });
+  const main = el.querySelector("#stMain");
+
+  function renderTab(tab) {
+    el.querySelectorAll(".st-nav").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+    if (tab === "preferences") {
+      main.innerHTML = `
+        <h2 class="st-heading">Preferences</h2>
+        <p class="st-sub">Stealth launch modes, desktop widgets, and quick disguises.</p>
+        <div class="st-grid-2">
+          <div class="st-card">
+            <h3><i class="fa-solid fa-ghost" style="color:var(--acc)"></i> About Blank</h3>
+            <p>Opens the OS inside an invisible <code>about:blank</code> frame.</p>
+            <div class="st-btn-row"><button type="button" class="ib primary" id="st-ab">Launch</button></div>
+          </div>
+          <div class="st-card">
+            <h3><i class="fa-solid fa-shield-halved" style="color:var(--acc2)"></i> Blob</h3>
+            <p>Creates a temporary encrypted <code>blob:</code> session URL.</p>
+            <div class="st-btn-row"><button type="button" class="ib primary" id="st-blob">Launch</button></div>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-compass" style="color:#38bdf8"></i> Desktop Quick Guide</h3>
+          <p>Replay the interactive 4-step walkthrough anytime.</p>
+          <div class="st-btn-row"><button type="button" class="ib primary" id="st-replay-guide"><i class="fa-solid fa-sparkles"></i> Open Guide</button></div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-calendar-day" style="color:#38bdf8"></i> Desktop Clock &amp; Date</h3>
+          <p>Toggle the large center date display on your wallpaper.</p>
+          <div class="st-btn-row"><button type="button" class="ib" id="st-toggle-date">${ls.get("sh0zy.hidedate") === "1" ? "Show Date Hero" : "Hide Date Hero"}</button></div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-masks-theater" style="color:#f59e0b"></i> Tab Presets</h3>
+          <p>Instantly disguise your browser tab title and icon.</p>
+          <div class="st-presets" id="stPresets"></div>
+        </div>
+      `;
+      main.querySelector("#st-ab").onclick = launchAboutBlank;
+      main.querySelector("#st-blob").onclick = launchBlob;
+      main.querySelector("#st-replay-guide").onclick = () => openFirstRunGuide(0);
+      main.querySelector("#st-toggle-date").onclick = () => {
+        const next = ls.get("sh0zy.hidedate") === "1" ? "0" : "1";
+        ls.set("sh0zy.hidedate", next);
+        applySettings();
+        renderTab("preferences");
+      };
+      const pBox = main.querySelector("#stPresets");
+      TAB_PRESETS.forEach(p => {
+        const btn = h("button", { type: "button", className: "st-preset-chip" });
+        btn.innerHTML = `<img src="${p.icon}" alt="" onerror="this.style.display='none'"/><span>${p.name}</span>`;
+        btn.onclick = () => { ls.set("sh0zy.title", p.title); ls.set("sh0zy.icon", p.icon); applySettings(); notify(`Tab disguised as ${p.name}`); };
+        pBox.append(btn);
+      });
+    } else if (tab === "account") {
+      let accObj = { name: "User", hint: "" };
+      try { accObj = JSON.parse(ls.get("sift.account") || '{"name":"User","hint":""}'); } catch {}
+      main.innerHTML = `
+        <h2 class="st-heading">Computer Account</h2>
+        <p class="st-sub">Manage your local browser user profile or re-run the Setup Assistant.</p>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-id-card" style="color:var(--acc)"></i> Signed in as ${accObj.name || "User"}</h3>
+          <p>${accObj.hint ? "Password hint: " + accObj.hint : "Local browser account configured."}</p>
+          <div class="st-btn-row">
+            <button type="button" class="ib primary" id="st-rerun-setup"><i class="fa-solid fa-wand-magic-sparkles"></i> Re-run Hello Setup</button>
+          </div>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-signature" style="color:var(--acc2)"></i> Display name</h3>
+          <p>This is the name shown in the menu bar and on the lock screen.</p>
+          <div class="st-field" style="margin-top:0"><label for="st-name">Name</label><input id="st-name" maxlength="24"/></div>
+          <div class="st-btn-row" style="margin-top:14px"><button type="button" class="ib primary" id="st-name-save">Save name</button></div>
+        </div>
+      `;
+      main.querySelector("#st-name").value = accObj.name || "User";
+      main.querySelector("#st-name-save").onclick = () => {
+        accObj.name = main.querySelector("#st-name").value.trim() || "User";
+        ls.set("sift.account", JSON.stringify(accObj));
+        refreshUser(); renderTab("account"); notify("Name updated");
+      };
+      main.querySelector("#st-rerun-setup").onclick = () => {
+        ls.del("sift.setupDone");
+        location.reload();
+      };
+    } else if (tab === "cloaking") {
+      main.innerHTML = `
+        <h2 class="st-heading">Tab Cloaker</h2>
+        <p class="st-sub">Customize your tab's appearance.</p>
+        <div class="st-card">
+          <div class="st-field"><label>Custom Tab Title</label><input id="st-c-title" value="${ls.get("sh0zy.title") || "SIFT"}"/></div>
+          <div class="st-field"><label>Custom Favicon URL</label><input id="st-c-icon" value="${ls.get("sh0zy.icon")}"/></div>
+          <div class="st-btn-row" style="margin-top:14px"><button type="button" class="ib primary" id="st-c-save">Apply</button></div>
+        </div>
+      `;
+      main.querySelector("#st-c-save").onclick = () => {
+        ls.set("sh0zy.title", main.querySelector("#st-c-title").value.trim());
+        ls.set("sh0zy.icon", main.querySelector("#st-c-icon").value.trim());
+        applySettings(); notify("Tab identity updated!");
+      };
+    } else if (tab === "themes") {
+      const cur = ls.get("sh0zy.theme") || "glass";
+      main.innerHTML = `
+        <h2 class="st-heading">Themes &amp; Accent</h2>
+        <p class="st-sub">Switch visual theme and system accent highlight.</p>
+        <div class="theme-cards">
+          <button type="button" class="theme-card ${cur==="glass"?"selected":""}" data-th="glass"><div class="theme-swatch" style="background:linear-gradient(135deg,#1e293b,#6a95ff)"></div><b>macOS Glass</b></button>
+          <button type="button" class="theme-card ${cur==="obsidian"?"selected":""}" data-th="obsidian"><div class="theme-swatch" style="background:linear-gradient(135deg,#090a0f,#1e293b)"></div><b>Obsidian</b></button>
+          <button type="button" class="theme-card ${cur==="crystal"?"selected":""}" data-th="crystal"><div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc,#cbd5e1)"></div><b>Crystal Light</b></button>
+        </div>
+        <div class="st-card">
+          <h3><i class="fa-solid fa-droplet" style="color:var(--acc)"></i> Accent Color</h3>
+          <p>Pick an accent tint for buttons, indicators, and highlights.</p>
+          <div class="st-btn-row" id="stAccRow"></div>
+        </div>
+      `;
+      main.querySelectorAll(".theme-card").forEach(btn => {
+        btn.onclick = () => {
+          ls.set("sh0zy.theme", btn.dataset.th);
+          applySettings();
+          renderTab("themes");
+        };
+      });
+      const accColors = ["#2b7fff", "#9333ea", "#e11d48", "#ea580c", "#16a34a", "#64748b"];
+      accColors.forEach(c => {
+        const dot = h("button", {
+          type: "button",
+          className: "accent-dot" + ((ls.get("sh0zy.acc") || "#2b7fff") === c ? " selected" : ""),
+          onclick: () => { ls.set("sh0zy.acc", c); applySettings(); renderTab("themes"); }
+        });
+        dot.style.background = c;
+        dot.innerHTML = '<i class="fa-solid fa-check"></i>';
+        main.querySelector("#stAccRow").append(dot);
+      });
+    } else if (tab === "background") {
+      main.innerHTML = `
+        <h2 class="st-heading">Wallpaper</h2>
+        <p class="st-sub">Choose a preset wallpaper or open the custom uploader.</p>
+        <div class="wp-grid" id="stWpGrid"></div>
+        <div class="st-btn-row" style="margin-top:14px">
+          <button type="button" class="ib primary" id="stOpenWp"><i class="fa-solid fa-upload"></i> Custom Image / Link</button>
+        </div>
+      `;
+      main.querySelector("#stOpenWp").onclick = () => $("wp").showModal();
+      const wg = main.querySelector("#stWpGrid");
+      PRESET_WALLPAPERS.forEach(w => {
+        const item = h("button", { type: "button", className: "wp-item" });
+        item.style.backgroundImage = `url("${w.url}")`;
+        item.innerHTML = `<span>${w.name}</span>`;
+        item.onclick = () => { ls.set("sh0zy.bg", w.url); applySettings(); notify(`Wallpaper set to ${w.name}`); };
+        wg.append(item);
+      });
+    } else if (SYS_TABS[tab]) {
+      SYS_TABS[tab](main);
+    } else if (tab === "data") {
+      main.innerHTML = `
+        <h2 class="st-heading">Data</h2>
+        <p class="st-sub">Clear cached pages, notes, and local settings.</p>
+        <div class="st-card">
+          <div class="st-btn-row">
+            <button type="button" class="ib" id="stClearCache"><i class="fa-solid fa-broom"></i> Clear App Cache</button>
+            <button type="button" class="ib" id="stResetAll"><i class="fa-solid fa-rotate-left"></i> Factory Reset OS</button>
+          </div>
+        </div>
+      `;
+      main.querySelector("#stClearCache").onclick = () => { cache.clear(); notify("Page cache cleared!"); };
+      main.querySelector("#stResetAll").onclick = () => { localStorage.clear(); location.reload(); };
+    }
+  }
+
+  el.querySelectorAll(".st-nav").forEach(btn => btn.onclick = () => renderTab(btn.dataset.tab));
+  renderTab(initialTab);
+
+  const wObj = { app: { key: "settings-win", name: "Settings" }, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set("settings-win", wObj); focusWin(wObj);
+}
+
+/* ===== NATIVE APPS ===== */
+function attachWindowControls(el, wObj) {
+  const tb = el.querySelector(".tb"), rs = el.querySelector(".rs");
+  el.addEventListener("pointerdown", () => focusWin(wObj), true);
+  tb.addEventListener("dblclick", e => { if (!e.target.closest("button")) toggleMax(wObj); });
+  el.querySelector(".b-m").onclick = () => minimize(wObj);
+  el.querySelector(".b-x").onclick = () => toggleMax(wObj);
+  el.querySelector(".b-c").onclick = () => closeWin(wObj);
+
+  const drag = (handle, start, move) => handle.addEventListener("pointerdown", e => {
+    if (e.button || e.target.closest("button") || el.classList.contains("max")) return;
+    const s = start(e); handle.setPointerCapture(e.pointerId); desk.classList.add("drag");
+    const mv = ev => move(ev, s), up = () => { handle.removeEventListener("pointermove", mv); handle.removeEventListener("pointerup", up); desk.classList.remove("drag"); };
+    handle.addEventListener("pointermove", mv); handle.addEventListener("pointerup", up);
+  });
+  drag(tb, e => ({ x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop }), (e, s) => {
+    el.style.left = Math.min(innerWidth - 80, Math.max(80 - el.offsetWidth, s.l + e.clientX - s.x)) + "px";
+    el.style.top = Math.min(innerHeight - 60, Math.max(32, s.t + e.clientY - s.y)) + "px";
+  });
+  if (rs) {
+    drag(rs, e => ({ x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }), (e, s) => {
+      el.style.width = Math.max(320, s.w + e.clientX - s.x) + "px";
+      el.style.height = Math.max(260, s.h + e.clientY - s.y) + "px";
+    });
+  }
+}
+
+function openCalculator(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.style.minWidth = "300px";
+  el.style.minHeight = "430px";
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Calculator</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="calc-app">
+        <div class="calc-disp">
+          <div class="calc-expr" id="cExpr"></div>
+          <div class="calc-val" id="cVal">0</div>
+        </div>
+        <div class="calc-grid">
+          <button type="button" class="calc-btn fn" data-k="AC">AC</button>
+          <button type="button" class="calc-btn fn" data-k="NEG">+/-</button>
+          <button type="button" class="calc-btn fn" data-k="PCT">%</button>
+          <button type="button" class="calc-btn op" data-k="/">÷</button>
+          <button type="button" class="calc-btn" data-k="7">7</button>
+          <button type="button" class="calc-btn" data-k="8">8</button>
+          <button type="button" class="calc-btn" data-k="9">9</button>
+          <button type="button" class="calc-btn op" data-k="*">×</button>
+          <button type="button" class="calc-btn" data-k="4">4</button>
+          <button type="button" class="calc-btn" data-k="5">5</button>
+          <button type="button" class="calc-btn" data-k="6">6</button>
+          <button type="button" class="calc-btn op" data-k="-">−</button>
+          <button type="button" class="calc-btn" data-k="1">1</button>
+          <button type="button" class="calc-btn" data-k="2">2</button>
+          <button type="button" class="calc-btn" data-k="3">3</button>
+          <button type="button" class="calc-btn op" data-k="+">+</button>
+          <button type="button" class="calc-btn zero" data-k="0">0</button>
+          <button type="button" class="calc-btn" data-k=".">.</button>
+          <button type="button" class="calc-btn op" data-k="=">=</button>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const W = 320, H = 460;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 70 + n * 24) + "px" });
+
+  let cur = "0", prev = null, op = null, fresh = false;
+  const valEl = el.querySelector("#cVal"), exprEl = el.querySelector("#cExpr");
+  const render = () => {
+    valEl.textContent = cur;
+    exprEl.textContent = prev !== null && op ? `${prev} ${op}` : "";
+  };
+  const compute = (a, b, operator) => {
+    if (operator === "+") return a + b;
+    if (operator === "-") return a - b;
+    if (operator === "*") return a * b;
+    if (operator === "/") return b === 0 ? "Error" : a / b;
+    return b;
+  };
+
+  el.querySelectorAll(".calc-btn").forEach(btn => {
+    btn.onclick = () => {
+      const k = btn.dataset.k;
+      if (/^[0-9]$/.test(k)) {
+        cur = (cur === "0" || cur === "Error" || fresh) ? k : cur + k;
+        fresh = false;
+      } else if (k === ".") {
+        if (fresh || cur === "Error") { cur = "0."; fresh = false; }
+        else if (!cur.includes(".")) cur += ".";
+      } else if (k === "AC") {
+        cur = "0"; prev = null; op = null; fresh = false;
+      } else if (k === "NEG") {
+        if (cur !== "0" && cur !== "Error") cur = String(parseFloat(cur) * -1);
+      } else if (k === "PCT") {
+        if (cur !== "Error") cur = String(parseFloat(cur) / 100);
+      } else if (["+", "-", "*", "/"].includes(k)) {
+        if (prev !== null && op && !fresh) {
+          const res = compute(parseFloat(prev), parseFloat(cur), op);
+          cur = res === "Error" ? "Error" : String(Number(res.toFixed(8)));
+        }
+        prev = cur; op = k; fresh = true;
+      } else if (k === "=" && prev !== null && op) {
+        const res = compute(parseFloat(prev), parseFloat(cur), op);
+        cur = res === "Error" ? "Error" : String(Number(res.toFixed(8)));
+        prev = null; op = null; fresh = true;
+      }
+      render();
+    };
+  });
+
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openNotes(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Notes</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="notes-app">
+        <aside class="notes-side">
+          <div style="display:flex;gap:6px">
+            <button type="button" class="ib primary" id="nAdd" style="flex:1;height:30px;font-size:12px"><i class="fa-solid fa-plus"></i> New</button>
+            <button type="button" class="ib" id="nDel" style="height:30px;padding:0 10px" title="Delete Note"><i class="fa-solid fa-trash"></i></button>
+          </div>
+          <div class="notes-list" id="nList"></div>
+        </aside>
+        <div class="notes-editor">
+          <input class="notes-title-in" id="nTitle" placeholder="Note Title"/>
+          <textarea class="notes-body-in" id="nBody" placeholder="Start typing your note..."></textarea>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const W = Math.min(720, Math.round(innerWidth * 0.82)), H = Math.min(480, Math.round(innerHeight * 0.72));
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 62 + n * 24) + "px" });
+
+  let notes = [];
+  try { notes = JSON.parse(ls.get("sh0zy.notes") || "[]"); } catch {}
+  if (!notes.length) {
+    notes = [{ id: Date.now(), title: "Welcome to SIFT Notes", body: "Jot down quick ideas, homework reminders, or links here. Everything saves automatically in your browser!" }];
+  }
+  let activeId = notes[0].id;
+  const saveNotes = () => ls.set("sh0zy.notes", JSON.stringify(notes));
+
+  const listEl = el.querySelector("#nList"), titleIn = el.querySelector("#nTitle"), bodyIn = el.querySelector("#nBody");
+  function renderNotes() {
+    const activeNote = notes.find(x => x.id === activeId) || notes[0];
+    if (activeNote) {
+      activeId = activeNote.id;
+      titleIn.value = activeNote.title;
+      bodyIn.value = activeNote.body;
+    }
+    listEl.replaceChildren(...notes.map(item => {
+      const btn = h("button", {
+        type: "button",
+        className: "note-item" + (item.id === activeId ? " active" : ""),
+        onclick: () => { activeId = item.id; renderNotes(); }
+      });
+      btn.append(
+        h("b", { textContent: item.title || "Untitled Note" }),
+        h("small", { textContent: item.body || "No additional text" })
+      );
+      return btn;
+    }));
+  }
+
+  titleIn.oninput = () => {
+    const cur = notes.find(x => x.id === activeId);
+    if (cur) { cur.title = titleIn.value; saveNotes(); renderNotes(); }
+  };
+  bodyIn.oninput = () => {
+    const cur = notes.find(x => x.id === activeId);
+    if (cur) { cur.body = bodyIn.value; saveNotes(); renderNotes(); }
+  };
+  el.querySelector("#nAdd").onclick = () => {
+    const freshNote = { id: Date.now(), title: "New Note", body: "" };
+    notes.unshift(freshNote);
+    activeId = freshNote.id;
+    saveNotes();
+    renderNotes();
+    titleIn.focus();
+  };
+  el.querySelector("#nDel").onclick = () => {
+    if (notes.length <= 1) {
+      notes[0].title = "New Note"; notes[0].body = "";
+    } else {
+      notes = notes.filter(x => x.id !== activeId);
+      activeId = notes[0].id;
+    }
+    saveNotes();
+    renderNotes();
+  };
+  renderNotes();
+
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openPaint(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  const colors = ["#111827", "#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#a855f7", "#ffffff"];
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Paint</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="paint-app">
+        <div class="paint-bar">
+          <div id="pSwatches" style="display:flex;gap:6px;align-items:center"></div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);margin-left:8px">
+            Size <input id="pSize" type="range" min="2" max="36" value="5" style="width:84px"/>
+          </label>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button type="button" class="ib" id="pClear" style="height:28px;padding:0 10px;font-size:12px">Clear</button>
+            <button type="button" class="ib primary" id="pSave" style="height:28px;padding:0 10px;font-size:12px">Save PNG</button>
+          </div>
+        </div>
+        <div class="paint-canvas-wrap" id="pWrap">
+          <canvas id="pCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const W = Math.min(780, Math.round(innerWidth * 0.84)), H = Math.min(520, Math.round(innerHeight * 0.76));
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 58 + n * 24) + "px" });
+
+  let brushColor = "#111827", brushSize = 5, drawing = false;
+  const swBox = el.querySelector("#pSwatches");
+  colors.forEach((c, idx) => {
+    const sw = h("button", {
+      type: "button",
+      className: "paint-swatch" + (idx === 0 ? " active" : ""),
+      title: c === "#ffffff" ? "Eraser" : c,
+      onclick: () => {
+        brushColor = c;
+        swBox.querySelectorAll(".paint-swatch").forEach(s => s.classList.remove("active"));
+        sw.classList.add("active");
+      }
+    });
+    sw.style.background = c;
+    swBox.append(sw);
+  });
+
+  el.querySelector("#pSize").oninput = e => { brushSize = Number(e.target.value); };
+
+  const wrap = el.querySelector("#pWrap"), canvas = el.querySelector("#pCanvas"), ctx = canvas.getContext("2d");
+  const resizeCanvas = () => {
+    const prevImg = canvas.width && canvas.height ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
+    canvas.width = wrap.clientWidth || 740;
+    canvas.height = wrap.clientHeight || 420;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (prevImg) ctx.putImageData(prevImg, 0, 0);
+  };
+
+  const getPos = e => {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
+  canvas.addEventListener("pointerdown", e => {
+    drawing = true;
+    canvas.setPointerCapture(e.pointerId);
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = brushColor;
+    ctx.lineWidth = brushSize;
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (!drawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+  const endDraw = () => { drawing = false; };
+  canvas.addEventListener("pointerup", endDraw);
+  canvas.addEventListener("pointercancel", endDraw);
+
+  el.querySelector("#pClear").onclick = () => {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+  el.querySelector("#pSave").onclick = () => {
+    const a = document.createElement("a");
+    a.download = "sift-drawing.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    notify("Saved drawing as PNG!");
+  };
+
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+  requestAnimationFrame(resizeCanvas);
+}
+
+function openWeather(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Weather</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="weather-app">
+        <div class="weather-main">
+          <i class="fa-solid fa-cloud-sun"></i>
+          <div class="weather-temp">72°</div>
+          <div class="weather-cond">Partly Cloudy</div>
+          <div class="weather-loc">Cupertino, California</div>
+        </div>
+        <div class="weather-grid">
+          <div class="weather-card"><small>HUMIDITY</small><b>48%</b></div>
+          <div class="weather-card"><small>WIND</small><b>9 mph</b></div>
+          <div class="weather-card"><small>UV INDEX</small><b>5 Mod</b></div>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const W = 460, H = 420;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openMusic(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  const tracks = MEDIA.tracks;
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Music</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="music-app">
+        <div class="music-art"><i class="fa-solid fa-music"></i></div>
+        <div class="music-meta">
+          <h3 id="mTitle">${tracks[MEDIA.idx].title}</h3>
+          <p id="mArtist">${tracks[MEDIA.idx].artist}</p>
+        </div>
+        <div class="music-controls">
+          <button type="button" class="music-btn" id="mPrev" aria-label="Previous"><i class="fa-solid fa-backward-step"></i></button>
+          <button type="button" class="music-btn play" id="mPlay" aria-label="Play"><i class="fa-solid fa-play"></i></button>
+          <button type="button" class="music-btn" id="mNext" aria-label="Next"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const paint = () => {
+    el.querySelector("#mTitle").textContent = tracks[MEDIA.idx].title;
+    el.querySelector("#mArtist").textContent = tracks[MEDIA.idx].artist;
+    el.querySelector("#mPlay").innerHTML = MEDIA.playing ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+  };
+  const syncTrack = () => { if (!el.isConnected) { MEDIA.subs.delete(syncTrack); return; } paint(); };
+  MEDIA.subs.add(syncTrack); paint();
+  el.querySelector("#mPlay").onclick = () => MEDIA.toggle();
+  el.querySelector("#mPrev").onclick = () => MEDIA.prev();
+  el.querySelector("#mNext").onclick = () => MEDIA.next();
+
+  const W = 400, H = 440;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+function openTerminal(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Terminal</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="term-app">
+        <div class="term-output" id="tOut">
+          <div>SIFT Darwin Kernel v15.1 — Type <b>help</b> for commands.</div>
+        </div>
+        <div class="term-input-row">
+          <span>sift@macbook ~ %</span>
+          <input id="tIn" type="text" autocomplete="off" spellcheck="false"/>
+        </div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const out = el.querySelector("#tOut"), inp = el.querySelector("#tIn");
+  const print = txt => { out.append(h("div", { textContent: txt })); out.scrollTop = out.scrollHeight; };
+  inp.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const cmd = inp.value.trim();
+    inp.value = "";
+    if (!cmd) return;
+    print(`sift@macbook ~ % ${cmd}`);
+    if (cmd === "help") print("Available commands: help, whoami, date, clear, apps, setup");
+    else if (cmd === "whoami") {
+      let nm = "user";
+      try { nm = JSON.parse(ls.get("sift.account") || "{}").name || "user"; } catch {}
+      print(nm);
+    } else if (cmd === "date") print(new Date().toString());
+    else if (cmd === "apps") print([...apps.keys()].join(", "));
+    else if (cmd === "setup") { ls.del("sift.setupDone"); location.reload(); }
+    else if (cmd === "clear") out.replaceChildren();
+    else print(`zsh: command not found: ${cmd}`);
+  });
+
+  const W = 580, H = 380;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+  setTimeout(() => inp.focus(), 40);
+}
+
+function openClockApp(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt">${ico(app.icon)}<b>Clock</b></span>
+      <span></span>
+    </div>
+    <div class="wbody">
+      <div class="clock-app">
+        <div class="clock-big" id="clkBig"></div>
+        <div class="clock-sub" id="clkSub"></div>
+      </div>
+    </div>
+    <i class="rs"></i>
+  `;
+  const updateClk = () => {
+    const now = new Date();
+    el.querySelector("#clkBig").textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    el.querySelector("#clkSub").textContent = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  };
+  updateClk();
+  const timer = setInterval(() => {
+    if (!document.body.contains(el)) { clearInterval(timer); return; }
+    updateClk();
+  }, 1000);
+
+  const W = 440, H = 300;
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(12, Math.round((innerWidth - W) / 2) + n * 24) + "px", top: Math.max(44, 64 + n * 24) + "px" });
+  const wObj = { app, el, min: false };
+  attachWindowControls(el, wObj);
+  desk.append(el); wins.set(app.key, wObj); focusWin(wObj);
+}
+
+/* ===== WINDOW MANAGER ===== */
+const topWin = () => [...wins.values()].filter(x => !x.min).sort((a, b) => a.el.style.zIndex - b.el.style.zIndex).pop() || null;
+function paintDock() {
+  dockBtns.forEach((b, k) => {
+    b.classList.toggle("open", wins.has(k));
+    b.classList.toggle("act", !!focused && focused.app.key === k);
+  });
+  if ($("topActiveApp")) {
+    $("topActiveApp").textContent = focused && !focused.min ? focused.app.name : "Finder";
+  }
+}
+function focusWin(w) {
+  if (w.min) { w.min = false; w.el.classList.remove("min"); }
+  w.el.style.zIndex = ++zTop; focused = w; wins.forEach(x => x.el.classList.toggle("focus", x === w)); paintDock();
+  syncFullscreenState();
+}
+function minimize(w) {
+  w.min = true;
+  w.el.classList.add("min");
+  w.el.classList.remove("focus");
+  if (focused === w) focused = topWin();
+  if (focused) focused.el.classList.add("focus");
+  paintDock();
+  syncFullscreenState();
+}
+function closeWin(w) {
+  w.el.remove();
+  wins.delete(w.app.key);
+  if (focused === w) focused = topWin();
+  if (focused) focused.el.classList.add("focus");
+  paintDock();
+  syncFullscreenState();
+}
+const toggleMax = w => {
+  w.el.classList.toggle("max");
+  syncFullscreenState();
+};
+
+function createWin(app) {
+  const el = h("section", { className: "win" }), n = wins.size;
+  el.setAttribute("aria-label", app.name);
+  el.innerHTML = `
+    <div class="tb">
+      <div class="wb">
+        <button type="button" class="b-c" aria-label="Close"></button>
+        <button type="button" class="b-m" aria-label="Minimize"></button>
+        <button type="button" class="b-x" aria-label="Maximize"></button>
+      </div>
+      <span class="tt"></span>
+      <span></span>
+    </div>
+    <div class="wbody"><div class="ph"></div></div>
+    <i class="rs"></i>
+  `;
+  el.querySelector(".tt").innerHTML = ico(app.icon) + "<b>" + app.name + "</b>";
+  const W = Math.min(980, Math.round(innerWidth * 0.74)), H = Math.min(640, Math.round(innerHeight * 0.72));
+  Object.assign(el.style, { width: W + "px", height: H + "px", left: Math.max(8, Math.round((innerWidth - W) / 2) + n * 24 - 24) + "px", top: Math.max(42, 58 + n * 24) + "px" });
+  const frame = h("iframe", { title: app.name });
+  frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-fullscreen");
+  frame.setAttribute("allow", "fullscreen; autoplay; pointer-lock; gamepad; clipboard-write");
+  const ph = el.querySelector(".ph"), w = { app, el, frame, min: false };
+
+  w.load = async fresh => {
+    ph.hidden = false; ph.replaceChildren(h("div", { className: "spin" }), h("span", { textContent: "Loading " + app.name + "…" }));
+    try { const html = await getPage(app.file, fresh); frame.srcdoc = html + FWD; }
+    catch { ph.replaceChildren(h("span", { textContent: "Couldn't load " + app.name + "." }), h("button", { className: "ib primary", textContent: "Retry", onclick: () => w.load(true) })); }
+  };
+  frame.addEventListener("load", () => { if (frame.srcdoc) ph.hidden = true; });
+  el.querySelector(".wbody").append(frame);
+
+  attachWindowControls(el, w);
+  desk.append(el); wins.set(app.key, w);
+  focusWin(w); w.load(); return w;
+}
+
+function openApp(key, toggle) {
+  const app = apps.get(key); if (!app) return;
+  const w = wins.get(key);
+  if (!w) {
+    if (app.native === "calculator") openCalculator(app);
+    else if (app.native === "notes") openNotes(app);
+    else if (app.native === "paint") openPaint(app);
+    else if (app.native === "weather") openWeather(app);
+    else if (app.native === "music") openMusic(app);
+    else if (app.native === "terminal") openTerminal(app);
+    else if (app.native === "clock") openClockApp(app);
+    else createWin(app);
+  } else if (w.min || focused !== w || !toggle) focusWin(w);
+  else minimize(w);
+}
+
+/* ===== DOCK ===== */
+function dockBtn(label, icon, tileBg, fn, key, extraClass = "", customSvg = "") {
+  const b = h("button", { type: "button", onclick: fn, className: ("dk " + extraClass).trim() });
+  b.setAttribute("aria-label", label);
+  if (tileBg) b.style.setProperty("--tile-bg", tileBg);
+  b.dataset.tip = label;
+  b.innerHTML = '<span class="ti">' + (customSvg || ico(icon)) + "</span>";
+  if (key) dockBtns.set(key, b);
+  return b;
+}
+
+function buildDock() {
+  const userApps = [...apps.values()].filter(a => a.key !== "home" && a.key !== "index");
+  const siftMarkSvg = `<svg viewBox="0 0 100 100" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="20" width="60" height="60" rx="15" transform="rotate(45 50 50)" stroke="currentColor" stroke-width="11"/><rect x="38" y="38" width="24" height="24" rx="6" transform="rotate(45 50 50)" fill="currentColor"/></svg>`;
+  $("dock").replaceChildren(
+    dockBtn("Launchpad", "fa-solid fa-grip", null, e => { e.stopPropagation(); toggleStartMenu(); }, null, "start-dk", siftMarkSvg),
+    h("i", { className: "sep" }),
+    ...userApps.map((a, i) => dockBtn(a.name, a.icon, tileGradient(a.key, i), () => openApp(a.key, true), a.key, "app-" + a.key)),
+    h("i", { className: "sep" }),
+    dockBtn("Discord", "discord", "linear-gradient(160deg, #6b76ff 0%, #5865f2 100%)", () => window.open(LINKS.discord, "_blank", "noopener"), null, "app-discord"),
+    dockBtn("Settings", "settings", "linear-gradient(160deg, #94a3b8 0%, #64748b 100%)", () => openSettings("preferences"), "settings-win", "app-settings")
+  );
+}
+
+/* ===== WIDGETS & CLOCK ===== */
+$("updList").replaceChildren(...UPDATES.map(u => {
+  const a = h("article", { className: "u" });
+  a.append(h("small", { textContent: u.date + (u.tag ? " · " + u.tag : "") }), h("b", { textContent: u.title }), h("p", { textContent: u.text }));
+  if (u.bullets) a.append(h("ul", {}, ...u.bullets.map(t => h("li", { textContent: t }))));
+  return a;
+}));
+$("updBtn").onclick = () => $("upd").classList.toggle("shut");
+
+/* ===== CONTROL CENTER, SYSTEM STATE & ACCOUNT CHIP ===== */
+const SYS_DEF = { wifi: true, bt: true, air: 0, dnd: false, night: false, bright: 100, vol: 60, mute: false, sfx: true, widgets: true, clock24: false, secs: false, rmotion: false, rtrans: false };
+const SYS = {};
+for (const k in SYS_DEF) {
+  const d = SYS_DEF[k], raw = ls.get("sift.sys." + k);
+  SYS[k] = raw === "" ? d : typeof d === "boolean" ? raw === "1" : (Number(raw) || 0);
+}
+const AIR_MODES = ["Contacts Only", "Everyone", "Receiving Off"];
+const MEDIA = {
+  tracks: [
+    { title: "Midnight Horizon", artist: "SIFT Synthwave" },
+    { title: "Sequoia Breeze", artist: "Ambient Chill" },
+    { title: "Glass Reflections", artist: "Lo-Fi Study Beats" }
+  ],
+  idx: 0, playing: false, subs: new Set(),
+  emit() { this.subs.forEach(f => f()); },
+  toggle() { this.playing = !this.playing; this.emit(); },
+  next() { this.idx = (this.idx + 1) % this.tracks.length; this.emit(); },
+  prev() { this.idx = (this.idx - 1 + this.tracks.length) % this.tracks.length; this.emit(); }
+};
+const setOn = (id, on) => { const e = $(id); e.classList.toggle("on", on); e.setAttribute("aria-pressed", on); };
+const setF = r => r.style.setProperty("--f", (r.value - r.min) / (r.max - r.min));
+const volIco = () => SYS.mute || !SYS.vol ? "fa-volume-xmark" : SYS.vol < 40 ? "fa-volume-low" : "fa-volume-high";
+
+function sysSet(k, v) {
+  SYS[k] = v;
+  ls.set("sift.sys." + k, typeof v === "boolean" ? (v ? "1" : "0") : String(v));
+  applySystem();
+}
+function applySystem() {
+  document.body.classList.toggle("reduce-motion", SYS.rmotion);
+  document.body.classList.toggle("reduce-trans", SYS.rtrans);
+  $("dim").style.opacity = ((100 - SYS.bright) / 100 * 0.8).toFixed(3);
+  $("warm").style.opacity = SYS.night ? "1" : "0";
+  $("widgets").hidden = !SYS.widgets;
+  $("topWifiBtn").style.opacity = SYS.wifi ? "" : ".38";
+  $("topWifiBtn").title = SYS.wifi ? "Connected to SIFT Network" : "Wi-Fi Off";
+  $("topDnd").hidden = !SYS.dnd;
+  setOn("ccWifi", SYS.wifi); $("ccWifiSub").textContent = SYS.wifi ? "SIFT Network" : "Off";
+  setOn("ccBt", SYS.bt); $("ccBtSub").textContent = SYS.bt ? "On" : "Off";
+  setOn("ccAir", SYS.air !== 2); $("ccAirSub").textContent = AIR_MODES[SYS.air] || AIR_MODES[0];
+  setOn("ccDnd", SYS.dnd); setOn("ccNight", SYS.night); setOn("ccMute", SYS.mute);
+  $("ccBright").value = SYS.bright; $("ccVol").value = SYS.vol;
+  setF($("ccBright")); setF($("ccVol"));
+  $("ccVolIco").className = "fa-solid " + volIco();
+  tick();
+}
+
+let actx = null;
+function blip() {
+  if (SYS.mute || !SYS.sfx || !SYS.vol) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = 660; g.gain.value = SYS.vol / 100 * 0.25;
+    o.connect(g); g.connect(actx.destination);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.14);
+    o.start(); o.stop(actx.currentTime + 0.15);
+  } catch {}
+}
+
+/* Control Center panel */
+const cc = $("cc"), umenu = $("userMenu");
+function toggleCC(force) {
+  const open = force ?? !cc.classList.contains("open");
+  if (open) { menu.hidden = true; umenu.hidden = true; $("helpMenu").hidden = true; toggleStartMenu(false); toggleExpose(false); toggleSpotlight(false); }
+  cc.classList.toggle("open", open);
+}
+$("topCcBtn").onclick = e => { e.stopPropagation(); toggleCC(); };
+$("ccWifi").onclick = () => sysSet("wifi", !SYS.wifi);
+$("ccBt").onclick = () => sysSet("bt", !SYS.bt);
+$("ccAir").onclick = () => sysSet("air", (SYS.air + 1) % 3);
+$("ccDnd").onclick = () => sysSet("dnd", !SYS.dnd);
+$("ccNight").onclick = () => sysSet("night", !SYS.night);
+$("ccFull").onclick = () => {
+  toggleCC(false);
+  const isActive = document.body.classList.contains("in-fullscreen") || !!document.fullscreenElement;
+  if (isActive) {
+    fullscreenButtonMode = false;
+    document.body.classList.remove("in-fullscreen");
+    if (document.fullscreenElement) document.exitFullscreen?.();
+  } else {
+    fullscreenButtonMode = true;
+    document.body.classList.add("in-fullscreen");
+    const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+    if (request) {
+      try {
+        const result = request.call(document.documentElement);
+        if (result && result.catch) result.catch(() => syncFullscreenState());
+      } catch { syncFullscreenState(); }
+    }
+    syncFullscreenState();
+  }
+};
+$("ccBright").oninput = e => sysSet("bright", +e.target.value);
+$("ccVol").oninput = e => { sysSet("vol", +e.target.value); if (SYS.mute && SYS.vol) sysSet("mute", false); };
+$("ccVol").onchange = blip;
+$("ccMute").onclick = () => sysSet("mute", !SYS.mute);
+cc.querySelectorAll("[data-open]").forEach(b => b.onclick = () => { toggleCC(false); openSettings(b.dataset.open); });
+$("ccPlay").onclick = () => MEDIA.toggle();
+$("ccNext").onclick = () => MEDIA.next();
+MEDIA.subs.add(() => {
+  const t = MEDIA.tracks[MEDIA.idx];
+  $("ccTitle").textContent = t.title; $("ccArtist").textContent = t.artist;
+  $("ccPlay").innerHTML = '<i class="fa-solid fa-' + (MEDIA.playing ? "pause" : "play") + '"></i>';
+});
+
+/* Account chip in the menu bar */
+function accName() { try { return JSON.parse(ls.get("sift.account") || "null")?.name || "User"; } catch { return "User"; } }
+function refreshUser() {
+  const n = accName(), c = n.charAt(0).toUpperCase();
+  $("topUserName").textContent = n; $("topAv").textContent = c;
+  $("umName").textContent = n; $("umAv").textContent = c;
+}
+$("topUser").onclick = e => {
+  e.stopPropagation();
+  if (!umenu.hidden) { umenu.hidden = true; return; }
+  toggleCC(false); menu.hidden = true; $("helpMenu").hidden = true; refreshUser();
+  umenu.hidden = false;
+  const r = $("topUser").getBoundingClientRect();
+  umenu.style.top = r.bottom + 6 + "px";
+  umenu.style.left = Math.max(8, Math.min(innerWidth - umenu.offsetWidth - 8, r.left)) + "px";
+};
+umenu.querySelector('[data-u="acct"]').onclick = () => { umenu.hidden = true; openSettings("account"); };
+umenu.querySelector('[data-u="sys"]').onclick = () => { umenu.hidden = true; openSettings("preferences"); };
+umenu.querySelector('[data-u="lock"]').onclick = () => location.reload();
+addEventListener("pointerdown", e => {
+  if (cc.classList.contains("open") && !cc.contains(e.target) && !$("topCcBtn").contains(e.target)) toggleCC(false);
+  if (!umenu.hidden && !umenu.contains(e.target) && !$("topUser").contains(e.target)) umenu.hidden = true;
+  if (!($("helpMenu").hidden) && !$("helpMenu").contains(e.target) && !$("topHelpBtn").contains(e.target)) $("helpMenu").hidden = true;
+});
+addEventListener("keydown", e => { if (e.key === "Escape") { toggleCC(false); umenu.hidden = true; $("helpMenu").hidden = true; } });
+
+/* New Settings tabs */
+const swRow = (k, t, d) => `<div class="st-row"><div><b>${t}</b><p>${d}</p></div><button type="button" class="sw${SYS[k] ? " on" : ""}" data-k="${k}" role="switch" aria-checked="${SYS[k]}" aria-label="${t}"></button></div>`;
+const rgRow = (k, t, min, max) => `<div class="st-row st-rg"><b>${t}</b><input type="range" class="cc-range" data-k="${k}" min="${min}" max="${max}" value="${SYS[k]}" aria-label="${t}"/></div>`;
+const stHead = (t, s) => `<h2 class="st-heading">${t}</h2><p class="st-sub">${s}</p>`;
+function bindSys(m) {
+  m.querySelectorAll(".sw").forEach(b => b.onclick = () => {
+    const k = b.dataset.k; sysSet(k, !SYS[k]);
+    b.classList.toggle("on", SYS[k]); b.setAttribute("aria-checked", SYS[k]);
+  });
+  m.querySelectorAll("input.cc-range").forEach(r => {
+    setF(r);
+    r.oninput = () => { sysSet(r.dataset.k, +r.value); setF(r); };
+    if (r.dataset.k === "vol") r.onchange = blip;
+  });
+  m.querySelectorAll("select[data-k]").forEach(s => s.onchange = () => sysSet(s.dataset.k, +s.value));
+}
+const SYS_TABS = {
+  display: m => {
+    m.innerHTML = stHead("Display", "Brightness and screen colour. Also in Control Center.")
+      + `<div class="st-card">${rgRow("bright", "Brightness", 25, 100)}${swRow("night", "Night Shift", "Warms the screen colours.")}</div>`;
+    bindSys(m);
+  },
+  sound: m => {
+    m.innerHTML = stHead("Sound", "Volume for system sounds. Games and apps keep their own volume.")
+      + `<div class="st-card">${rgRow("vol", "Volume", 0, 100)}${swRow("mute", "Mute", "Silence all system sounds.")}${swRow("sfx", "Sound on volume change", "Play a short tone when you let go of the slider.")}</div>`;
+    bindSys(m);
+  },
+  network: m => {
+    m.innerHTML = stHead("Network", "These are simulated. A web page can't control real Wi-Fi, Bluetooth or AirDrop.")
+      + `<div class="st-card">${swRow("wifi", "Wi-Fi", "Connect to the SIFT Network.")}${swRow("bt", "Bluetooth", "Make this desktop discoverable.")}</div>`
+      + `<div class="st-card"><div class="st-field" style="margin-top:0"><label for="st-air">AirDrop</label><select id="st-air" data-k="air">${AIR_MODES.map((n, i) => `<option value="${i}"${SYS.air === i ? " selected" : ""}>${n}</option>`).join("")}</select></div></div>`;
+    bindSys(m);
+  },
+  notifications: m => {
+    m.innerHTML = stHead("Notifications", "Control pop-ups and the desktop updates card.")
+      + `<div class="st-card">${swRow("dnd", "Do Not Disturb", "Hide pop-up notifications.")}${swRow("widgets", "Release Notes widget", "Show the updates card on the desktop.")}</div>`;
+    bindSys(m);
+  },
+  datetime: m => {
+    m.innerHTML = stHead("Date & Time", "How the clock looks in the menu bar.")
+      + `<div class="st-card">${swRow("clock24", "24-hour time", "Show 17:30 instead of 5:30 PM.")}${swRow("secs", "Show seconds", "Add seconds to the menu bar clock.")}</div>`;
+    bindSys(m);
+  },
+  access: m => {
+    m.innerHTML = stHead("Accessibility", "Make the desktop easier on the eyes.")
+      + `<div class="st-card">${swRow("rmotion", "Reduce motion", "Turn off most animations and transitions.")}${swRow("rtrans", "Reduce transparency", "Replace blurred glass with solid panels.")}</div>`;
+    bindSys(m);
+  }
+};
+
+applySystem();
+refreshUser();
+MEDIA.emit();
+
+function tick() {
+  const d = new Date();
+  const wk = d.toLocaleDateString([], { weekday: "short" });
+  const mo = d.toLocaleDateString([], { month: "short" });
+  const dy = d.getDate();
+  const tm = d.toLocaleTimeString([], { hour: SYS.clock24 ? "2-digit" : "numeric", minute: "2-digit", ...(SYS.secs ? { second: "2-digit" } : {}), hour12: !SYS.clock24 });
+  $("clock").textContent = `${wk} ${mo} ${dy}  ${tm}`;
+  $("dayName").textContent = d.toLocaleDateString([], { weekday: "long" }).toUpperCase();
+  $("dateTxt").textContent = d.toLocaleDateString([], { month: "long", day: "numeric" });
+}
+tick(); setInterval(tick, 1000);
+
+/* ===== WALLPAPER & DOCS DIALOGS ===== */
+$("wp-apply").onclick = () => {
+  const u = $("wp-url").value.trim();
+  if (!u) { $("wp-msg").textContent = "Please enter a valid image URL."; return; }
+  ls.set("sh0zy.bg", u); applySettings(); $("wp").close(); notify("Wallpaper updated!");
+};
+$("wp-up").onclick = () => $("wp-file").click();
+$("wp-file").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => { ls.set("sh0zy.bg", r.result); applySettings(); $("wp").close(); notify("Wallpaper uploaded!"); };
+  r.readAsDataURL(file);
+};
+$("wp-p1").onclick = () => { ls.set("sh0zy.bg", PRESET_WALLPAPERS[0].url); applySettings(); $("wp").close(); };
+$("wp-p2").onclick = () => { ls.set("sh0zy.bg", PRESET_WALLPAPERS[1].url); applySettings(); $("wp").close(); };
+$("wp-reset").onclick = () => { ls.del("sh0zy.bg"); applySettings(); $("wp").close(); };
+$("wp-x").onclick = () => $("wp").close();
+
+function openDoc(type) {
+  $("doc-t").textContent = type === "privacy" ? "Privacy Policy" : "Terms of Service";
+  $("doc-b").innerHTML = type === "privacy"
+    ? "<p>All settings, account preferences, and notes are stored locally in your browser via localStorage. No personal account credentials are sent to external servers.</p>"
+    : "<p>Welcome to SIFT Web OS. Use responsibly and customize your workspace freely.</p>";
+  $("doc").showModal();
+}
+$("doc-x").onclick = () => $("doc").close();
+menu.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => { menu.hidden = true; openDoc(b.dataset.doc); });
+document.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => { $("helpMenu").hidden = true; menu.hidden = true; openDoc(b.dataset.doc); });
+
+/* ===== TOP MENU BAR INTERACTIONS ===== */
+function showMenu(x, y) {
+  menu.querySelector('[data-a="start"]').onclick = () => { menu.hidden = true; toggleStartMenu(true); };
+  menu.querySelector('[data-a="expose"]').onclick = () => { menu.hidden = true; toggleExpose(true); };
+  menu.querySelector('[data-a="wall"]').onclick = () => { menu.hidden = true; $("wp").showModal(); };
+  menu.querySelector('[data-a="settings"]').onclick = () => { menu.hidden = true; openSettings("preferences"); };
+  menu.querySelector('[data-a="ab"]').onclick = () => { menu.hidden = true; launchAboutBlank(); };
+  menu.querySelector('[data-a="blob"]').onclick = () => { menu.hidden = true; launchBlob(); };
+  menu.querySelector('[data-a="discord"]').onclick = () => { menu.hidden = true; window.open(LINKS.discord, "_blank", "noopener"); };
+  menu.style.left = Math.min(innerWidth - menu.offsetWidth - 8, x) + "px";
+  menu.style.top = Math.min(innerHeight - menu.offsetHeight - 8, y) + "px";
+  menu.hidden = false;
+}
+
+$("menuBtn").onclick = e => {
+  e.stopPropagation();
+  toggleStartMenu(false);
+  toggleExpose(false);
+  $("helpMenu").hidden = true;
+  const r = $("menuBtn").getBoundingClientRect();
+  showMenu(r.left, r.bottom + 6);
+};
+$("topActiveApp").onclick = e => { e.stopPropagation(); toggleStartMenu(true); };
+$("topFileBtn").onclick = e => { e.stopPropagation(); toggleStartMenu(true); };
+$("topEditBtn").onclick = () => openSettings("cloaking");
+$("topViewBtn").onclick = () => openSettings("themes");
+$("topWindowBtn").onclick = e => { e.stopPropagation(); toggleExpose(true); };
+$("topHelpBtn").onclick = e => {
+  e.stopPropagation();
+  menu.hidden = true;
+  const hm = $("helpMenu");
+  hm.hidden = !hm.hidden;
+  const r = $("topHelpBtn").getBoundingClientRect();
+  hm.style.top = r.bottom + 6 + "px";
+  hm.style.left = Math.max(8, r.left) + "px";
+};
+$("topWifiBtn").onclick = () => notify(SYS.wifi ? "Connected to SIFT Network" : "Wi-Fi is turned off");
+$("topSearchBtn").onclick = e => { e.stopPropagation(); toggleSpotlight(); };
+
+window.onpointerdown = e => {
+  if (!menu.contains(e.target) && !$("menuBtn").contains(e.target)) menu.hidden = true;
+};
+window.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    toggleSpotlight();
+  }
+  if (e.key === "Escape") {
+    if (spotlight.classList.contains("open")) toggleSpotlight(false);
+    if (startMenu.classList.contains("open")) toggleStartMenu(false);
+    if (expose.classList.contains("open")) toggleExpose(false);
+    if ($("firstRunGuide").classList.contains("open")) closeFirstRunGuide();
+  }
+});
+
+/* ===== SETUP WIZARD & BOOT FLOW ===== */
+let setupData = { name: "User", pass: "", hint: "", theme: "glass", acc: "#2b7fff" };
+
+function enterDesktop() {
+  refreshUser();
+  $("boot").classList.add("done");
+  document.body.classList.add("booted");
+  if (ls.get("sift.guideDone") !== "1") {
+    setTimeout(() => openFirstRunGuide(0), 900);
+  }
+}
+
+function initSetupWizard() {
+  const accountDone = ls.get("sift.setupDone") === "1";
+  let savedAccount = null;
+  try { savedAccount = JSON.parse(ls.get("sift.account") || "null"); } catch {}
+
+  $("helloBtn").onclick = () => {
+    $("bootHelloStage").style.display = "none";
+    $("helloBtn").style.display = "none";
+
+    if (accountDone && savedAccount) {
+      const userName = savedAccount.name || "User";
+      $("boot").classList.add("step-welcome");
+      $("setupWelcomeCard").hidden = false;
+      $("setupAvatarInitial").textContent = userName.charAt(0).toUpperCase();
+      $("setupWelcomeTitle").textContent = `Welcome, ${userName}`;
+
+      if (savedAccount.pass) {
+        $("setupWelcomeSub").textContent = "Enter your password to unlock your desktop.";
+        $("lockLoginBox").hidden = false;
+        $("lockHintTxt").textContent = "";
+        setTimeout(() => $("lockPassInput").focus(), 60);
+
+        const tryUnlock = () => {
+          if ($("lockPassInput").value === savedAccount.pass) {
+            enterDesktop();
+          } else {
+            $("lockPassPill").classList.remove("shake");
+            void $("lockPassPill").offsetWidth;
+            $("lockPassPill").classList.add("shake");
+            $("lockPassInput").value = "";
+            $("lockHintTxt").textContent = savedAccount.hint
+              ? `Incorrect password · Hint: ${savedAccount.hint}`
+              : "Incorrect password. Try again.";
+          }
+        };
+        $("lockUnlockBtn").onclick = tryUnlock;
+        $("lockPassInput").onkeydown = e => {
+          if (e.key === "Enter") { e.preventDefault(); tryUnlock(); }
+        };
+      } else {
+        $("setupWelcomeSub").textContent = "Signing in to your desktop…";
+        $("lockLoginBox").hidden = true;
+        setTimeout(enterDesktop, 1200);
+      }
+      return;
+    }
+
+    $("boot").classList.add("step-setup");
+    $("setupAccountCard").hidden = false;
+    setTimeout(() => $("setupName").focus(), 60);
+  };
+
+  $("setupPass").addEventListener("input", () => {
+    const hasPass = $("setupPass").value.length > 0;
+    $("rowVerify").hidden = !hasPass;
+    $("rowHint").hidden = !hasPass;
+  });
+
+  [$("setupName"), $("setupPass"), $("setupVerify"), $("setupHint")].forEach(inp => {
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        $("setupAccountNext").click();
+      }
+    });
+  });
+
+  $("setupAccountNext").onclick = () => {
+    const nameVal = $("setupName").value.trim();
+    const passVal = $("setupPass").value;
+    const verifyVal = $("setupVerify").value;
+    const hintVal = $("setupHint").value.trim();
+    if (!nameVal) { notify("Please enter your full name."); $("setupName").focus(); return; }
+    if (passVal && passVal !== verifyVal) { notify("Passwords do not match."); $("setupVerify").focus(); return; }
+    setupData.name = nameVal;
+    setupData.pass = passVal;
+    setupData.hint = hintVal;
+
+    $("setupAccountCard").hidden = true;
+    $("setupLookCard").hidden = false;
+  };
+
+  $("setupLookCard").querySelectorAll(".look-choice").forEach(card => {
+    card.onclick = () => {
+      $("setupLookCard").querySelectorAll(".look-choice").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+      setupData.theme = card.dataset.theme;
+    };
+  });
+
+  $("setupSwatches").querySelectorAll(".accent-dot").forEach(sw => {
+    sw.onclick = () => {
+      $("setupSwatches").querySelectorAll(".accent-dot").forEach(s => s.classList.remove("selected"));
+      sw.classList.add("selected");
+      setupData.acc = sw.dataset.acc;
+    };
+  });
+
+  $("setupLookNext").onclick = () => {
+    ls.set("sh0zy.theme", setupData.theme);
+    ls.set("sh0zy.acc", setupData.acc);
+    applySettings();
+
+    $("setupLookCard").hidden = true;
+    $("boot").classList.remove("step-setup");
+    $("boot").classList.add("step-welcome");
+    $("setupWelcomeCard").hidden = false;
+    $("lockLoginBox").hidden = true;
+    $("setupAvatarInitial").textContent = setupData.name.charAt(0).toUpperCase();
+    $("setupWelcomeTitle").textContent = `Welcome, ${setupData.name}`;
+    $("setupWelcomeSub").textContent = setupData.pass
+      ? "Your desktop will ask for your password each time it starts."
+      : "Your account is ready.";
+
+    ls.set("sift.account", JSON.stringify(setupData));
+    ls.set("sift.setupDone", "1");
+
+    setTimeout(enterDesktop, 1900);
+  };
+}
+
+/* ===== INIT ===== */
+async function init() {
+  applySettings();
+  try {
+    const r = await fetch(BASE + "pages.json");
+    if (r.ok) {
+      pages = await r.json();
+      pages.forEach(p => {
+        let k = slugOf(p);
+        if (k !== "home" && k !== "index") {
+          let file = p.file;
+          if (k === "games") file = "ofcgames.html";
+          apps.set(k, { key: k, name: p.name, icon: p.icon, file: file });
+        }
+      });
+    }
+  } catch {}
+  if (apps.size === 0) {
+    apps.set("games", { key: "games", name: "Games", icon: "gamepad", file: "ofcgames.html" });
+    apps.set("chat", { key: "chat", name: "Chat", icon: "chat", file: "chat.html" });
+    apps.set("ai", { key: "ai", name: "AI", icon: "robot", file: "ai.html" });
+  } else {
+    if (apps.has("games")) apps.get("games").file = "ofcgames.html";
+  }
+
+  apps.set("paint", { key: "paint", name: "Paint", icon: "paint", native: "paint" });
+  apps.set("calculator", { key: "calculator", name: "Calculator", icon: "calculator", native: "calculator" });
+  apps.set("notes", { key: "notes", name: "Notes", icon: "notes", native: "notes" });
+  apps.set("weather", { key: "weather", name: "Weather", icon: "weather", native: "weather" });
+  apps.set("music", { key: "music", name: "Music", icon: "music", native: "music" });
+  apps.set("terminal", { key: "terminal", name: "Terminal", icon: "terminal", native: "terminal" });
+  apps.set("clock", { key: "clock", name: "Clock", icon: "clock", native: "clock" });
+
+  buildDock();
+  renderStartMenu();
+  initSetupWizard();
+
+  if (window.self === window.top && location.protocol !== "blob:") {
+    if (ls.get("sh0zy.autoab") === "1") launchAboutBlank();
+    else if (ls.get("sh0zy.autoblob") === "1") launchBlob();
+  }
+}
+
+init();
+]]></script>
+</div></div></foreignObject>
 </svg>
