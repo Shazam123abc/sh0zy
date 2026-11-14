@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xhtml="http://www.w3.org/1999/xhtml"
+     width="100%" height="100%"
+     style="display:block;width:100vw;height:100vh;overflow:hidden;"
+     role="document"
+     aria-label="SIFT interactive desktop">
+  <rect x="0" y="0" width="100%" height="100%" fill="#07080c" />
+
+  <foreignObject x="0" y="0" width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml"
+         style="position:relative;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;overflow:hidden;background:#07080c;">
+      <iframe id="sift-site"
+              title="SIFT"
+              style="display:block;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;background:#07080c;"
+              allow="autoplay; fullscreen; clipboard-read; clipboard-write; gamepad; pointer-lock"
+              allowfullscreen="allowfullscreen"></iframe>
+      <div id="sift-load-error"
+           style="display:none;position:absolute;inset:0;box-sizing:border-box;padding:32px;background:#07080c;color:#f4f6fb;font:14px/1.6 system-ui,sans-serif;">
+        <div style="max-width:620px;margin:12vh auto 0;padding:24px;border:1px solid #30394e;border-radius:16px;background:#111827;">
+          <strong style="display:block;font-size:18px;margin-bottom:8px;">SIFT could not load</strong>
+          <span id="sift-load-error-message">Could not fetch index1.html. Check your internet connection and try again.</span>
+        </div>
+      </div>
+    </div>
+  </foreignObject>
+
+  <script type="application/ecmascript"><![CDATA[
+    (function () {
+      "use strict";
+
+      // The SVG can be opened as a local download, so fetch the source page
+      // directly from the repository and point its app assets at the repo CDN.
+      const packageBase = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
+      const pageUrl = "https://raw.githubusercontent.com/Shazam123abc/sh0zy/main/index1.html";
+      const oldMainBase = "https://cdn.jsdelivr.net/gh/Shazam123abc/sh0zy@main/";
+      const frame = document.getElementById("sift-site");
+      const errorPanel = document.getElementById("sift-load-error");
+      const errorMessage = document.getElementById("sift-load-error-message");
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorPanel.style.display = "block";
+      }
+
+      fetch(pageUrl, { cache: "no-cache" })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("index1.html returned HTTP " + response.status + ".");
+          }
+          return response.text();
+        })
+        .then(function (html) {
+          if (!/<html[\s>]/i.test(html) || !/<body[\s>]/i.test(html)) {
+            throw new Error("index1.html does not look like a complete HTML page.");
+          }
+
+          html = html.split(oldMainBase).join(packageBase);
+
+          const baseTag = '<base href="' + packageBase + '">';
+          if (/<head(?:\s[^>]*)?>/i.test(html)) {
+            html = html.replace(/<head(?:\s[^>]*)?>/i, function (head) {
+              return head + baseTag;
+            });
+          } else {
+            html = html.replace(/<html(?:\s[^>]*)?>/i, function (root) {
+              return root + "<head>" + baseTag + "</head>";
+            });
+          }
+
+          frame.srcdoc = html;
+        })
+        .catch(function (error) {
+          showError(error && error.message
+            ? error.message
+            : "Could not fetch SIFT. Check the repository file and try again.");
+        });
+    })();
+  ]]></script>
+</svg>
